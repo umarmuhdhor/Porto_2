@@ -1,0 +1,327 @@
+@import 'tailwindcss';
+
+/*
+ * Design tokens — sumber: docs/DESIGN-portfolio-v2-cinematic-scroll.md §2
+ * Nilai mentah didefinisikan di :root, lalu di-map ke Tailwind theme via @theme inline
+ * supaya tersedia SEKALIGUS sebagai CSS var (var(--color-cream)) dan utility (bg-cream).
+ */
+:root {
+  /* Warna — DESIGN §2.1 */
+  --color-cream: #f7f1ed; /* latar terang dominan */
+  --color-dark: #242424; /* section kontras gelap */
+
+  /* Accent = kuning referensi (#FFD640). Dipilih user untuk mirror 1:1 hero.
+     Dipakai global: Menu pill, footer, tint hero. Teks di atas accent SELALU
+     ink gelap (kuning + teks gelap = kontras tinggi). */
+  --color-accent: #ffd640; /* brand accent (kuning, match referensi) */
+  --color-accent-soft: #ffe862; /* varian terang aksen */
+  --color-accent-line: #e48f5b; /* aksen garis/brush (terakota) — signature hero */
+
+  /* Bubble chat intro hero (mirror referensi). Biru lembut, teks krem/putih. */
+  --color-note: #5b93e0;
+  --color-note-ink: #ffffff;
+
+  /* Teks — DESIGN §2.1 */
+  --color-ink: #0a0a0a; /* text primary */
+  --color-muted: rgb(99, 99, 99); /* text secondary (meta, tahun, kategori) */
+  --color-inverse: #f7f1ed; /* teks di atas dark section */
+  --color-ghost: rgba(0, 0, 0, 0.15); /* teks bayangan besar di background */
+
+  /* Radius — DESIGN §2.4 */
+  --radius-pill: 9999px;
+  --radius-card: 20px;
+  --radius-badge: 14px;
+
+  /* Layout — DESIGN §2.3 */
+  --frame-inset: 5%;
+
+  /* Font families. --font-geist-sans di-inject next/font (geist package) &
+     --font-space-grotesk (Space Grotesk, OFL) di-inject next/font/google, dua-duanya
+     di <html> className (app/layout.tsx).
+     Display = Space Grotesk (grotesk geometrik, pendekatan Aeonik referensi untuk
+     nama hero & heading). Body & system = Geist (netral, enak dibaca panjang).
+     Peran script SENGAJA di-drop (DESIGN §2.2 — Tempting 0% terpakai di referensi). */
+  --font-display: var(--font-space-grotesk);
+  --font-body: var(--font-geist-sans);
+  --font-system: var(--font-geist-sans);
+}
+
+@theme inline {
+  --color-cream: var(--color-cream);
+  --color-dark: var(--color-dark);
+  --color-accent: var(--color-accent);
+  --color-accent-soft: var(--color-accent-soft);
+  --color-accent-line: var(--color-accent-line);
+  --color-note: var(--color-note);
+  --color-note-ink: var(--color-note-ink);
+  --color-ink: var(--color-ink);
+  --color-muted: var(--color-muted);
+  --color-inverse: var(--color-inverse);
+  --color-ghost: var(--color-ghost);
+
+  --radius-pill: var(--radius-pill);
+  --radius-card: var(--radius-card);
+  --radius-badge: var(--radius-badge);
+
+  /* next/font CSS variables (di-set di <html> className) */
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-system: var(--font-system);
+}
+
+/*
+ * Skala z-index — SATU sumber kebenaran (M2 §5: cegah z-index war).
+ * Jangan tulis angka z mentah di komponen; pakai var di bawah.
+ *   0  hero background fixed  — selalu paling belakang
+ *  10  section halaman        — urutan tumpuk = urutan DOM (sticky stacking)
+ *  20  ornamen dalam section  — brush divider, badge lokal
+ *  40  frame lines            — dekor global, pointer-events-none
+ *  45  honors badge
+ *  50  nav pill (M6)
+ */
+:root {
+  --z-hero-bg: 0;
+  --z-section: 10;
+  --z-ornament: 20;
+  --z-frame: 40;
+  --z-badge: 45;
+  --z-nav: 50;
+}
+
+html {
+  background: var(--color-cream);
+}
+
+body {
+  font-family: var(--font-body), system-ui, sans-serif;
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/*
+ * Sticky-stacking (M2 §3.3). Baca komentar di components/ui/StackSection.tsx
+ * untuk alasan pilih `sticky` ketimbang ScrollTrigger `pin`.
+ *
+ * .stack-panel WAJIB direct child dari satu parent tinggi (<main>) — sticky
+ * berhenti di batas parent, dan justru itu yang bikin panel tetap nempel di
+ * top:0 sambil section berikutnya naik menutupinya.
+ */
+.stack-panel {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-section);
+  height: var(--stack-h, 100vh);
+  min-height: 100svh;
+}
+
+/* Section biasa (non-stacking) — tetap di atas latar hero yang fixed. */
+.page-section {
+  position: relative;
+  z-index: var(--z-section);
+}
+
+/*
+ * Service list: state aktif dibawa `aria-current`, warna cuma
+ * representasi visualnya (DESIGN §8).
+ */
+.service-item {
+  /* BUKAN --color-ghost (rgba(0,0,0,.15)) — item non-aktif tetap KONTEN yang
+     harus terbaca, dan .15 cuma ~1.3:1 di atas cream. 45% ink ≈ 3.3:1, lolos
+     WCAG AA untuk teks besar sambil tetap jelas "mundur" dari item aktif. */
+  color: color-mix(in srgb, var(--color-ink) 45%, transparent);
+  transition: color 400ms ease;
+}
+
+.service-item[aria-current='true'] {
+  color: var(--color-ink);
+}
+
+/*
+ * Reveal one-shot gambar case study (M5 §3.4) — dipakai components/ui/Reveal.tsx.
+ *
+ * DEFAULT `.reveal` = TERLIHAT. Yang menyembunyikan cuma `data-reveal="armed"`,
+ * dan atribut itu hanya dipasang oleh JS setelah ia memastikan reveal-nya aman
+ * dijalankan (lihat Reveal.tsx). Urutan ini disengaja: kalau JS gagal load,
+ * observer tidak pernah fire, atau halaman dirender di tab background,
+ * galeri tetap tampil — tidak ada jalan bagi konten untuk tersangkut invisible.
+ *
+ * Guard `no-preference`: user yang minta hemat gerak melihat gambar final
+ * langsung, bukan versi cepat dari animasi yang sama. Ditulis sebagai media
+ * query (bukan cek JS sekali) supaya perubahan setelan di tengah sesi langsung
+ * berlaku.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  /* Sengaja TANPA `transition` di sini. Transisi CSS memakai properti dari
+     rule TUJUAN, jadi menaruhnya di state tersembunyi berarti pemasangan
+     data-reveal="armed" ikut dianimasikan — elemen akan fade-out 700ms dulu
+     sebelum fade-in. Tanpa transition, arming langsung snap ke tersembunyi. */
+  .reveal[data-reveal='armed'] {
+    opacity: 0;
+    transform: translateY(24px);
+    will-change: opacity, transform;
+  }
+
+  /* Transisi hidup hanya di arah masuk. */
+  .reveal[data-reveal='armed'][data-visible='true'] {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 700ms ease,
+      transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: auto;
+  }
+}
+
+/*
+ * Split-text hero entrance (M6 §3.1) — dipakai components/ui/SplitText.tsx.
+ *
+ * State ISTIRAHAT `.split-char` = TERLIHAT (tak ada opacity:0 default). Animasi
+ * cuma tambahan di bawah `no-preference`, jadi no-JS & reduced-motion tetap
+ * menampilkan teks penuh — nama hero tak pernah hilang (progressive enhancement).
+ * `both` fill menahan frame `from` selama animation-delay (di-set inline per
+ * huruf), sehingga huruf masuk berurutan. Beda dari animasi rAF: CSS pakai
+ * document timeline, tak membeku invisible saat tab dibuka di background.
+ */
+@keyframes split-char-in {
+  from {
+    opacity: 0;
+    transform: translateY(110%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .split-char {
+    animation: split-char-in 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    will-change: transform, opacity;
+  }
+}
+
+/*
+ * Hero intro choreography — signature-first (Hero.tsx `data-intro`).
+ * Fase 'draw': signature dipindah ke tengah & membesar sambil menggores, sisa
+ * hero disembunyikan. Fase 'reveal' (atribut berganti): nilai kembali ke
+ * default → signature NAIK ke posisi atas & sisa hero fade-in, keduanya via
+ * transition di base rule.
+ *
+ * Default (tanpa data-intro / no-JS / reduced-motion) = state final langsung
+ * terlihat — atribut hanya di-set JS di jalur no-preference. Transisi masuk ke
+ * 'draw' tidak ikut teranimasi karena atribut dipasang pre-paint (useLayoutEffect):
+ * frame pertama sudah state draw, tak ada nilai sebelumnya untuk ditransisikan.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-signature {
+    transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .hero-rest {
+    transition: opacity 800ms ease;
+  }
+  [data-intro='draw'] .hero-signature {
+    transform: translateY(42vh) scale(1.25);
+  }
+  [data-intro='draw'] .hero-rest {
+    opacity: 0;
+  }
+}
+
+/*
+ * Backdrop interaktif section dark (StatementDark) — mirror referensi:
+ * medan titik halus yang memudar dari sudut atas, plus sorot yang mengikuti
+ * kursor sehingga titik terakota menyala di sekitarnya (improve background +
+ * hover background). Semua layer `pointer-events-none`; koordinat kursor masuk
+ * lewat --mx/--my yang di-set DarkBackdrop, aktif/tidak lewat data-active.
+ */
+/* Medan titik dasar — halus & merata di seluruh section, meluruh tipis di tepi. */
+.dark-dots {
+  --dot: rgba(247, 241, 237, 0.1);
+  background-image: radial-gradient(circle at center, var(--dot) 1px, transparent 1.7px);
+  background-size: 24px 24px;
+  -webkit-mask-image: radial-gradient(120% 110% at 50% 40%, #000 55%, transparent 100%);
+  mask-image: radial-gradient(120% 110% at 50% 40%, #000 55%, transparent 100%);
+}
+
+/* Klaster titik lebih terang — diamond di tengah-atas (mirror referensi). */
+.dark-dots-cluster {
+  --dot: rgba(247, 241, 237, 0.34);
+  background-image: radial-gradient(circle at center, var(--dot) 1px, transparent 1.7px);
+  background-size: 24px 24px;
+  -webkit-mask-image: radial-gradient(42% 52% at 50% 2%, #000 0%, rgba(0, 0, 0, 0.55) 42%, transparent 74%);
+  mask-image: radial-gradient(42% 52% at 50% 2%, #000 0%, rgba(0, 0, 0, 0.55) 42%, transparent 74%);
+}
+
+/* Lapisan titik "menyala" — sama persis grid-nya (24px) supaya sejajar dengan
+   .dark-dots, tapi warna terakota terang & di-mask lingkaran di posisi kursor. */
+.dark-dots-hi {
+  --dot: rgba(228, 143, 91, 0.6);
+  background-image: radial-gradient(circle at center, var(--dot) 1px, transparent 1.8px);
+  background-size: 24px 24px;
+  -webkit-mask-image: radial-gradient(circle 190px at var(--mx, -999px) var(--my, -999px), #000 0%, transparent 68%);
+  mask-image: radial-gradient(circle 190px at var(--mx, -999px) var(--my, -999px), #000 0%, transparent 68%);
+  opacity: 0;
+  transition: opacity 320ms ease;
+}
+
+/* Halo hangat lembut di bawah kursor. */
+.dark-glow {
+  background: radial-gradient(
+    circle 260px at var(--mx, -999px) var(--my, -999px),
+    rgba(228, 143, 91, 0.1),
+    transparent 66%
+  );
+  opacity: 0;
+  transition: opacity 320ms ease;
+}
+
+.dark-backdrop[data-active='true'] .dark-dots-hi,
+.dark-backdrop[data-active='true'] .dark-glow {
+  opacity: 1;
+}
+
+/*
+ * Float dekoratif ikon brand (Codex / Claude) di section dark. Rotasi diam
+ * dipertahankan lewat --rot supaya translateY tidak menghapusnya.
+ */
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--rot, 0deg));
+  }
+  50% {
+    transform: translateY(-16px) rotate(var(--rot, 0deg));
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .floaty {
+    animation: floaty var(--dur, 7s) ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
+    will-change: transform;
+  }
+}
+
+/* Reduced-motion global guard (detail per-animasi di-handle tiap milestone) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* M2 §3.6 — matikan koreografi stacking: section jadi scroll linear biasa,
+     urutan & isi konten identik, tanpa ruang scroll kosong sisa fase hold. */
+  .stack-panel {
+    position: relative;
+    height: auto;
+  }
+
+  /* Tanpa scrub tidak ada item "aktif" — semua dirender kontras penuh. */
+  .service-item {
+    color: var(--color-ink);
+  }
+}

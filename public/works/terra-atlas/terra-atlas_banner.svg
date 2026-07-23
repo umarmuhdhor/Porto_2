@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="TERRA ATLAS — BANNER">
+  <rect width="1600" height="900" fill="#f7f1ed"/>
+  <rect x="204.4" y="188.7" width="883.4" height="565.2" rx="45.2" fill="#1f8a6d" opacity="0.9"/>
+  <circle cx="1205.6" cy="464.1" r="233.0" fill="#1f8a6d" opacity="0.35"/>
+  <path d="M0 669.9 C 480.0 366.9, 1120.0 533.1, 1600 632.0" fill="none" stroke="#1f8a6d" stroke-width="12.6" opacity="0.55" stroke-linecap="round"/>
+  <rect x="128.0" y="702.0" width="184.1" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="336.0" y="702.0" width="200.0" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="544.0" y="702.0" width="105.9" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="752.0" y="702.0" width="207.7" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="960.0" y="702.0" width="223.8" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <text x="96.0" y="846.0" font-family="system-ui, sans-serif" font-size="28.8" letter-spacing="5.4" fill="#0a0a0a" opacity="0.45">TERRA ATLAS — BANNER</text>
+</svg>

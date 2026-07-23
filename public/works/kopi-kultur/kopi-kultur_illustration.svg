@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="KOPI KULTUR — ILLUSTRATION">
+  <rect width="1200" height="800" fill="#f7f1ed"/>
+  <rect x="258.4" y="206.7" width="647.9" height="513.8" rx="41.1" fill="#b4442a" opacity="0.9"/>
+  <circle cx="907.8" cy="522.9" r="159.0" fill="#b4442a" opacity="0.35"/>
+  <path d="M0 536.2 C 360.0 335.4, 840.0 464.6, 1200 585.5" fill="none" stroke="#b4442a" stroke-width="11.2" opacity="0.55" stroke-linecap="round"/>
+  <rect x="96.0" y="624.0" width="68.8" height="28.0" rx="14.0" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="252.0" y="624.0" width="127.5" height="28.0" rx="14.0" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="408.0" y="624.0" width="89.7" height="28.0" rx="14.0" fill="#0a0a0a" opacity="0.12"/>
+  <text x="72.0" y="752.0" font-family="system-ui, sans-serif" font-size="25.6" letter-spacing="4.8" fill="#0a0a0a" opacity="0.45">KOPI KULTUR — ILLUSTRATION</text>
+</svg>

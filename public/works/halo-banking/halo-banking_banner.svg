@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="HALO BANKING — BANNER">
+  <rect width="1600" height="900" fill="#f7f1ed"/>
+  <rect x="334.7" y="251.2" width="584.9" height="432.5" rx="34.6" fill="#2f6df6" opacity="0.9"/>
+  <circle cx="1004.9" cy="481.2" r="207.4" fill="#2f6df6" opacity="0.35"/>
+  <path d="M0 631.6 C 480.0 383.2, 1120.0 516.8, 1600 647.4" fill="none" stroke="#2f6df6" stroke-width="12.6" opacity="0.55" stroke-linecap="round"/>
+  <rect x="128.0" y="702.0" width="159.9" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="336.0" y="702.0" width="205.8" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="544.0" y="702.0" width="97.4" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <text x="96.0" y="846.0" font-family="system-ui, sans-serif" font-size="28.8" letter-spacing="5.4" fill="#0a0a0a" opacity="0.45">HALO BANKING — BANNER</text>
+</svg>

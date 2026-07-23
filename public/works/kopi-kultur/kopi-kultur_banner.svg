@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="KOPI KULTUR — BANNER">
+  <rect width="1600" height="900" fill="#f7f1ed"/>
+  <rect x="127.2" y="218.1" width="783.8" height="550.2" rx="44.0" fill="#b4442a" opacity="0.9"/>
+  <circle cx="1309.4" cy="314.0" r="173.8" fill="#b4442a" opacity="0.35"/>
+  <path d="M0 628.2 C 480.0 398.9, 1120.0 501.1, 1600 648.7" fill="none" stroke="#b4442a" stroke-width="12.6" opacity="0.55" stroke-linecap="round"/>
+  <rect x="128.0" y="702.0" width="210.6" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="336.0" y="702.0" width="190.6" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="544.0" y="702.0" width="165.0" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="752.0" y="702.0" width="131.6" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="960.0" y="702.0" width="139.9" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <text x="96.0" y="846.0" font-family="system-ui, sans-serif" font-size="28.8" letter-spacing="5.4" fill="#0a0a0a" opacity="0.45">KOPI KULTUR — BANNER</text>
+</svg>
