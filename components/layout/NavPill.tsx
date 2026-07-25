@@ -67,7 +67,7 @@ export function NavPill() {
   return (
     <nav
       aria-label="Primary"
-      className="fixed inset-x-0 bottom-6 flex flex-col items-center gap-3"
+      className="chrome-floating fixed inset-x-0 bottom-6 flex flex-col items-center gap-3"
       style={{ zIndex: 'var(--z-nav)' }}
     >
       <AnimatePresence>

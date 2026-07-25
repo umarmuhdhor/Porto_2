@@ -57,7 +57,7 @@ export function ProjectIndex({ projects }: { projects: ProjectRow[] }) {
         Curated Projects
       </h2>
       <p className="font-system text-muted mt-4 max-w-md">
-        Selection of projects across branding, product, and visual systems.
+        Selection of mobile and iOS development work, built end to end.
       </p>
 
       {cursorFollow ? <CursorFollowList projects={projects} /> : <StaticList projects={projects} />}

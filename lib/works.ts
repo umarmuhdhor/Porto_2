@@ -9,11 +9,11 @@
  */
 
 import type { Work } from '@/content/works/types';
-import { haloBanking } from '@/content/works/halo-banking';
-import { terraAtlas } from '@/content/works/terra-atlas';
-import { kopiKultur } from '@/content/works/kopi-kultur';
+import { absata } from '@/content/works/absata';
+import { higgzAcademia } from '@/content/works/higgz-academia';
+import { mdpTeaching } from '@/content/works/mdp-teaching';
 
-const WORKS: readonly Work[] = [haloBanking, terraAtlas, kopiKultur];
+const WORKS: readonly Work[] = [absata, higgzAcademia, mdpTeaching];
 
 export function getAllWorks(): readonly Work[] {
   return WORKS;

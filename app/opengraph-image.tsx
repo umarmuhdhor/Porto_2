@@ -14,7 +14,7 @@ import { ImageResponse } from 'next/og';
 
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
-export const alt = 'Umar — Portfolio';
+export const alt = 'Umar Muhdhor — iOS Developer';
 
 // Selaras dengan token DESIGN §2.1 (cream / ink / accent coral).
 const CREAM = '#f7f1ed';
@@ -76,7 +76,7 @@ export default function OpengraphImage() {
             maxWidth: 900,
           }}
         >
-          Product, brand & interface design.
+          Mobile apps, built end to end.
         </div>
         <div
           style={{
@@ -88,7 +88,7 @@ export default function OpengraphImage() {
             opacity: 0.65,
           }}
         >
-          Visual & front-end designer
+          iOS Developer · Swift & Flutter
         </div>
       </div>
 

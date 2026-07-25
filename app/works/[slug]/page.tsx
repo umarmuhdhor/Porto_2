@@ -60,6 +60,9 @@ const PAD = { paddingInline: 'var(--frame-inset)' };
 const LINK =
   'font-system focus-visible:outline-accent rounded-sm underline underline-offset-4 transition-colors focus-visible:outline-2 focus-visible:outline-offset-4';
 
+/** Label seksi/kolom — satu konstanta supaya semua eyebrow di halaman ini sama. */
+const LABEL = 'font-system text-muted text-xs tracking-[0.3em] uppercase';
+
 export default async function WorkPage({ params }: Params) {
   const { slug } = await params;
   const work = getWorkBySlug(slug);
@@ -126,16 +129,82 @@ export default async function WorkPage({ params }: Params) {
 
         <ServicePillList items={work.services} />
 
+        {/* Strip fakta: <dl>, bukan grid <div>, supaya screen reader membaca
+            pasangan label→nilai sebagai pasangan. `stack` ikut di sini sebagai
+            satu baris penuh — daripada jadi deret pill kedua yang bentuknya
+            sama persis dengan services di atasnya. */}
+        <dl className="border-ink/10 mt-12 grid grid-cols-2 gap-x-6 gap-y-8 border-t pt-8 md:mt-16 md:grid-cols-4">
+          {work.facts.map((fact) => (
+            <div key={fact.label}>
+              <dt className={LABEL}>{fact.label}</dt>
+              <dd className="font-body mt-2 text-sm leading-snug md:text-base">{fact.value}</dd>
+            </div>
+          ))}
+          {work.stack && (
+            <div className="col-span-2 md:col-span-4">
+              <dt className={LABEL}>Stack</dt>
+              <dd className="font-system mt-2 text-sm md:text-base">{work.stack.join('  ·  ')}</dd>
+            </div>
+          )}
+        </dl>
+
         <div className="mt-16 grid grid-cols-1 gap-10 md:mt-24 md:grid-cols-2 md:gap-16">
           <section>
-            <h2 className="font-system text-muted text-xs tracking-[0.3em] uppercase">Challenge</h2>
+            <h2 className={LABEL}>Challenge</h2>
             <p className="font-body mt-4 leading-relaxed md:text-lg">{work.challenge}</p>
           </section>
           <section>
-            <h2 className="font-system text-muted text-xs tracking-[0.3em] uppercase">Role</h2>
+            <h2 className={LABEL}>Role</h2>
             <p className="font-body mt-4 leading-relaxed md:text-lg">{work.role}</p>
           </section>
         </div>
+
+        <section className="mt-16 md:mt-24">
+          <h2 className={LABEL}>Approach</h2>
+          {/* <ol> karena langkahnya memang berurut — urutannya bagian dari isi,
+              dan itu sudah disampaikan oleh <ol> sendiri ke screen reader.
+              Angka "01" di tiap item cuma versi terlihatnya, jadi aria-hidden
+              supaya tidak dibacakan dua kali. Warnanya accent-line (terakota),
+              BUKAN accent: accent itu kuning dan dipakai sebagai LATAR di
+              sistem ini — sebagai teks di atas cream nyaris tidak terbaca. */}
+          <ol className="mt-6 grid grid-cols-1 gap-8 md:mt-8 md:grid-cols-3 md:gap-10">
+            {work.approach.map((step, i) => (
+              <li key={step.title} className="border-ink/10 border-t pt-5">
+                <span
+                  aria-hidden="true"
+                  className="font-display text-accent-line block text-sm leading-none font-bold"
+                >
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <h3 className="font-display mt-3 text-lg leading-tight font-bold md:text-xl">
+                  {step.title}
+                </h3>
+                <p className="font-body text-ink/80 mt-3 leading-relaxed">{step.body}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section className="mt-16 md:mt-24">
+          <h2 className={LABEL}>Outcome</h2>
+          <dl className="mt-6 grid grid-cols-1 gap-8 sm:grid-cols-3 md:mt-8 md:gap-10">
+            {work.outcomes.map((outcome) => (
+              // flex-col-reverse: DOM tetap <dt> lalu <dd> (urutan yang sah di
+              // <dl>, dan yang dibaca screen reader sebagai "label → nilai"),
+              // sementara secara visual angkanya yang tampil duluan di atas
+              // keterangannya. Alternatifnya menduplikasi label jadi <dt
+              // class="sr-only">, yang membuat screen reader membacanya dua kali.
+              <div key={outcome.label} className="border-ink/10 flex flex-col-reverse border-t pt-5">
+                <dt className="font-body text-muted mt-3 text-sm leading-snug md:text-base">
+                  {outcome.label}
+                </dt>
+                <dd className="font-display text-3xl leading-none font-bold tracking-tight md:text-5xl">
+                  {outcome.metric}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </section>
 
         <BentoGallery banner={work.banner} items={work.gallery} />
 

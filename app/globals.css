@@ -92,6 +92,22 @@ html {
   background: var(--color-cream);
 }
 
+/*
+ * Chrome mengambang (NavPill) disembunyikan saat section kontak mendominasi
+ * viewport — sudut layar jadi bersih & hanya menampilkan baris kredit, persis
+ * seperti referensi. Atribut di-toggle ContactChromeToggle (IntersectionObserver).
+ */
+.chrome-floating {
+  transition:
+    opacity 300ms ease,
+    transform 300ms ease;
+}
+body[data-at-contact='true'] .chrome-floating {
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+}
+
 body {
   font-family: var(--font-body), system-ui, sans-serif;
   color: var(--color-ink);

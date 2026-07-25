@@ -15,7 +15,7 @@
 export type GallerySpan = 'full' | 'half';
 
 export interface GalleryItem {
-  /** Path absolut dari /public, mis. `/works/halo-banking/halo-banking_screens.svg`. */
+  /** Path absolut dari /public, mis. `/works/absata/absata_screens.svg`. */
   src: string;
   /** Alt deskriptif — bukan "gambar project". Dipakai screen reader (PRD §11). */
   alt: string;
@@ -33,6 +33,33 @@ export interface SummarySegment {
   strong?: boolean;
 }
 
+/**
+ * Satu baris di strip fakta bawah header (organisasi, periode, platform, dst).
+ * Label sengaja bebas per project: project engineering butuh "Platform",
+ * project mengajar butuh "Scope" — memaksa key yang sama bikin salah satunya
+ * diisi asal.
+ */
+export interface WorkFact {
+  label: string;
+  value: string;
+}
+
+/** Satu langkah di bagian Approach — judul pendek + satu paragraf. */
+export interface ApproachStep {
+  title: string;
+  body: string;
+}
+
+/**
+ * Satu angka hasil. `metric` dirender besar, `label` menjelaskan angkanya.
+ * Isi HANYA angka yang benar-benar ada di CV — bagian ini paling gampang
+ * jadi klaim palsu kalau diisi kira-kira.
+ */
+export interface Outcome {
+  metric: string;
+  label: string;
+}
+
 export interface Work {
   slug: string;
   title: string;
@@ -45,8 +72,20 @@ export interface Work {
   description: string;
   summary: SummarySegment[];
   services: string[];
+  /** Strip fakta ringkas di bawah header. 3–4 item; lebih dari itu jadi tabel. */
+  facts: WorkFact[];
+  /**
+   * Teknologi yang dipakai. OPSIONAL karena tidak semua project di sini project
+   * engineering — mengarang stack untuk project mengajar lebih buruk daripada
+   * tidak menampilkan barisnya sama sekali.
+   */
+  stack?: string[];
   challenge: string;
   role: string;
+  /** Bagaimana challenge diselesaikan. 3 langkah — cukup untuk kasih bentuk. */
+  approach: ApproachStep[];
+  /** Hasil terukur. 3 angka; grid-nya memang dirancang untuk tiga kolom. */
+  outcomes: Outcome[];
   /** Gambar lebar pembuka gallery, selalu full-bleed. */
   banner: Omit<GalleryItem, 'span'>;
   gallery: GalleryItem[];

@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="HALO BANKING — SYSTEM">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="ABSATA — SYSTEM">
   <rect width="1200" height="800" fill="#f7f1ed"/>
   <rect x="174.3" y="113.7" width="411.3" height="387.7" rx="31.0" fill="#2f6df6" opacity="0.9"/>
   <circle cx="765.0" cy="317.1" r="139.2" fill="#2f6df6" opacity="0.35"/>
@@ -6,5 +6,5 @@
   <rect x="96.0" y="624.0" width="138.3" height="28.0" rx="14.0" fill="#0a0a0a" opacity="0.12"/>
   <rect x="252.0" y="624.0" width="99.7" height="28.0" rx="14.0" fill="#0a0a0a" opacity="0.12"/>
   <rect x="408.0" y="624.0" width="161.4" height="28.0" rx="14.0" fill="#0a0a0a" opacity="0.12"/>
-  <text x="72.0" y="752.0" font-family="system-ui, sans-serif" font-size="25.6" letter-spacing="4.8" fill="#0a0a0a" opacity="0.45">HALO BANKING — SYSTEM</text>
+  <text x="72.0" y="752.0" font-family="system-ui, sans-serif" font-size="25.6" letter-spacing="4.8" fill="#0a0a0a" opacity="0.45">ABSATA — SYSTEM</text>
 </svg>

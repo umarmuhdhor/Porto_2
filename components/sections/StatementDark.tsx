@@ -21,7 +21,7 @@ import { LineArt, type LineArtHandle } from '@/components/sections/LineArt';
 import { DarkBackdrop } from '@/components/sections/DarkBackdrop';
 import { FloatingIcons } from '@/components/sections/FloatingIcons';
 
-const HEADLINE = '4+ years of crafting meaningful products and visuals that hold up';
+const HEADLINE = 'Building mobile apps that feel effortless and hold up in real use';
 const SOLID_WORDS = 2;
 
 /** Fase hold dipakai penuh untuk menggambar garis — habis 100% saat mulai ditutupi. */

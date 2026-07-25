@@ -20,7 +20,7 @@ import { SignatureLine } from '@/components/ui/SignatureLine';
 import { HeroName } from '@/components/ui/HeroName';
 import { ChatBubble } from '@/components/ui/ChatBubble';
 
-const ROLE = 'Visual Designer';
+const ROLE = 'iOS Developer';
 const LOCATION = 'Based in — Indonesia';
 
 /** Layout-effect isomorfik: pre-paint di klien (cegah flash intro), no-op di SSR. */

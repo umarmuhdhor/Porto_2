@@ -26,19 +26,19 @@ import { BrushDivider } from '@/components/ui/BrushDivider';
  */
 const SERVICES = [
   {
-    label: 'Landing Pages',
-    preview: '/works/terra-atlas/terra-atlas_banner.svg',
-    alt: 'Preview landing page Terra Atlas.',
+    label: 'iOS Development',
+    preview: '/works/absata/absata_banner.svg',
+    alt: 'Preview aplikasi iOS ABSATA.',
   },
   {
-    label: 'Visual Branding',
-    preview: '/works/kopi-kultur/kopi-kultur_banner.svg',
-    alt: 'Preview sistem branding Kopi Kultur.',
+    label: 'Cross-Platform Apps',
+    preview: '/works/higgz-academia/higgz-academia_banner.svg',
+    alt: 'Preview materi mobile Higgz Academia.',
   },
   {
-    label: 'Product Design',
-    preview: '/works/halo-banking/halo-banking_banner.svg',
-    alt: 'Preview produk Halo Banking.',
+    label: 'UI Implementation',
+    preview: '/works/mdp-teaching/mdp-teaching_banner.svg',
+    alt: 'Preview materi dan antarmuka MDP Lecturing.',
   },
 ] as const;
 
@@ -65,7 +65,7 @@ export function ServiceList() {
         {/* Kolom kiri — intro + daftar layanan besar */}
         <div>
           <p className="font-system text-muted max-w-sm text-base leading-relaxed md:text-lg">
-            Designing experiences that help brands grow through
+            Building mobile experiences that help people get things done
           </p>
 
           <ul className="mt-10 flex flex-col gap-2 md:gap-3">

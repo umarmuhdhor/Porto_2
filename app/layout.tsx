@@ -39,9 +39,9 @@ const SPEED_INSIGHTS_PROPS = PROXIED ? { scriptSrc: '/_hb/s.js', endpoint: '/_hb
  */
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
 
-const TITLE = 'Umar — Portfolio';
+const TITLE = 'Umar Muhdhor — iOS Developer';
 const DESCRIPTION =
-  'Product, brand, and interface work by Umar — a visual & front-end designer building experiences that stay legible long after launch.';
+  'Mobile app work by Umar Muhdhor — an iOS developer building reliable, easy-to-use apps with Swift and Flutter.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
