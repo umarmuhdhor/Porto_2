@@ -77,8 +77,8 @@ export function NavPill() {
             initial={reduce ? { opacity: 0 } : { opacity: 0, y: 12, scale: 0.96 }}
             animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
             exit={reduce ? { opacity: 0 } : { opacity: 0, y: 12, scale: 0.96 }}
-            transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-            className="font-system flex flex-col items-stretch gap-1 rounded-[var(--radius-card)] border border-black/10 bg-white/90 p-2 text-center text-sm font-medium tracking-[0.2em] uppercase shadow-xl backdrop-blur"
+            transition={{ type: 'spring', stiffness: 260, damping: 28, mass: 0.9 }}
+            className="font-system flex flex-col items-stretch gap-1 rounded-[var(--radius-card)] border border-[var(--line-rule)] bg-white/85 p-2 text-center text-sm font-medium tracking-[0.2em] uppercase shadow-xl backdrop-blur"
           >
             {ITEMS.map((item) => (
               <li key={item.label}>
@@ -101,7 +101,7 @@ export function NavPill() {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-controls="nav-menu"
-        className="bg-accent font-system text-ink focus-visible:outline-ink inline-flex items-center gap-3 rounded-[var(--radius-pill)] px-7 py-3 text-base font-medium tracking-[0.02em] shadow-lg transition-transform duration-200 hover:scale-[1.04] focus-visible:outline-2 focus-visible:outline-offset-2"
+        className="bg-accent font-system text-ink focus-visible:outline-ink inline-flex items-center gap-3 rounded-[var(--radius-pill)] px-7 py-3 text-base font-medium tracking-[0.02em] shadow-[0_10px_30px_-12px_rgba(10,10,10,0.45)] transition-transform duration-[var(--dur-base)] ease-[var(--ease-smooth)] hover:scale-[1.04] focus-visible:outline-2 focus-visible:outline-offset-2"
       >
         <span>{open ? 'Close' : 'Menu'}</span>
         <span aria-hidden className="text-base leading-none">

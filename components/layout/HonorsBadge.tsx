@@ -10,7 +10,7 @@
 export function HonorsBadge() {
   return (
     <div className="fixed top-1/2 right-0 -translate-y-1/2" style={{ zIndex: 'var(--z-badge)' }}>
-      <div className="bg-dark text-inverse flex flex-col items-center gap-6 px-3 py-5">
+      <div className="bg-dark text-inverse flex flex-col items-center gap-6 rounded-l-[var(--radius-badge)] px-3 py-5 shadow-[0_18px_40px_-20px_rgba(10,10,10,0.6)]">
         <span className="font-display text-lg leading-none font-bold">UM.</span>
         <span className="text-xs font-medium tracking-widest [writing-mode:vertical-rl]">
           Honors

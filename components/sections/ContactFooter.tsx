@@ -38,7 +38,7 @@ function IconButton({
       href={href}
       aria-label={label}
       {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-      className="border-ink text-ink hover:bg-ink hover:text-accent focus-visible:outline-ink flex h-11 w-11 items-center justify-center rounded-xl border-2 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 md:h-12 md:w-12"
+      className="border-ink/85 text-ink hover:bg-ink hover:text-accent focus-visible:outline-ink flex h-11 w-11 items-center justify-center rounded-xl border transition-[background-color,color,transform] duration-[var(--dur-base)] ease-[var(--ease-smooth)] hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 md:h-12 md:w-12"
     >
       {children}
     </a>
@@ -77,8 +77,15 @@ export function ContactFooter() {
         </div>
       </div>
 
-      {/* Garis pembatas */}
-      <div aria-hidden className="h-px w-full bg-black/25" />
+      {/* Garis pembatas — hairline dengan ujung meluruh, senada garis tepi. */}
+      <div
+        aria-hidden
+        className="h-[var(--hairline-w)] w-full"
+        style={{
+          backgroundImage:
+            'linear-gradient(to right, transparent, rgba(10,10,10,0.28) 4%, rgba(10,10,10,0.28) 96%, transparent)',
+        }}
+      />
 
       {/* CTA kiri + Reach out kanan */}
       <div className="flex flex-col gap-8 pt-7 sm:flex-row sm:items-end sm:justify-between sm:gap-6">

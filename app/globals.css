@@ -35,6 +35,30 @@
   /* Layout — DESIGN §2.3 */
   --frame-inset: 5%;
 
+  /*
+   * Garis tepi & rule — SATU sumber kebenaran.
+   * Semua garis dekoratif diturunkan dari --color-ink lewat color-mix, jadi
+   * intensitasnya konsisten dan ikut berubah kalau ink diganti. Ketebalan
+   * hairline (0.5px di layar retina) bikin garis terbaca sebagai detail cetak,
+   * bukan border UI — `max()` menjaga garis tidak hilang di layar non-retina.
+   */
+  --hairline-w: max(0.5px, 0.0625rem);
+  /* Grid blueprint hero = 5% ink; garis tepi harus jelas berada di lapisan
+     berbeda dari grid itu, jadi 18% (bukan ~10%) meski hanya 1px. */
+  --line-frame: color-mix(in srgb, var(--color-ink) 18%, transparent);
+  --line-rule: color-mix(in srgb, var(--color-ink) 9%, transparent);
+  --line-strong: color-mix(in srgb, var(--color-ink) 22%, transparent);
+
+  /*
+   * Kurva gerak. --ease-smooth (expo-out) dipakai untuk apa pun yang masuk /
+   * berpindah; --ease-soft untuk perubahan warna & opacity yang tak boleh
+   * terasa "menghentak".
+   */
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast: 260ms;
+  --dur-base: 420ms;
+
   /* Font families. --font-geist-sans di-inject next/font (geist package) &
      --font-space-grotesk (Space Grotesk, OFL) di-inject next/font/google, dua-duanya
      di <html> className (app/layout.tsx).
@@ -88,6 +112,19 @@
   --z-nav: 50;
 }
 
+/*
+ * `overflow-x: clip` (BUKAN hidden): line-art section dark sengaja digambar
+ * jauh melewati tepi kiri layar, dan tanpa ini ia menambah lebar dokumen →
+ * scrollbar horizontal. `hidden` juga akan menghilangkannya, tapi `hidden`
+ * membuat elemen jadi scroll container dan itu mematahkan `position: sticky`
+ * yang jadi tulang punggung koreografi stacking. `clip` memotong tanpa pernah
+ * bisa di-scroll, jadi sticky tetap hidup.
+ */
+html,
+body {
+  overflow-x: clip;
+}
+
 html {
   background: var(--color-cream);
 }
@@ -99,8 +136,8 @@ html {
  */
 .chrome-floating {
   transition:
-    opacity 300ms ease,
-    transform 300ms ease;
+    opacity var(--dur-base) var(--ease-soft),
+    transform var(--dur-base) var(--ease-smooth);
 }
 body[data-at-contact='true'] .chrome-floating {
   opacity: 0;
@@ -112,6 +149,60 @@ body {
   font-family: var(--font-body), system-ui, sans-serif;
   color: var(--color-ink);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/*
+ * Garis tepi global (FrameLines) & rule horizontal.
+ *
+ * Garis tepi tidak dipotong rata di atas/bawah viewport: ujungnya diluruhkan
+ * lewat gradient supaya tidak terbaca sebagai border kotak yang mengurung
+ * halaman. Karena garis ini `fixed` sepanjang scroll, ujung yang tegas akan
+ * ikut "menempel" di tepi layar dan terasa kaku; luruh di ~8% teratas/terbawah
+ * membuatnya menyatu dengan latar.
+ */
+.frame-line {
+  width: var(--hairline-w);
+  background-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--line-frame) 8%,
+    var(--line-frame) 92%,
+    transparent 100%
+  );
+}
+
+/* Rule horizontal dengan ujung meluruh — dipakai di footer & flank hero. */
+.rule-fade-r {
+  height: var(--hairline-w);
+  background-image: linear-gradient(to right, var(--line-strong), transparent);
+}
+.rule-fade-l {
+  height: var(--hairline-w);
+  background-image: linear-gradient(to left, var(--line-strong), transparent);
+}
+.rule-soft {
+  height: var(--hairline-w);
+  background-image: linear-gradient(
+    to right,
+    transparent,
+    var(--line-rule) 6%,
+    var(--line-rule) 94%,
+    transparent
+  );
+}
+
+/*
+ * Daftar baris (ProjectIndex, work meta) — hairline + pseudo-element supaya
+ * ketebalannya subpiksel konsisten dan tidak ikut menebal saat baris di-hover.
+ */
+.rule-list > * + * {
+  border-top: var(--hairline-w) solid var(--line-rule);
+}
+.rule-list-y {
+  border-top: var(--hairline-w) solid var(--line-rule);
+  border-bottom: var(--hairline-w) solid var(--line-rule);
 }
 
 /*
@@ -142,10 +233,12 @@ body {
  */
 .service-item {
   /* BUKAN --color-ghost (rgba(0,0,0,.15)) — item non-aktif tetap KONTEN yang
-     harus terbaca, dan .15 cuma ~1.3:1 di atas cream. 45% ink ≈ 3.3:1, lolos
-     WCAG AA untuk teks besar sambil tetap jelas "mundur" dari item aktif. */
-  color: color-mix(in srgb, var(--color-ink) 45%, transparent);
-  transition: color 400ms ease;
+     harus terbaca, dan .15 cuma ~1.3:1 di atas cream. 32% ink ≈ 2.3:1: lebih
+     pudar dari sebelumnya supaya jarak aktif↔non-aktif sekuat referensi, tapi
+     masih jauh di atas ambang "hilang". Status aktif tetap dibawa
+     `aria-current`, dan di reduced-motion semua item dirender ink penuh. */
+  color: color-mix(in srgb, var(--color-ink) 32%, transparent);
+  transition: color var(--dur-base) var(--ease-soft);
 }
 
 .service-item[aria-current='true'] {
@@ -264,7 +357,12 @@ body {
   --dot: rgba(247, 241, 237, 0.34);
   background-image: radial-gradient(circle at center, var(--dot) 1px, transparent 1.7px);
   background-size: 24px 24px;
-  -webkit-mask-image: radial-gradient(42% 52% at 50% 2%, #000 0%, rgba(0, 0, 0, 0.55) 42%, transparent 74%);
+  -webkit-mask-image: radial-gradient(
+    42% 52% at 50% 2%,
+    #000 0%,
+    rgba(0, 0, 0, 0.55) 42%,
+    transparent 74%
+  );
   mask-image: radial-gradient(42% 52% at 50% 2%, #000 0%, rgba(0, 0, 0, 0.55) 42%, transparent 74%);
 }
 
@@ -274,8 +372,16 @@ body {
   --dot: rgba(228, 143, 91, 0.6);
   background-image: radial-gradient(circle at center, var(--dot) 1px, transparent 1.8px);
   background-size: 24px 24px;
-  -webkit-mask-image: radial-gradient(circle 190px at var(--mx, -999px) var(--my, -999px), #000 0%, transparent 68%);
-  mask-image: radial-gradient(circle 190px at var(--mx, -999px) var(--my, -999px), #000 0%, transparent 68%);
+  -webkit-mask-image: radial-gradient(
+    circle 190px at var(--mx, -999px) var(--my, -999px),
+    #000 0%,
+    transparent 68%
+  );
+  mask-image: radial-gradient(
+    circle 190px at var(--mx, -999px) var(--my, -999px),
+    #000 0%,
+    transparent 68%
+  );
   opacity: 0;
   transition: opacity 320ms ease;
 }

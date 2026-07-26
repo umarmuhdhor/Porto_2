@@ -8,7 +8,7 @@
 
 export function ServicePill({ children }: { children: React.ReactNode }) {
   return (
-    <li className="font-system border-ink/15 text-ink/80 rounded-[var(--radius-pill)] border px-4 py-2 text-xs tracking-wide md:text-sm">
+    <li className="font-system text-ink/80 rounded-[var(--radius-pill)] border border-[var(--line-strong)] px-4 py-2 text-xs tracking-wide transition-colors duration-[var(--dur-base)] ease-[var(--ease-smooth)] md:text-sm">
       {children}
     </li>
   );

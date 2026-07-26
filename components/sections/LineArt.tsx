@@ -3,85 +3,74 @@
 /**
  * Line-art self-drawing untuk section dark (M3 §3.1–3.4, PRD §6).
  *
- * Bentuk mengikuti referensi §dark: SATU kurva mulus lebar melintang bagian
- * bawah — bukit di kiri, lembah di tengah tempat node pen-tool duduk, lalu naik
- * ke kanan atas. Ditemani kurva gema tipis + sapuan aksen terakota di dasar.
+ * BENTUK (mirror referensi §dark): SATU garis tebal. Ia mulai **tepat di bawah
+ * satu huruf headline**, turun vertikal sebentar, lalu menyapu ke kiri sebagai
+ * gelombang lebar dan keluar dari tepi kiri layar. Node pen-tool duduk di titik
+ * pertama gelombang itu.
  *
- * Node pen-tool (kotak rounded, isi gelap, border lime + ikon vektor) BUKAN
- * bagian yang digambar — ia selalu ada (mirror referensi: node tetap tampil),
- * jadi dirender statis di luar timeline. Yang menggambar dirinya cuma 3 stroke:
- * kurva utama, kurva gema, dan sapuan aksen.
+ * KENAPA DI-ANCHOR KE HURUF, BUKAN KE SECTION: titik mulainya harus tetap
+ * "menempel" di bawah huruf yang sama di lebar layar apa pun. Kalau SVG-nya
+ * dipasang absolut terhadap section, tiap kali headline re-wrap (atau ukuran
+ * font clamp berubah) titik mulainya meleset. Karena itu SVG ini dirender di
+ * dalam <span> yang membungkus satu huruf (lihat StatementDark) dan SEMUA
+ * ukurannya dalam `em` → skalanya ikut font headline secara otomatis.
+ *
+ * Sistem koordinat: viewBox 200×600 dipetakan ke 2em×6em, jadi 1 unit = 0.01em.
+ * Koordinat x negatif = ke kiri dari huruf; -3200 unit = -32em, jauh melewati
+ * tepi kiri layar. `overflow: visible` membiarkannya keluar kotak SVG; yang
+ * memotong di tepi layar adalah `overflow-x: clip` di html/body (globals.css).
  *
  * Progress disuntik dari luar lewat `ref.setProgress()` (panel induk sticky —
- * lihat StackSection M2 §6.2), bukan ScrollTrigger internal.
+ * lihat StackSection M2 §6.2), bukan ScrollTrigger internal. Garis digambar
+ * dari ujung huruf → ujung kiri, searah arah baca gerakannya.
  */
 
-import { useImperativeHandle, useRef, type Ref } from 'react';
+import { useImperativeHandle, useRef, type CSSProperties, type Ref } from 'react';
 import { gsap, useGSAP } from '@/lib/gsap';
 import { NO_PREFERENCE, REDUCE_MOTION } from '@/lib/motion';
-import { buildDrawTimeline, setFullyDrawn, type DrawMode, type DrawSpec } from '@/lib/lineDraw';
+import { buildDrawTimeline, setFullyDrawn, type DrawSpec } from '@/lib/lineDraw';
 
 export type LineArtHandle = {
   /** progress 0→1; dipanggil tiap frame oleh scrub ScrollTrigger induk. */
   setProgress: (progress: number) => void;
 };
 
-type ArtPath = {
-  d: string;
-  mode: DrawMode;
-  at: number;
-  dur: number;
-  tone?: 'ink' | 'accent';
-  opacity: number;
-  strokeWidth: number;
-  width?: readonly [number, number];
-  cap?: 'round' | 'butt';
+/**
+ * Kurva tunggal. Urutan titik = urutan gambar: turun dari huruf, belok kiri ke
+ * titik node, lalu tiga gelombang panjang yang makin melandai ke tepi kiri.
+ */
+const CURVE =
+  'M 3 0 L 3 58 C 3 150, -80 320, -450 262 S -700 480, -980 316 S -1400 540, -2000 440 S -2650 380, -3200 404';
+
+/** Titik node pen-tool = ujung segmen pertama kurva, jadi ia persis di garis. */
+const NODE = { x: -450, y: 262, r: 65 } as const;
+
+/** Tebal garis (unit viewBox = 0.01em). Menebal sepanjang gambar = tekanan tangan. */
+const STROKE: readonly [number, number] = [6, 13];
+
+/** Posisi SVG relatif huruf pembungkus — mengikuti pola referensi. Ukuran
+ *  (yang menentukan skala unit viewBox) di-set lewat class responsif. */
+const FRAME: CSSProperties = {
+  position: 'absolute',
+  left: '0.07em',
+  top: '0.72em',
+  overflow: 'visible',
 };
 
-/** Pusat node pen-tool di koordinat viewBox (di lembah kurva utama). */
-const NODE = { x: 560, y: 208, r: 32 } as const;
-
-/** Hanya 3 path yang MENGGAMBAR dirinya — sisanya (node) statis.
- *  Amplitudo sengaja rendah (gelombang lebar dangkal) supaya puncak kanan tidak
- *  menabrak baris terakhir headline — mirror referensi. */
-const PATHS: readonly ArtPath[] = [
-  // — kurva utama: bukit kiri → lembah tengah (node) → naik kanan
-  {
-    d: 'M-10 200 C 120 150 235 150 355 185 C 435 210 495 212 560 208 C 645 203 705 150 815 130 C 905 114 965 120 1010 116',
-    mode: 'solid',
-    at: 0,
-    dur: 0.62,
-    opacity: 0.95,
-    strokeWidth: 2,
-    cap: 'round',
-  },
-  // — kurva gema, sedikit di bawah (kesan sketsa ganda)
-  {
-    d: 'M-10 212 C 120 162 235 162 355 197 C 435 222 495 224 560 220 C 645 215 705 162 815 142 C 905 126 965 132 1010 128',
-    mode: 'solid',
-    at: 0.1,
-    dur: 0.56,
-    opacity: 0.3,
-    strokeWidth: 1.1,
-    cap: 'round',
-  },
-  // — sapuan aksen terakota di dasar; satu-satunya yang MENEBAL sepanjang scroll
-  {
-    d: 'M30 248 C 300 240 650 245 980 232',
-    mode: 'solid',
-    at: 0.4,
-    dur: 0.5,
-    tone: 'accent',
-    opacity: 0.9,
-    strokeWidth: 1.2,
-    width: [1.2, 2.6],
-    cap: 'round',
-  },
-];
+/**
+ * Skala kurva per breakpoint. Ukuran SVG-lah yang memetakan unit viewBox ke em,
+ * jadi mengubah w/h = memperpendek/memanjangkan sapuan secara UTUH (stroke ikut
+ * proporsional; beda dari `scaleX` yang akan menggepengkan garisnya).
+ *
+ * Kenapa perlu: semua ukuran di sini ber-em, sementara headline mobile cuma
+ * separuh ukuran desktop TAPI viewport-nya seperempatnya. Tanpa pengecilan
+ * ekstra, node pen-tool mendarat menempel di tepi kiri layar kecil.
+ */
+const SCALE = 'w-[1.1em] h-[3.3em] md:w-[1.6em] md:h-[4.8em] lg:w-[2em] lg:h-[6em]';
 
 export function LineArt({ className = '', ref }: { className?: string; ref?: Ref<LineArtHandle> }) {
   const rootRef = useRef<SVGSVGElement>(null);
-  const pathRefs = useRef<(SVGPathElement | null)[]>([]);
+  const pathRef = useRef<SVGPathElement>(null);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
 
   useImperativeHandle(
@@ -96,13 +85,10 @@ export function LineArt({ className = '', ref }: { className?: string; ref?: Ref
 
   useGSAP(
     () => {
-      const specs = PATHS.flatMap<DrawSpec>((p, i) => {
-        const el = pathRefs.current[i];
-        return el ? [{ el, mode: p.mode, at: p.at, dur: p.dur, width: p.width }] : [];
-      });
+      const el = pathRef.current;
+      if (!el) return;
 
-      if (!specs.length) return;
-
+      const specs: DrawSpec[] = [{ el, mode: 'solid', at: 0, dur: 0.9, width: STROKE }];
       const mm = gsap.matchMedia();
 
       mm.add(NO_PREFERENCE, () => {
@@ -126,27 +112,22 @@ export function LineArt({ className = '', ref }: { className?: string; ref?: Ref
     <svg
       ref={rootRef}
       aria-hidden
-      viewBox="0 0 1000 260"
+      viewBox="0 0 200 600"
       fill="none"
-      preserveAspectRatio="xMidYMax meet"
-      className={`pointer-events-none ${className}`}
+      style={FRAME}
+      className={`pointer-events-none ${SCALE} ${className}`}
     >
-      {/* Stroke yang digambar sendiri */}
-      {PATHS.map((p, i) => (
-        <path
-          key={p.d}
-          ref={(el) => {
-            pathRefs.current[i] = el;
-          }}
-          d={p.d}
-          stroke={p.tone === 'accent' ? 'var(--color-accent-line)' : 'currentColor'}
-          strokeWidth={p.strokeWidth}
-          strokeOpacity={p.opacity}
-          strokeLinecap={p.cap ?? 'butt'}
-          strokeLinejoin="round"
-          vectorEffect="non-scaling-stroke"
-        />
-      ))}
+      {/* Garis tunggal yang menggambar dirinya. Stroke SENGAJA dalam unit viewBox
+          (tanpa non-scaling-stroke) supaya tebalnya ikut mengecil di headline
+          mobile — 0.06em terbaca tebal di 72px dan tetap proporsional di 36px. */}
+      <path
+        ref={pathRef}
+        d={CURVE}
+        stroke="currentColor"
+        strokeWidth={STROKE[0]}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
 
       {/* Node pen-tool — statis, selalu tampil (mirror referensi). */}
       <g
@@ -159,20 +140,19 @@ export function LineArt({ className = '', ref }: { className?: string; ref?: Ref
           y={-NODE.r}
           width={NODE.r * 2}
           height={NODE.r * 2}
-          rx={16}
+          rx={32}
           fill="#242424"
           stroke="#d3dd52"
-          strokeWidth={2.5}
-          vectorEffect="non-scaling-stroke"
+          strokeWidth={5}
         />
         {/* ikon vektor pen-tool (bezier: kurva + 2 anchor + 2 control point) */}
         <g
+          transform="scale(2)"
           stroke="#b8bcc4"
           strokeWidth={1.6}
           fill="none"
           strokeLinecap="round"
           strokeLinejoin="round"
-          vectorEffect="non-scaling-stroke"
         >
           <path d="M-15 8 C -9 -8 9 -8 15 8" />
           <path d="M-15 8 L -6 -4" strokeOpacity={0.7} />

@@ -50,7 +50,17 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
 
     const start = () => {
       if (lenis) return;
-      lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
+      // lerp lebih kecil = ekor momentum lebih panjang & transisi antar-frame
+      // lebih halus (0.075 ≈ ~13 frame untuk mengejar target, vs ~10 di 0.1).
+      // wheelMultiplier sedikit di bawah 1 meredam lompatan besar dari wheel
+      // notch, sehingga koreografi stacking tidak "meloncati" fase hold.
+      lenis = new Lenis({
+        lerp: 0.075,
+        smoothWheel: true,
+        wheelMultiplier: 0.9,
+        touchMultiplier: 1.4,
+        syncTouch: true,
+      });
 
       // sync #1: setiap Lenis scroll → ScrollTrigger update posisi trigger.
       lenis.on('scroll', ScrollTrigger.update);

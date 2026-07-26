@@ -73,8 +73,10 @@ function CursorFollowList({ projects }: { projects: ProjectRow[] }) {
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const sx = useSpring(x, { stiffness: 300, damping: 30, mass: 0.5 });
-  const sy = useSpring(y, { stiffness: 300, damping: 30, mass: 0.5 });
+  // Spring lebih lunak (stiffness turun, mass naik) — preview tertinggal sedikit
+  // di belakang kursor lalu menyusul tanpa overshoot, bukan menempel kaku.
+  const sx = useSpring(x, { stiffness: 150, damping: 26, mass: 0.8 });
+  const sy = useSpring(y, { stiffness: 150, damping: 26, mass: 0.8 });
 
   function handleMove(e: React.MouseEvent) {
     const rect = containerRef.current?.getBoundingClientRect();
@@ -90,19 +92,19 @@ function CursorFollowList({ projects }: { projects: ProjectRow[] }) {
       onMouseMove={handleMove}
       onMouseLeave={() => setActiveSrc(null)}
     >
-      <ul className="font-system divide-y divide-black/10 border-y border-black/10">
+      <ul className="font-system rule-list rule-list-y">
         {projects.map((p) => (
           <li key={p.slug}>
             <Link
               href={`/works/${p.slug}`}
               onMouseEnter={() => setActiveSrc(p.preview)}
               onFocus={() => setActiveSrc(p.preview)}
-              className="group hover:text-accent focus-visible:text-accent focus-visible:outline-accent grid grid-cols-[1fr_auto] items-baseline gap-6 py-6 transition-colors focus-visible:outline-2 focus-visible:outline-offset-4"
+              className="group hover:text-accent focus-visible:text-accent focus-visible:outline-accent grid grid-cols-[1fr_auto] items-baseline gap-6 py-6 transition-[color,padding] duration-[var(--dur-base)] ease-[var(--ease-smooth)] hover:pl-3 focus-visible:outline-2 focus-visible:outline-offset-4"
             >
               <span className="flex items-baseline gap-4">
                 <span
                   aria-hidden
-                  className="text-muted group-hover:text-accent text-sm transition-colors"
+                  className="text-muted group-hover:text-accent text-sm transition-[color,transform] duration-[var(--dur-base)] ease-[var(--ease-smooth)] group-hover:translate-x-1"
                 >
                   +
                 </span>
@@ -121,16 +123,12 @@ function CursorFollowList({ projects }: { projects: ProjectRow[] }) {
       <motion.div
         aria-hidden
         className="pointer-events-none absolute top-0 left-0 z-10 hidden md:block"
-        style={{
-          x: sx,
-          y: sy,
-          translateX: '-50%',
-          translateY: '-50%',
-          opacity: activeSrc ? 1 : 0,
-        }}
+        style={{ x: sx, y: sy, translateX: '-50%', translateY: '-50%' }}
+        animate={{ opacity: activeSrc ? 1 : 0, scale: activeSrc ? 1 : 0.94 }}
+        transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
       >
         {activeSrc && (
-          <div className="h-48 w-64 overflow-hidden rounded-[var(--radius-card)] shadow-2xl ring-1 ring-black/10">
+          <div className="ring-ink/8 h-48 w-64 overflow-hidden rounded-[var(--radius-card)] shadow-[0_24px_60px_-24px_rgba(10,10,10,0.35)] ring-1">
             <Image
               src={activeSrc}
               alt=""
@@ -149,7 +147,7 @@ function CursorFollowList({ projects }: { projects: ProjectRow[] }) {
 
 function StaticList({ projects }: { projects: ProjectRow[] }) {
   return (
-    <ul className="font-system mt-10 divide-y divide-black/10 border-y border-black/10">
+    <ul className="font-system rule-list rule-list-y mt-10">
       {projects.map((p) => (
         <li key={p.slug}>
           <Link

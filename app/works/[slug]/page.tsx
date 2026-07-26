@@ -133,7 +133,7 @@ export default async function WorkPage({ params }: Params) {
             pasangan label→nilai sebagai pasangan. `stack` ikut di sini sebagai
             satu baris penuh — daripada jadi deret pill kedua yang bentuknya
             sama persis dengan services di atasnya. */}
-        <dl className="border-ink/10 mt-12 grid grid-cols-2 gap-x-6 gap-y-8 border-t pt-8 md:mt-16 md:grid-cols-4">
+        <dl className="mt-12 grid grid-cols-2 gap-x-6 gap-y-8 border-t border-[var(--line-rule)] pt-8 md:mt-16 md:grid-cols-4">
           {work.facts.map((fact) => (
             <div key={fact.label}>
               <dt className={LABEL}>{fact.label}</dt>
@@ -169,7 +169,7 @@ export default async function WorkPage({ params }: Params) {
               sistem ini — sebagai teks di atas cream nyaris tidak terbaca. */}
           <ol className="mt-6 grid grid-cols-1 gap-8 md:mt-8 md:grid-cols-3 md:gap-10">
             {work.approach.map((step, i) => (
-              <li key={step.title} className="border-ink/10 border-t pt-5">
+              <li key={step.title} className="border-t border-[var(--line-rule)] pt-5">
                 <span
                   aria-hidden="true"
                   className="font-display text-accent-line block text-sm leading-none font-bold"
@@ -194,7 +194,10 @@ export default async function WorkPage({ params }: Params) {
               // sementara secara visual angkanya yang tampil duluan di atas
               // keterangannya. Alternatifnya menduplikasi label jadi <dt
               // class="sr-only">, yang membuat screen reader membacanya dua kali.
-              <div key={outcome.label} className="border-ink/10 flex flex-col-reverse border-t pt-5">
+              <div
+                key={outcome.label}
+                className="flex flex-col-reverse border-t border-[var(--line-rule)] pt-5"
+              >
                 <dt className="font-body text-muted mt-3 text-sm leading-snug md:text-base">
                   {outcome.label}
                 </dt>
@@ -210,7 +213,7 @@ export default async function WorkPage({ params }: Params) {
 
         <nav
           aria-label="Case study navigation"
-          className="border-ink/10 mt-20 flex items-center justify-between border-t pt-8 md:mt-28"
+          className="mt-20 flex items-center justify-between border-t border-[var(--line-rule)] pt-8 md:mt-28"
         >
           <Link href="/#projects" className={`${LINK} text-ink hover:text-accent`}>
             ← Go back to projects

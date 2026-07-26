@@ -114,7 +114,8 @@ export function Hero() {
           className="hero-rest absolute top-1/2 left-0 hidden -translate-y-1/2 items-center gap-4 md:flex"
           style={{ paddingLeft: 'var(--frame-inset)' }}
         >
-          <span aria-hidden className="h-[2px] w-[100px] bg-black/30" />
+          {/* Garis tumbuh dari garis frame lalu menguat ke arah label. */}
+          <span aria-hidden className="rule-fade-l w-[110px] lg:w-[140px]" />
           <p className="font-system text-ink/80 text-base lg:text-lg">{ROLE}</p>
         </div>
         <div
@@ -122,7 +123,7 @@ export function Hero() {
           style={{ paddingRight: 'var(--frame-inset)' }}
         >
           <p className="font-system text-ink/80 text-base lg:text-lg">{LOCATION}</p>
-          <span aria-hidden className="h-[2px] w-[100px] bg-black/30" />
+          <span aria-hidden className="rule-fade-r w-[110px] lg:w-[140px]" />
         </div>
 
         {/* Nama ter-center di viewport. */}
