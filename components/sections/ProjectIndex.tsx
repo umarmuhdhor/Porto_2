@@ -1,176 +1,128 @@
-'use client';
-
 /**
- * ProjectIndex (M6 §3.3–3.4) — daftar baris project. Di device ber-hover
- * (desktop), hover baris memunculkan gambar preview yang mengikuti kursor via
- * spring. Di device tanpa hover (touch), preview cursor-follow diganti thumbnail
- * statis kecil per baris (DESIGN §7 — fallback fungsional, bukan hilang).
+ * ProjectIndex (M6 §3.3–3.4) — grid project bergaris, mirror referensi:
+ * dua kolom yang dipisah garis hairline, tiap sel berisi tahun di atas,
+ * logo project di tengah, dan kategori di bawah. Saat hover, cover project
+ * memenuhi sel dan pil "View project" muncul.
  *
- * Performa (M6 §5): posisi preview digerakkan lewat `transform` (GPU) yang
- * di-drive useSpring, BUKAN set left/top per mousemove (reflow). Elemen preview
- * `pointer-events-none` supaya tak mengganggu hit-testing baris.
+ * TANPA 'use client' — semuanya CSS hover/focus, tidak ada state. Versi lama
+ * memakai framer-motion untuk preview yang mengikuti kursor; grid ini menaruh
+ * preview DI DALAM selnya sendiri, jadi tidak ada lagi yang perlu dihitung per
+ * mousemove dan bundle client-nya hilang sepenuhnya.
  *
- * A11y: tiap baris adalah <Link> penuh (mudah ditekan di layar sentuh) dengan
- * focus-visible ring. Preview murni dekoratif (`aria-hidden`) — informasi baris
- * sudah lengkap dari teks.
+ * Sentuh / tanpa hover: sel tetap menampilkan logo + kategori (cover hanya
+ * tambahan), jadi tidak ada informasi yang cuma hidup di state hover. Fokus
+ * keyboard memicu efek yang sama lewat `group-focus-visible`.
  */
 
-import { useRef, useState, useSyncExternalStore } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, useMotionValue, useReducedMotion, useSpring } from 'framer-motion';
 
 export interface ProjectRow {
   slug: string;
   title: string;
   category: string;
   year: string;
+  /** Wordmark project — tampil di tengah sel. */
+  logo: string;
   preview: string;
   previewAlt: string;
 }
 
-/** Reaktif: apakah pointer utama mendukung hover (desktop) vs touch. */
-function useHasHover(): boolean {
-  return useSyncExternalStore(
-    (cb) => {
-      const mq = window.matchMedia('(hover: hover)');
-      mq.addEventListener('change', cb);
-      return () => mq.removeEventListener('change', cb);
-    },
-    () => window.matchMedia('(hover: hover)').matches,
-    () => false, // SSR: anggap touch → render fallback thumbnail dulu (aman).
-  );
-}
-
 export function ProjectIndex({ projects }: { projects: ProjectRow[] }) {
-  const hasHover = useHasHover();
-  const reduce = useReducedMotion();
-  const cursorFollow = hasHover && !reduce;
-
   return (
     <section
       id="projects"
-      className="page-section bg-cream text-ink flex min-h-screen flex-col justify-center"
+      className="page-section bg-cream text-ink flex min-h-screen flex-col justify-center py-[12vh]"
       style={{ paddingInline: 'var(--frame-inset)' }}
     >
-      <h2 className="font-display text-4xl font-bold tracking-tight md:text-6xl">
-        Curated Projects
-      </h2>
-      <p className="font-system text-muted mt-4 max-w-md">
-        Selection of mobile and iOS development work, built end to end.
-      </p>
+      <header className="text-center">
+        <h2 className="font-display text-4xl font-bold tracking-tight uppercase md:text-6xl">
+          Curated Projects
+        </h2>
+        <p className="font-system text-muted mx-auto mt-5 max-w-xl text-base md:text-lg">
+          Selection of mobile and iOS development work, built end to end.
+        </p>
+      </header>
 
-      {cursorFollow ? <CursorFollowList projects={projects} /> : <StaticList projects={projects} />}
-    </section>
-  );
-}
-
-/* ---------- Desktop: cursor-follow preview ---------- */
-
-function CursorFollowList({ projects }: { projects: ProjectRow[] }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [activeSrc, setActiveSrc] = useState<string | null>(null);
-
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  // Spring lebih lunak (stiffness turun, mass naik) — preview tertinggal sedikit
-  // di belakang kursor lalu menyusul tanpa overshoot, bukan menempel kaku.
-  const sx = useSpring(x, { stiffness: 150, damping: 26, mass: 0.8 });
-  const sy = useSpring(y, { stiffness: 150, damping: 26, mass: 0.8 });
-
-  function handleMove(e: React.MouseEvent) {
-    const rect = containerRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    x.set(e.clientX - rect.left);
-    y.set(e.clientY - rect.top);
-  }
-
-  return (
-    <div
-      ref={containerRef}
-      className="relative mt-10"
-      onMouseMove={handleMove}
-      onMouseLeave={() => setActiveSrc(null)}
-    >
-      <ul className="font-system rule-list rule-list-y">
-        {projects.map((p) => (
-          <li key={p.slug}>
+      {/*
+       * Garis grid dibentuk dari border tiap sel, bukan `gap` + divider:
+       * dengan flex-wrap, jumlah baris tidak diketahui di muka, dan border
+       * per sel otomatis membentuk kisi yang benar berapa pun jumlah project.
+       * Container menyumbang sisi atas (mobile) & kiri (desktop).
+       */}
+      <ul className="mt-12 flex flex-col border-t border-[var(--line-rule)] md:mt-16 md:flex-row md:flex-wrap md:border-l">
+        {projects.map((project) => (
+          <li
+            key={project.slug}
+            className="w-full border-x border-b border-[var(--line-rule)] md:w-1/2 md:border-x-0 md:border-r"
+          >
             <Link
-              href={`/works/${p.slug}`}
-              onMouseEnter={() => setActiveSrc(p.preview)}
-              onFocus={() => setActiveSrc(p.preview)}
-              className="group hover:text-accent focus-visible:text-accent focus-visible:outline-accent grid grid-cols-[1fr_auto] items-baseline gap-6 py-6 transition-[color,padding] duration-[var(--dur-base)] ease-[var(--ease-smooth)] hover:pl-3 focus-visible:outline-2 focus-visible:outline-offset-4"
+              href={`/works/${project.slug}`}
+              className="group focus-visible:outline-accent relative flex min-h-[238px] flex-col items-center justify-between overflow-hidden px-6 py-4 focus-visible:outline-2 focus-visible:-outline-offset-2 md:min-h-[348px]"
             >
-              <span className="flex items-baseline gap-4">
-                <span
-                  aria-hidden
-                  className="text-muted group-hover:text-accent text-sm transition-[color,transform] duration-[var(--dur-base)] ease-[var(--ease-smooth)] group-hover:translate-x-1"
-                >
-                  +
-                </span>
-                <span className="text-lg md:text-2xl">{p.title}</span>
+              {/* Cover — dekoratif (`alt=""`): judul & kategori sudah ada
+                  sebagai teks di sel yang sama. */}
+              <Image
+                src={project.preview}
+                alt=""
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="scale-[1.06] object-cover opacity-0 transition-[opacity,transform] duration-[var(--dur-slow)] ease-[var(--ease-smooth)] group-hover:scale-100 group-hover:opacity-100 group-focus-visible:scale-100 group-focus-visible:opacity-100"
+              />
+              {/* Scrim tipis di atas cover: tahun & kategori tetap terbaca
+                  berapa pun terangnya gambar di belakangnya. */}
+              <span
+                aria-hidden
+                className="bg-cream/35 absolute inset-0 opacity-0 transition-opacity duration-[var(--dur-slow)] ease-[var(--ease-smooth)] group-hover:opacity-100 group-focus-visible:opacity-100"
+              />
+
+              <span className="font-system text-muted relative z-[2] text-xs leading-none tracking-wide uppercase md:text-base">
+                {project.year}
               </span>
-              <span className="text-muted flex shrink-0 items-baseline gap-6 text-sm tracking-wide uppercase">
-                <span className="hidden sm:inline">{p.category}</span>
-                <span>{p.year}</span>
+
+              <span className="relative z-[2] flex w-full flex-1 items-center justify-center">
+                <Image
+                  src={project.logo}
+                  alt={project.title}
+                  width={320}
+                  height={320}
+                  /* Batas TINGGI, bukan cuma lebar: aset logo di sini campur —
+                     ada wordmark lebar, ada mark persegi. Kalau hanya lebar yang
+                     dibatasi, yang persegi tumbuh setinggi selnya. */
+                  className="h-auto max-h-[84px] w-[58%] max-w-[220px] object-contain md:max-h-[104px] md:w-[44%] md:max-w-[280px]"
+                />
+              </span>
+
+              <span className="font-system relative z-[2] text-xs leading-none tracking-wide uppercase md:text-base">
+                {project.category}
+              </span>
+
+              {/* Pil CTA — murni dekoratif, seluruh selnya sudah satu link. */}
+              <span
+                aria-hidden
+                /* Ditaruh di 32% tinggi sel, BUKAN dead-center: logo project
+                   duduk di tengah, dan pil di titik yang sama akan menutupinya
+                   persis saat gambar cover baru muncul. */
+                className="text-ink font-system pointer-events-none absolute top-[32%] left-1/2 z-[3] flex -translate-x-1/2 -translate-y-[130%] items-center gap-2 rounded-[var(--radius-pill)] bg-white px-5 py-2.5 text-sm font-medium opacity-0 shadow-[0_12px_28px_-16px_rgba(10,10,10,0.5)] transition-[opacity,transform] duration-[var(--dur-base)] ease-[var(--ease-smooth)] group-hover:-translate-y-1/2 group-hover:opacity-100 group-focus-visible:-translate-y-1/2 group-focus-visible:opacity-100"
+              >
+                View project
+                <svg
+                  viewBox="0 0 16 16"
+                  width="14"
+                  height="14"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" />
+                </svg>
               </span>
             </Link>
           </li>
         ))}
       </ul>
-
-      {/* Preview mengambang — pointer-events-none, transform-driven (GPU). */}
-      <motion.div
-        aria-hidden
-        className="pointer-events-none absolute top-0 left-0 z-10 hidden md:block"
-        style={{ x: sx, y: sy, translateX: '-50%', translateY: '-50%' }}
-        animate={{ opacity: activeSrc ? 1 : 0, scale: activeSrc ? 1 : 0.94 }}
-        transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
-      >
-        {activeSrc && (
-          <div className="ring-ink/8 h-48 w-64 overflow-hidden rounded-[var(--radius-card)] shadow-[0_24px_60px_-24px_rgba(10,10,10,0.35)] ring-1">
-            <Image
-              src={activeSrc}
-              alt=""
-              width={256}
-              height={192}
-              className="h-full w-full object-cover"
-            />
-          </div>
-        )}
-      </motion.div>
-    </div>
-  );
-}
-
-/* ---------- Touch / reduced-motion: static thumbnails ---------- */
-
-function StaticList({ projects }: { projects: ProjectRow[] }) {
-  return (
-    <ul className="font-system rule-list rule-list-y mt-10">
-      {projects.map((p) => (
-        <li key={p.slug}>
-          <Link
-            href={`/works/${p.slug}`}
-            className="hover:text-accent focus-visible:text-accent focus-visible:outline-accent flex items-center gap-4 py-5 transition-colors focus-visible:outline-2 focus-visible:outline-offset-4"
-          >
-            <span className="h-14 w-20 shrink-0 overflow-hidden rounded-[var(--radius-badge)] ring-1 ring-black/10">
-              <Image
-                src={p.preview}
-                alt={p.previewAlt}
-                width={80}
-                height={56}
-                className="h-full w-full object-cover"
-              />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block truncate text-lg">{p.title}</span>
-              <span className="text-muted block text-xs tracking-wide uppercase">{p.category}</span>
-            </span>
-            <span className="text-muted shrink-0 text-sm tracking-wide uppercase">{p.year}</span>
-          </Link>
-        </li>
-      ))}
-    </ul>
+    </section>
   );
 }

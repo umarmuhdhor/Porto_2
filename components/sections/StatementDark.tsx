@@ -34,16 +34,32 @@ const SOLID_WORDS = 2;
  */
 const ANCHOR = { word: 8, char: 1 } as const;
 
-/** Fase hold dipakai penuh untuk menggambar garis — habis 100% saat mulai ditutupi. */
-const HOLD_VH = 60;
+/**
+ * Fase hold dibagi dua babak berurutan: kata-kata menyala dulu, baru garis
+ * digambar. Karena keduanya sekarang antre (bukan barengan), holdnya diperpanjang
+ * supaya masing-masing tetap dapat ruang scroll yang cukup.
+ */
+const HOLD_VH = 85;
 
 /** Opacity kata sebelum gilirannya menyala (nilai referensi). */
 const DIM = 0.22;
-/** Semua kata sudah menyala di titik ini — sisa hold jadi jeda baca. */
-const REVEAL_END = 0.72;
+/** Kata TERAKHIR mulai menyala di sekitar sini; sisanya jadi ruang untuk garis. */
+const REVEAL_END = 0.42;
 /** Panjang jendela nyala tiap kata, dalam kelipatan satu slot. >1 = saling
  *  menimpa, jadi nyalanya terbaca sebagai gelombang, bukan lampu satu-satu. */
 const OVERLAP = 2.2;
+
+const WORD_COUNT = HEADLINE.split(' ').length;
+const SLOT = REVEAL_END / WORD_COUNT;
+
+/**
+ * Progress saat kata ANCHOR (yang menggendong huruf tempat garis bergantung)
+ * mencapai opacity penuh. Garis baru MULAI digambar di titik ini — jadi tidak
+ * ada garis yang seolah tumbuh dari huruf yang masih redup. Diturunkan dari
+ * rumus jendela `paintWords`, bukan angka tetap, supaya tetap sinkron kalau
+ * REVEAL_END / OVERLAP / panjang kalimatnya diubah.
+ */
+const LINE_START = SLOT * (ANCHOR.word + OVERLAP);
 
 /** Media query dipakai berulang; useLayoutEffect isomorfik (no-op di SSR). */
 const useIsoLayout = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
@@ -59,12 +75,9 @@ export function StatementDark() {
    * mengikuti scroll — termasuk saat user scroll balik ke atas (reversible).
    */
   const paintWords = useCallback((progress: number) => {
-    const els = wordRefs.current;
-    const slot = REVEAL_END / els.length;
-
-    els.forEach((el, i) => {
+    wordRefs.current.forEach((el, i) => {
       if (!el) return;
-      const t = (progress - i * slot) / (slot * OVERLAP);
+      const t = (progress - i * SLOT) / (SLOT * OVERLAP);
       const eased = t <= 0 ? 0 : t >= 1 ? 1 : t;
       el.style.opacity = String(DIM + (1 - DIM) * eased);
     });
@@ -81,7 +94,11 @@ export function StatementDark() {
 
   const handleProgress = useCallback(
     (progress: number) => {
-      artRef.current?.setProgress(progress);
+      // Progress garis dipetakan ulang ke jendela [LINE_START, 1] → di bawah
+      // LINE_START nilainya 0 (garis belum ada sama sekali), lalu 0→1 memakai
+      // sisa fase hold.
+      const line = (progress - LINE_START) / (1 - LINE_START);
+      artRef.current?.setProgress(line);
       paintWords(progress);
     },
     [paintWords],

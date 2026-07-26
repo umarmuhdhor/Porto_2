@@ -12,6 +12,7 @@
 import { getAllWorks } from '@/lib/works';
 import { Hero } from '@/components/sections/Hero';
 import { StatementDark } from '@/components/sections/StatementDark';
+import { AboutWindows } from '@/components/sections/AboutWindows';
 import { ServiceList } from '@/components/sections/ServiceList';
 import { ProjectIndex, type ProjectRow } from '@/components/sections/ProjectIndex';
 import { ContactFooter } from '@/components/sections/ContactFooter';
@@ -24,6 +25,7 @@ export default function Home() {
     title: work.title,
     category: work.category,
     year: work.year,
+    logo: work.logo,
     preview: work.banner.src,
     previewAlt: work.banner.alt,
   }));
@@ -36,11 +38,17 @@ export default function Home() {
       {/* 2 — Statement (dark) — panel stacking */}
       <StatementDark />
 
+      {/* 2b — About windows (cream) — panel jendela yang bisa digeser & muncul
+          satu per satu mengikuti scroll. Section BIASA (bukan stack-panel):
+          isinya tumbuh mengikuti jumlah baris, jadi tidak boleh dikunci setinggi
+          viewport. Ia tetap naik menutupi StatementDark karena urutan DOM. */}
+      <AboutWindows />
+
       {/* 3 — Service list (cream) — panel stacking + item aktif terikat scroll */}
       <ServiceList />
 
-      {/* 5 — Project index (cream) — naik menutupi ServiceList. Cursor-follow
-          preview di desktop, thumbnail statis di touch (M6 §3.3–3.4). */}
+      {/* 5 — Project index (cream) — naik menutupi ServiceList. Grid bergaris
+          dua kolom; cover project muncul saat hover (M6 §3.3–3.4). */}
       <ProjectIndex projects={projects} />
 
       {/* 6 — Contact / footer (accent) — mirror referensi: watermark nama,

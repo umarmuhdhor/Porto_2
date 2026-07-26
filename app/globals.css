@@ -58,6 +58,7 @@
   --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
   --dur-fast: 260ms;
   --dur-base: 420ms;
+  --dur-slow: 700ms;
 
   /* Font families. --font-geist-sans di-inject next/font (geist package) &
      --font-space-grotesk (Space Grotesk, OFL) di-inject next/font/google, dua-duanya
@@ -421,6 +422,59 @@ body {
     animation: floaty var(--dur, 7s) ease-in-out infinite;
     animation-delay: var(--delay, 0s);
     will-change: transform;
+  }
+}
+
+/*
+ * Jendela "about" yang bisa digeser (components/sections/AboutWindows.tsx).
+ *
+ * DUA ELEMEN, DUA TRANSFORM — ini pemisahan yang menahan seluruh interaksinya:
+ *   .win-slot → transform REVEAL (dikendalikan scroll lewat data-armed/data-shown)
+ *   .win      → transform DRAG (ditulis JS ke style.transform)
+ * Menaruh keduanya di satu elemen berarti reveal menimpa posisi hasil geseran
+ * user pada frame scroll berikutnya.
+ *
+ * Sama seperti .reveal: state ISTIRAHAT = TERLIHAT. Hanya data-armed (dipasang
+ * JS di jalur no-preference) yang menyembunyikan, jadi tanpa JS atau di
+ * reduced-motion semua jendela tampil.
+ */
+.win-bar {
+  cursor: grab;
+  /* Tanpa ini gestur seret di layar sentuh diambil alih scroll browser dan
+     window tidak pernah ikut jari. */
+  touch-action: none;
+}
+[data-dragging='true'] .win-bar {
+  cursor: grabbing;
+}
+/* Saat digeser, window naik ke depan & bayangannya menebal — umpan balik bahwa
+   ia sedang "diangkat", bukan sekadar bergerak. */
+.win {
+  transition: box-shadow var(--dur-fast) var(--ease-soft);
+}
+.win[data-dragging='true'] {
+  box-shadow:
+    0 60px 90px -50px rgba(10, 10, 10, 0.55),
+    0 14px 30px -18px rgba(10, 10, 10, 0.3);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Sengaja TANPA transition di state tersembunyi — alasannya sama dengan
+     .reveal: transisi memakai properti rule TUJUAN, jadi menaruhnya di sini
+     membuat pemasangan data-armed ikut teranimasi (fade-out dulu, baru masuk). */
+  .win-slot[data-armed='true'] {
+    opacity: 0;
+    transform: translateY(30px) scale(0.97);
+    will-change: opacity, transform;
+  }
+
+  .win-slot[data-armed='true'][data-shown='true'] {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 520ms ease,
+      transform 640ms var(--ease-smooth);
+    will-change: auto;
   }
 }
 
