@@ -13,7 +13,7 @@ export const higgzAcademia: Work = {
   title: 'Higgz Academia',
   logo: '/works/higgz-academia/higgz-academia_logo.svg',
   category: 'EDTECH | PROBLEM SOLVING',
-  year: '2024',
+  year: '2023–2024',
   description:
     'Worked solutions and video tutorials for Higgz Academia — steps that follow one clean path, stay consistent across topics, and hold accuracy above 90%.',
   summary: [
@@ -28,7 +28,7 @@ export const higgzAcademia: Work = {
   ],
   services: ['Problem solving', 'Video tutorials', 'Content development', 'Mentoring'],
   facts: [
-    { label: 'Client', value: 'Higgz Academia Technology PTE. LTD' },
+    { label: 'Client', value: 'Higgz Academia Technology PTE. LTD — Singapore' },
     { label: 'Engagement', value: 'Freelance' },
     { label: 'Timeline', value: 'Feb 2023 – Feb 2024' },
     { label: 'Output', value: 'Worked solutions + video tutorials' },

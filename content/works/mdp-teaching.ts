@@ -12,7 +12,7 @@ export const mdpTeaching: Work = {
   title: 'MDP Lecturing',
   logo: '/works/mdp-teaching/mdp-teaching_logo.svg',
   category: 'TEACHING | MENTORING',
-  year: '2023',
+  year: '2023–2024',
   description:
     'Assistant lecturer at Universitas Multi Data Palembang — mentoring 50+ students, building course material, and holding one grading standard across three classes.',
   summary: [
