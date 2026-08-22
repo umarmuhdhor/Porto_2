@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="LOAD AWAY — SCREENS">
+  <rect width="1200" height="800" fill="#f7f1ed"/>
+  <rect x="300.9" y="257.5" width="483.3" height="488.3" rx="38.7" fill="#6d28d9" opacity="0.9"/>
+  <circle cx="841.8" cy="268.2" r="132.8" fill="#6d28d9" opacity="0.35"/>
+  <path d="M0 630.5 C 360.0 467.3, 840.0 332.7, 1200 547.8" fill="none" stroke="#6d28d9" stroke-width="11.2" opacity="0.55" stroke-linecap="round"/>
+  <rect x="96.0" y="624.0" width="166.5" height="28.0" rx="14.0" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="252.0" y="624.0" width="85.3" height="28.0" rx="14.0" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="408.0" y="624.0" width="127.7" height="28.0" rx="14.0" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="564.0" y="624.0" width="74.2" height="28.0" rx="14.0" fill="#0a0a0a" opacity="0.12"/>
+  <text x="72.0" y="752.0" font-family="system-ui, sans-serif" font-size="25.6" letter-spacing="4.8" fill="#0a0a0a" opacity="0.45">LOAD AWAY — SCREENS</text>
+</svg>

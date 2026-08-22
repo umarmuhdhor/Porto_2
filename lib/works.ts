@@ -9,11 +9,27 @@
  */
 
 import type { Work } from '@/content/works/types';
+import { loadAway } from '@/content/works/load-away';
+import { popshot } from '@/content/works/popshot';
+import { shopifyAutomation } from '@/content/works/shopify-automation';
 import { absata } from '@/content/works/absata';
 import { higgzAcademia } from '@/content/works/higgz-academia';
 import { mdpTeaching } from '@/content/works/mdp-teaching';
 
-const WORKS: readonly Work[] = [absata, higgzAcademia, mdpTeaching];
+/**
+ * Urutan = urutan tampil. Tiga teratas adalah karya terbaru dan paling dekat
+ * dengan posisi yang dituju (iOS/Swift), tiga berikutnya riwayat kerja dari CV.
+ * Jumlahnya genap supaya grid dua kolom di ProjectIndex tidak menyisakan sel
+ * kosong.
+ */
+const WORKS: readonly Work[] = [
+  loadAway,
+  popshot,
+  shopifyAutomation,
+  absata,
+  higgzAcademia,
+  mdpTeaching,
+];
 
 export function getAllWorks(): readonly Work[] {
   return WORKS;
@@ -28,4 +44,10 @@ export function getWorkBySlug(slug: string): Work | undefined {
   return WORKS.find((work) => work.slug === slug);
 }
 
-export type { Work, GalleryItem, GallerySpan, SummarySegment } from '@/content/works/types';
+export type {
+  Work,
+  GalleryItem,
+  GallerySpan,
+  SummarySegment,
+  WorkLink,
+} from '@/content/works/types';

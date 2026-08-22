@@ -18,7 +18,7 @@
  * Jalankan: pnpm run gen:works
  */
 
-import { writeFileSync, mkdirSync } from 'node:fs';
+import { writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -33,9 +33,45 @@ const RATIO = {
 
 const PROJECTS = [
   {
-    slug: 'halo-banking',
-    title: 'Halo Banking',
-    monogram: 'H',
+    slug: 'load-away',
+    title: 'Load Away',
+    monogram: 'L',
+    accent: '#6d28d9',
+    assets: [
+      ['banner', 'banner'],
+      ['screens', 'half'],
+      ['system', 'half'],
+      ['graphics', 'full'],
+    ],
+  },
+  {
+    slug: 'popshot',
+    title: 'Popshot!!',
+    monogram: 'P',
+    accent: '#db2777',
+    assets: [
+      ['banner', 'banner'],
+      ['screens', 'half'],
+      ['flow', 'half'],
+      ['graphics', 'full'],
+    ],
+  },
+  {
+    slug: 'shopify-automation',
+    title: 'Shopify Automation',
+    monogram: 'S',
+    accent: '#334155',
+    assets: [
+      ['banner', 'banner'],
+      ['pipeline', 'half'],
+      ['rules', 'half'],
+      ['graphics', 'full'],
+    ],
+  },
+  {
+    slug: 'absata',
+    title: 'ABSATA',
+    monogram: 'A',
     accent: '#2f6df6',
     assets: [
       ['banner', 'banner'],
@@ -45,9 +81,9 @@ const PROJECTS = [
     ],
   },
   {
-    slug: 'terra-atlas',
-    title: 'Terra Atlas',
-    monogram: 'T',
+    slug: 'higgz-academia',
+    title: 'Higgz Academia',
+    monogram: 'H',
     accent: '#1f8a6d',
     assets: [
       ['banner', 'banner'],
@@ -59,9 +95,9 @@ const PROJECTS = [
     ],
   },
   {
-    slug: 'kopi-kultur',
-    title: 'Kopi Kultur',
-    monogram: 'K',
+    slug: 'mdp-teaching',
+    title: 'MDP Lecturing',
+    monogram: 'M',
     accent: '#b4442a',
     assets: [
       ['banner', 'banner'],
@@ -71,6 +107,34 @@ const PROJECTS = [
     ],
   },
 ];
+
+/**
+ * Penjaga anti-basi. Manifest di atas ditulis ulang dengan tangan karena script
+ * node polos tidak bisa mengimpor TypeScript, dan itu persis kondisi yang bikin
+ * ia menyimpang: sebelumnya isinya tiga slug (`halo-banking`, `terra-atlas`,
+ * `kopi-kultur`) yang sudah lama tidak ada di content/works — menjalankan
+ * script hanya akan membuat tiga folder yatim dan TIDAK menyentuh aset yang
+ * benar-benar dipakai, tanpa satu pun peringatan.
+ *
+ * Sekarang script berhenti kalau slug di sini tidak punya file konten yang
+ * cocok. Sengaja dicek terhadap keberadaan FILE, bukan isi lib/works.ts:
+ * mencocokkan nama file cukup untuk menangkap penyimpangan tanpa harus
+ * mem-parse TypeScript.
+ */
+function assertSlugsExist() {
+  const missing = PROJECTS.map((p) => p.slug).filter(
+    (slug) => !existsSync(resolve(ROOT, 'content/works', `${slug}.ts`)),
+  );
+
+  if (missing.length > 0) {
+    console.error(
+      `\n✗ Manifest di scripts/generate-work-placeholders.mjs sudah menyimpang.\n` +
+        `  Slug tanpa content/works/<slug>.ts: ${missing.join(', ')}\n` +
+        `  Samakan manifest dengan isi content/works/ lalu jalankan lagi.\n`,
+    );
+    process.exit(1);
+  }
+}
 
 /** Latar sama dengan --color-cream di app/globals.css. */
 const CREAM = '#f7f1ed';
@@ -157,6 +221,8 @@ function logoSvg({ monogram, accent, title }) {
 </svg>
 `;
 }
+
+assertSlugsExist();
 
 let written = 0;
 for (const project of PROJECTS) {

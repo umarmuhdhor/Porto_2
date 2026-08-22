@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="LOAD AWAY — BANNER">
+  <rect width="1600" height="900" fill="#f7f1ed"/>
+  <rect x="250.2" y="128.5" width="687.5" height="473.0" rx="37.8" fill="#6d28d9" opacity="0.9"/>
+  <circle cx="1290.0" cy="554.5" r="165.2" fill="#6d28d9" opacity="0.35"/>
+  <path d="M0 600.1 C 480.0 239.3, 1120.0 660.7, 1600 660.0" fill="none" stroke="#6d28d9" stroke-width="12.6" opacity="0.55" stroke-linecap="round"/>
+  <rect x="128.0" y="702.0" width="159.9" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="336.0" y="702.0" width="122.8" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="544.0" y="702.0" width="147.4" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="752.0" y="702.0" width="179.8" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="960.0" y="702.0" width="220.6" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <text x="96.0" y="846.0" font-family="system-ui, sans-serif" font-size="28.8" letter-spacing="5.4" fill="#0a0a0a" opacity="0.45">LOAD AWAY — BANNER</text>
+</svg>

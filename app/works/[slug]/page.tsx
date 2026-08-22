@@ -129,6 +129,28 @@ export default async function WorkPage({ params }: Params) {
 
         <ServicePillList items={work.services} />
 
+        {/* Tautan build/kode yang bisa benar-benar dibuka. Dirender tepat di
+            bawah ringkasan karena inilah aksi yang paling mungkin diambil
+            pembaca yang baru saja yakin — bukan di kaki halaman setelah
+            galeri. `rel="noopener noreferrer"` karena semuanya keluar situs. */}
+        {work.links && work.links.length > 0 && (
+          <ul className="mt-8 flex flex-wrap gap-3">
+            {work.links.map((link) => (
+              <li key={link.href}>
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-system border-ink/20 hover:border-ink focus-visible:outline-ink inline-flex items-center gap-2 rounded-[var(--radius-pill)] border px-4 py-2 text-xs tracking-wide uppercase transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 md:text-sm"
+                >
+                  {link.label}
+                  <span aria-hidden="true">&#8599;</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+
         {/* Strip fakta: <dl>, bukan grid <div>, supaya screen reader membaca
             pasangan label→nilai sebagai pasangan. `stack` ikut di sini sebagai
             satu baris penuh — daripada jadi deret pill kedua yang bentuknya

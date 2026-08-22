@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="SHOPIFY AUTOMATION — RULES">
+  <rect width="1200" height="800" fill="#f7f1ed"/>
+  <rect x="80.7" y="179.9" width="519.1" height="390.7" rx="31.3" fill="#334155" opacity="0.9"/>
+  <circle cx="1008.7" cy="411.2" r="181.8" fill="#334155" opacity="0.35"/>
+  <path d="M0 578.4 C 360.0 197.8, 840.0 602.2, 1200 568.6" fill="none" stroke="#334155" stroke-width="11.2" opacity="0.55" stroke-linecap="round"/>
+  <rect x="96.0" y="624.0" width="166.8" height="28.0" rx="14.0" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="252.0" y="624.0" width="65.4" height="28.0" rx="14.0" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="408.0" y="624.0" width="74.7" height="28.0" rx="14.0" fill="#0a0a0a" opacity="0.12"/>
+  <text x="72.0" y="752.0" font-family="system-ui, sans-serif" font-size="25.6" letter-spacing="4.8" fill="#0a0a0a" opacity="0.45">SHOPIFY AUTOMATION — RULES</text>
+</svg>

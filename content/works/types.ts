@@ -44,6 +44,20 @@ export interface WorkFact {
   value: string;
 }
 
+/**
+ * Tautan keluar milik project — TestFlight, App Store, repo.
+ *
+ * OPSIONAL dan sengaja bukan field tetap seperti `testflight`/`github`: tiap
+ * project punya kombinasi yang berbeda (satu punya beta publik tanpa repo, satu
+ * punya repo tanpa build publik, sebagian klien tidak punya keduanya), dan key
+ * kosong yang harus dicek satu per satu di template lebih buruk daripada daftar
+ * yang panjangnya nol.
+ */
+export interface WorkLink {
+  label: string;
+  href: string;
+}
+
 /** Satu langkah di bagian Approach — judul pendek + satu paragraf. */
 export interface ApproachStep {
   title: string;
@@ -80,6 +94,12 @@ export interface Work {
    * tidak menampilkan barisnya sama sekali.
    */
   stack?: string[];
+  /**
+   * Tautan ke build atau kode yang benar-benar bisa dibuka pengunjung. Kosongkan
+   * (atau hilangkan) untuk project yang tidak punya — bukan alasan buat menaruh
+   * tautan ke halaman yang tidak ada.
+   */
+  links?: WorkLink[];
   challenge: string;
   role: string;
   /** Bagaimana challenge diselesaikan. 3 langkah — cukup untuk kasih bentuk. */
