@@ -1,10 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="ABSATA — GRAPHICS">
   <rect width="1600" height="900" fill="#f7f1ed"/>
-  <rect x="412.5" y="216.0" width="846.7" height="559.3" rx="44.7" fill="#2f6df6" opacity="0.9"/>
-  <circle cx="1019.1" cy="598.0" r="243.7" fill="#2f6df6" opacity="0.35"/>
-  <path d="M0 593.7 C 480.0 280.0, 1120.0 620.0, 1600 662.5" fill="none" stroke="#2f6df6" stroke-width="12.6" opacity="0.55" stroke-linecap="round"/>
-  <rect x="128.0" y="702.0" width="145.8" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
-  <rect x="336.0" y="702.0" width="183.3" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
-  <rect x="544.0" y="702.0" width="177.4" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="313.3" y="248.3" width="673.6" height="335.7" rx="26.9" fill="#2f6df6" opacity="0.9"/>
+  <circle cx="1067.0" cy="393.4" r="173.7" fill="#2f6df6" opacity="0.35"/>
+  <path d="M0 626.3 C 480.0 369.3, 1120.0 530.7, 1600 649.5" fill="none" stroke="#2f6df6" stroke-width="12.6" opacity="0.55" stroke-linecap="round"/>
+  <rect x="128.0" y="702.0" width="124.8" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="336.0" y="702.0" width="106.3" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="544.0" y="702.0" width="182.7" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="752.0" y="702.0" width="172.0" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="960.0" y="702.0" width="181.7" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
   <text x="96.0" y="846.0" font-family="system-ui, sans-serif" font-size="28.8" letter-spacing="5.4" fill="#0a0a0a" opacity="0.45">ABSATA — GRAPHICS</text>
 </svg>

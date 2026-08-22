@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="MDP LECTURING — SCREENS">
   <rect width="1600" height="900" fill="#f7f1ed"/>
-  <rect x="367.5" y="304.8" width="589.2" height="493.3" rx="39.5" fill="#b4442a" opacity="0.9"/>
-  <circle cx="1310.1" cy="346.9" r="187.8" fill="#b4442a" opacity="0.35"/>
-  <path d="M0 718.2 C 480.0 325.7, 1120.0 574.3, 1600 612.7" fill="none" stroke="#b4442a" stroke-width="12.6" opacity="0.55" stroke-linecap="round"/>
-  <rect x="128.0" y="702.0" width="126.0" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
-  <rect x="336.0" y="702.0" width="94.7" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
-  <rect x="544.0" y="702.0" width="176.0" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="193.7" y="192.4" width="750.8" height="335.4" rx="26.8" fill="#b4442a" opacity="0.9"/>
+  <circle cx="1281.9" cy="478.4" r="153.7" fill="#b4442a" opacity="0.35"/>
+  <path d="M0 680.4 C 480.0 416.7, 1120.0 483.3, 1600 627.9" fill="none" stroke="#b4442a" stroke-width="12.6" opacity="0.55" stroke-linecap="round"/>
+  <rect x="128.0" y="702.0" width="97.6" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="336.0" y="702.0" width="124.7" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="544.0" y="702.0" width="112.9" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
   <text x="96.0" y="846.0" font-family="system-ui, sans-serif" font-size="28.8" letter-spacing="5.4" fill="#0a0a0a" opacity="0.45">MDP LECTURING — SCREENS</text>
 </svg>

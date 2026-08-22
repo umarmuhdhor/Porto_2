@@ -121,7 +121,12 @@ export function StackSection({
         ref={panelRef}
         id={id}
         className={`stack-panel ${className}`}
-        style={{ '--stack-h': `${100 + hold}vh` } as CSSProperties}
+        /* `svh`, BUKAN `vh`: di mobile `vh` mengacu ke viewport saat bilah URL
+           tersembunyi, jadi tinggi tiap panel berubah setiap kali bilah itu
+           muncul/hilang saat scroll — seluruh halaman me-relayout dan posisi
+           trigger meleset di tengah gestur. `svh` (small viewport height) nilai
+           tetap: layout panel tidak pernah bergerak karena chrome browser. */
+        style={{ '--stack-h': `${100 + hold}svh` } as CSSProperties}
       >
         {divider}
         {/* `relative` bukan hiasan: konten absolute di dalam section (mis.

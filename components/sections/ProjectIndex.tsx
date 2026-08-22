@@ -28,6 +28,8 @@ export interface ProjectRow {
   previewAlt: string;
 }
 
+const HEADING = 'Curated Projects';
+
 export function ProjectIndex({ projects }: { projects: ProjectRow[] }) {
   return (
     <section
@@ -36,8 +38,36 @@ export function ProjectIndex({ projects }: { projects: ProjectRow[] }) {
       style={{ paddingInline: 'var(--frame-inset)' }}
     >
       <header className="text-center">
-        <h2 className="font-display text-4xl font-bold tracking-tight uppercase md:text-6xl">
-          Curated Projects
+        {/* Judul dipecah per huruf supaya tiap huruf bisa melompat & miring
+            sendiri saat disentuh kursor — satu-satunya gerakan di section ini
+            yang benar-benar dipicu user, bukan scroll.
+
+            `aria-label` di <h2> + `aria-hidden` di pembungkus huruf: tanpa itu
+            sebagian screen reader mengeja "C-U-R-A-T-E-D" karena tiap huruf
+            jadi kotak inline-block sendiri.
+
+            Murni CSS hover — tidak ada state, jadi file ini tetap tanpa
+            'use client' (lihat catatan kepala). */}
+        <h2
+          aria-label={HEADING}
+          className="font-display text-4xl font-bold tracking-tight uppercase md:text-6xl"
+        >
+          <span aria-hidden>
+            {[...HEADING].map((char, i) =>
+              char === ' ' ? (
+                // Spasi TIDAK dibungkus inline-block: kotak selebar spasi ikut
+                // hilang saat baris ter-wrap dan dua kata jadi dempet.
+                <span key={i}> </span>
+              ) : (
+                <span
+                  key={i}
+                  className="hover:text-accent-line inline-block transition-transform duration-[var(--dur-base)] ease-[var(--ease-smooth)] hover:-translate-y-1.5 hover:rotate-[-7deg] motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:rotate-0"
+                >
+                  {char}
+                </span>
+              ),
+            )}
+          </span>
         </h2>
         <p className="font-system text-muted mx-auto mt-5 max-w-xl text-base md:text-lg">
           Selection of mobile and iOS development work, built end to end.

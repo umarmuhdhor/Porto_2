@@ -50,14 +50,22 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
 
     const start = () => {
       if (lenis) return;
-      // lerp lebih kecil = ekor momentum lebih panjang & transisi antar-frame
-      // lebih halus (0.075 ≈ ~13 frame untuk mengejar target, vs ~10 di 0.1).
-      // wheelMultiplier sedikit di bawah 1 meredam lompatan besar dari wheel
-      // notch, sehingga koreografi stacking tidak "meloncati" fase hold.
+      // lerp = seberapa cepat posisi terlihat mengejar posisi target tiap frame.
+      // Lebih kecil = ekor momentum lebih panjang, TAPI juga jeda yang makin
+      // terasa antara memutar wheel dan halaman bergerak. 0.075 (~13 frame /
+      // ≈220ms untuk sampai) sudah masuk wilayah "berat": gerakannya halus tapi
+      // tidak lagi terasa terhubung ke tangan. 0.1 (~10 frame) menahan
+      // kehalusannya sambil mengembalikan respons itu.
+      //
+      // wheelMultiplier dikembalikan ke 1: meredamnya ke 0.9 berarti tiap notch
+      // wheel menempuh jarak lebih pendek, jadi user memutar lebih banyak untuk
+      // jarak yang sama — halaman terasa lambat, bukan halus. Fase hold
+      // koreografi stacking punya ruang scroll sendiri (85vh & 84vh) dan tidak
+      // bergantung pada peredaman ini.
       lenis = new Lenis({
-        lerp: 0.075,
+        lerp: 0.1,
         smoothWheel: true,
-        wheelMultiplier: 0.9,
+        wheelMultiplier: 1,
         touchMultiplier: 1.4,
         syncTouch: true,
       });

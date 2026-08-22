@@ -1,10 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="HIGGZ ACADEMIA — GRAPHICS">
   <rect width="1600" height="900" fill="#f7f1ed"/>
-  <rect x="328.3" y="169.9" width="720.2" height="581.1" rx="46.5" fill="#1f8a6d" opacity="0.9"/>
-  <circle cx="934.8" cy="429.8" r="194.8" fill="#1f8a6d" opacity="0.35"/>
-  <path d="M0 689.6 C 480.0 420.9, 1120.0 479.1, 1600 624.2" fill="none" stroke="#1f8a6d" stroke-width="12.6" opacity="0.55" stroke-linecap="round"/>
-  <rect x="128.0" y="702.0" width="161.1" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
-  <rect x="336.0" y="702.0" width="163.8" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
-  <rect x="544.0" y="702.0" width="171.4" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="349.0" y="158.2" width="891.5" height="485.0" rx="38.8" fill="#1f8a6d" opacity="0.9"/>
+  <circle cx="1278.2" cy="405.0" r="251.5" fill="#1f8a6d" opacity="0.35"/>
+  <path d="M0 705.7 C 480.0 530.3, 1120.0 369.7, 1600 617.7" fill="none" stroke="#1f8a6d" stroke-width="12.6" opacity="0.55" stroke-linecap="round"/>
+  <rect x="128.0" y="702.0" width="176.7" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="336.0" y="702.0" width="220.7" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="544.0" y="702.0" width="161.3" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="752.0" y="702.0" width="122.9" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
   <text x="96.0" y="846.0" font-family="system-ui, sans-serif" font-size="28.8" letter-spacing="5.4" fill="#0a0a0a" opacity="0.45">HIGGZ ACADEMIA — GRAPHICS</text>
 </svg>

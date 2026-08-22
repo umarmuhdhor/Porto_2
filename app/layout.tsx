@@ -4,10 +4,14 @@ import { Space_Grotesk } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import './globals.css';
+import { SITE } from '@/content/site';
 import { SmoothScrollProvider } from '@/components/providers/SmoothScrollProvider';
 import { FrameLines } from '@/components/layout/FrameLines';
 import { HonorsBadge } from '@/components/layout/HonorsBadge';
 import { NavPill } from '@/components/layout/NavPill';
+import { GuestbookDock } from '@/components/layout/GuestbookDock';
+import { AssistantDock } from '@/components/layout/AssistantDock';
+import { LiveCursors } from '@/components/layout/LiveCursors';
 
 /**
  * Display face — Space Grotesk (OFL). Grotesk geometrik modern; pendekatan bebas
@@ -39,9 +43,8 @@ const SPEED_INSIGHTS_PROPS = PROXIED ? { scriptSrc: '/_hb/s.js', endpoint: '/_hb
  */
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
 
-const TITLE = 'Umar Muhdhor — iOS Developer';
-const DESCRIPTION =
-  'Mobile app work by Umar Muhdhor — an iOS developer building reliable, easy-to-use apps with Swift and Flutter.';
+const TITLE = SITE.seo.title;
+const DESCRIPTION = SITE.seo.description;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -79,6 +82,32 @@ export default function RootLayout({
           <FrameLines />
           <HonorsBadge />
           <NavPill />
+          {/*
+           * Kedua dock berbagi SATU baris di pojok kanan atas, bukan
+           * memposisikan pilnya sendiri-sendiri.
+           *
+           * Kenapa satu wadah flex dan bukan sekadar menyetel `right` masing-
+           * masing: lebar pil guestbook berubah-ubah — labelnya hilang di bawah
+           * `sm` dan lencana jumlah tamu baru muncul setelah datanya masuk.
+           * Offset `right` apa pun yang dihitung manual akan meleset begitu
+           * salah satu dari dua hal itu berubah. Flex + `gap` menjaga jarak
+           * keduanya tetap sama tanpa ada angka yang perlu disetel ulang.
+           *
+           * `pointer-events-none` di wadah, `auto` di tombolnya: kotak baris ini
+           * membentang selebar kedua pil, dan tanpa itu celah di antaranya ikut
+           * mencegat klik ke halaman di belakangnya.
+           *
+           * Panel kedua dock tetap `fixed` terhadap viewport — wadah `fixed`
+           * tanpa transform bukan containing block, jadi posisinya tak berubah.
+           */}
+          <div
+            className="pointer-events-none fixed top-5 flex items-center gap-3 [&>*]:pointer-events-auto"
+            style={{ right: 'var(--frame-inset)', zIndex: 'var(--z-chat)' }}
+          >
+            <AssistantDock />
+            <GuestbookDock />
+          </div>
+          <LiveCursors />
         </SmoothScrollProvider>
         <Analytics {...ANALYTICS_PROPS} />
         <SpeedInsights {...SPEED_INSIGHTS_PROPS} />

@@ -17,6 +17,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { SITE } from '@/content/site';
 
 interface NavItem {
   label: string;
@@ -26,7 +27,7 @@ interface NavItem {
 const ITEMS: NavItem[] = [
   { label: 'HOME', href: '/' },
   { label: 'WORKS', href: '/#projects' },
-  { label: 'CONTACT', href: 'mailto:muhdhorcs@gmail.com' },
+  { label: 'CONTACT', href: SITE.mailto },
 ];
 
 /** Satu label dengan efek text-roll: baris asli slide naik, duplikat masuk dari bawah. */

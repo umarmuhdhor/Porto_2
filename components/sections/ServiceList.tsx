@@ -21,32 +21,24 @@ import { StackSection } from '@/components/ui/StackSection';
 import { BrushDivider } from '@/components/ui/BrushDivider';
 
 /**
- * Tiap layanan dipasangkan ke satu preview project (banner) supaya mockup di
- * kanan berganti mengikuti item aktif — persis pola referensi.
+ * Satu baris layanan siap-render. Path preview sudah DIRESOLUSI di server
+ * (app/page.tsx) dari slug project — komponen ini tidak tahu apa-apa soal
+ * registry karya, sama seperti ProjectIndex.
  */
-const SERVICES = [
-  {
-    label: 'iOS Development',
-    preview: '/works/absata/absata_banner.svg',
-    alt: 'Preview aplikasi iOS ABSATA.',
-  },
-  {
-    label: 'Cross-Platform Apps',
-    preview: '/works/higgz-academia/higgz-academia_banner.svg',
-    alt: 'Preview materi mobile Higgz Academia.',
-  },
-  {
-    label: 'UI Implementation',
-    preview: '/works/mdp-teaching/mdp-teaching_banner.svg',
-    alt: 'Preview materi dan antarmuka MDP Lecturing.',
-  },
-] as const;
+export interface ServiceRow {
+  label: string;
+  preview: string;
+  alt: string;
+}
 
-/** Ruang scroll fase hold — dibagi rata ke jumlah item (≈28vh per item). */
-const HOLD_VH = SERVICES.length * 28;
+/** Ruang scroll fase hold per item (vh). */
+const HOLD_PER_ITEM = 28;
 
-export function ServiceList() {
+export function ServiceList({ services }: { services: ServiceRow[] }) {
   const [active, setActive] = useState(0);
+
+  const SERVICES = services;
+  const HOLD_VH = SERVICES.length * HOLD_PER_ITEM;
 
   const handleProgress = (progress: number) => {
     const next = Math.min(SERVICES.length - 1, Math.floor(progress * SERVICES.length));
@@ -78,10 +70,28 @@ export function ServiceList() {
               <li
                 key={service.label}
                 aria-current={i === active ? 'true' : undefined}
+                /**
+                 * Hover mengambil alih item aktif dari scroll. Bukan state
+                 * terpisah: keduanya menulis `active` yang sama, jadi begitu
+                 * user menggulir lagi scroll yang menang kembali — tidak ada
+                 * mode "terkunci karena pernah di-hover".
+                 *
+                 * Sengaja tanpa padanan keyboard: baris ini bukan kontrol
+                 * (tidak menuju ke mana-mana), dan menjadikannya focusable akan
+                 * menambah tiga perhentian tab yang tak melakukan apa pun.
+                 * Informasinya sudah lengkap tanpa hover — kartu preview
+                 * `aria-hidden`, statusnya dibawa `aria-current`.
+                 */
+                onMouseEnter={() => setActive(i)}
                 /* Ukuran ikut lebar viewport (vw) supaya rasio teks:kolom tetap —
                    sekali muat satu baris, muat di semua lebar desktop, jadi
                    `nowrap` aman dan daftar tidak pernah "meloncat" tinggi. */
-                className="service-item font-display flex items-center gap-4 text-[clamp(1.35rem,5.8vw,2.5rem)] leading-[1.24] font-bold tracking-tight uppercase lg:justify-end lg:gap-5 lg:text-[clamp(2rem,3.6vw,3.5rem)] lg:whitespace-nowrap"
+                className={`service-item font-display flex items-center gap-4 text-[clamp(1.35rem,5.8vw,2.5rem)] leading-[1.24] font-bold tracking-tight uppercase transition-transform duration-[var(--dur-base)] ease-[var(--ease-smooth)] lg:justify-end lg:gap-5 lg:text-[clamp(2rem,3.6vw,3.5rem)] lg:whitespace-nowrap ${
+                  /* Item aktif menyembul melewati tepi kanan bersama — cuma di
+                     lg, tempat daftarnya rata kanan; di layar sempit rata kiri
+                     dan geseran ini justru merusak barisnya. */
+                  i === active ? 'lg:translate-x-2 motion-reduce:lg:translate-x-0' : ''
+                }`}
               >
                 {/* Penanda terakota — bahasa garis yang sama dengan flank hero.
                     Lebarnya tumbuh hanya di item aktif; `aria-hidden` karena
@@ -118,7 +128,16 @@ export function ServiceList() {
             }}
           />
 
-          <div className="bg-cream w-full overflow-hidden rounded-[calc(var(--radius-card)+4px)] shadow-[0_48px_90px_-48px_rgba(10,10,10,0.42),0_10px_28px_-20px_rgba(10,10,10,0.28)] ring-1 ring-[var(--line-rule)]">
+          {/* Kartu ikut MIRING bergantian tiap kali item aktif berganti — arah
+              kemiringannya ditentukan ganjil/genap index, jadi pergantian terasa
+              seperti kartu yang dilempar ke meja, bukan slideshow yang diam.
+              Sudutnya kecil (±1.6°): lebih dari itu dan sisi kartu mulai
+              memotong garis tepi kanan saat viewport pas selebar breakpoint. */}
+          <div
+            className={`bg-cream w-full overflow-hidden rounded-[calc(var(--radius-card)+4px)] shadow-[0_48px_90px_-48px_rgba(10,10,10,0.42),0_10px_28px_-20px_rgba(10,10,10,0.28)] ring-1 ring-[var(--line-rule)] transition-transform duration-[var(--dur-slow)] ease-[var(--ease-smooth)] motion-reduce:rotate-0 motion-reduce:transition-none ${
+              active % 2 === 0 ? '-rotate-[1.6deg]' : 'rotate-[1.6deg]'
+            }`}
+          >
             {/* Panggung gambar mengikuti rasio banner (16:9) supaya tidak ada
                 yang terpotong; baris kredit di bawahnya yang menambah tinggi
                 kartu mendekati proporsi referensi. */}
@@ -133,7 +152,12 @@ export function ServiceList() {
                   className={`object-cover transition-[opacity,transform] duration-[700ms] ease-[var(--ease-smooth)] ${
                     i === active ? 'scale-100 opacity-100' : 'scale-[1.04] opacity-0'
                   }`}
-                  priority={i === 0}
+                  /* SENGAJA TANPA `priority`: kartu ini ada di panel keempat,
+                     jauh di bawah lipatan. `priority` menambahkan <link
+                     rel=preload> di <head> sehingga gambar dekoratif ini
+                     berebut bandwidth dengan hero pada detik-detik pertama —
+                     menunda LCP demi sesuatu yang baru terlihat beberapa layar
+                     kemudian. Lazy (default next/image) sudah tepat. */
                 />
               ))}
             </div>

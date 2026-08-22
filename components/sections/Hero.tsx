@@ -16,12 +16,13 @@
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import { gsap, useGSAP } from '@/lib/gsap';
 import { NO_PREFERENCE } from '@/lib/motion';
+import { SITE } from '@/content/site';
 import { SignatureLine } from '@/components/ui/SignatureLine';
 import { HeroName } from '@/components/ui/HeroName';
 import { ChatBubble } from '@/components/ui/ChatBubble';
 
-const ROLE = 'iOS Developer';
-const LOCATION = 'Based in — Indonesia';
+const ROLE = SITE.role;
+const LOCATION = SITE.locationLabel;
 
 /** Layout-effect isomorfik: pre-paint di klien (cegah flash intro), no-op di SSR. */
 const useIsoLayout = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
@@ -70,7 +71,10 @@ export function Hero() {
   );
 
   return (
-    <section ref={sectionRef} className="page-section relative h-[120vh]">
+    /* `svh` (bukan `vh`): di mobile `vh` diukur dari viewport tanpa bilah URL,
+       jadi tinggi hero berubah tiap kali bilah itu muncul/hilang saat scroll —
+       halaman me-relayout persis di tengah gestur. `svh` nilainya tetap. */
+    <section ref={sectionRef} className="page-section relative h-[120svh]">
       {/* Layer latar fixed — dipasang di dalam Hero (child pertama <main>) supaya
           urutan cat menaruhnya di belakang semua section berikutnya. */}
       <div
@@ -100,7 +104,7 @@ export function Hero() {
       <div
         ref={contentRef}
         data-intro={phase === 'idle' ? undefined : phase}
-        className="absolute inset-x-0 top-0 h-screen"
+        className="absolute inset-x-0 top-0 h-[100svh]"
       >
         {/* Signature terakota. Fase 'draw': dipindah ke tengah & membesar sambil
             menggores; fase 'reveal': naik ke posisi atas ini (transisi di CSS). */}

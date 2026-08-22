@@ -9,12 +9,16 @@
  * hairline meluruh terbaca sebagai garis margin cetak — persis peran yang
  * diminta DESIGN §3. Tick pendek di mid-height menandai sumbu tempat label hero
  * mengapit, jadi garis punya artikulasi tanpa menambah bobot visual.
+ *
+ * Seluruh layer diberi kelas `.frame-lines` (bukan hanya garisnya) supaya bisa
+ * dipudarkan sebagai satu kesatuan — garis DAN tick — saat section accent
+ * menguasai layar; aturannya di globals.css, pemicunya AboutWindows.
  */
 export function FrameLines() {
   return (
     <div
       aria-hidden
-      className="pointer-events-none fixed inset-0"
+      className="frame-lines pointer-events-none fixed inset-0"
       style={{ zIndex: 'var(--z-frame)' }}
     >
       <span className="frame-line absolute top-0 bottom-0" style={{ left: 'var(--frame-inset)' }} />

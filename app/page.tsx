@@ -9,11 +9,12 @@
  * Detail lengkap: components/ui/StackSection.tsx.
  */
 
-import { getAllWorks } from '@/lib/works';
+import { getAllWorks, getWorkBySlug } from '@/lib/works';
+import { SERVICES } from '@/content/services';
 import { Hero } from '@/components/sections/Hero';
 import { StatementDark } from '@/components/sections/StatementDark';
 import { AboutWindows } from '@/components/sections/AboutWindows';
-import { ServiceList } from '@/components/sections/ServiceList';
+import { ServiceList, type ServiceRow } from '@/components/sections/ServiceList';
 import { ProjectIndex, type ProjectRow } from '@/components/sections/ProjectIndex';
 import { ContactFooter } from '@/components/sections/ContactFooter';
 
@@ -30,22 +31,37 @@ export default function Home() {
     previewAlt: work.banner.alt,
   }));
 
+  // Layanan menunjuk project lewat SLUG (content/services.ts); banner-nya
+  // diresolusi di sini. `throw` disengaja: slug yang salah ketik akan
+  // MENGGAGALKAN BUILD halaman statis ini, bukan diam-diam merender kartu
+  // preview kosong yang baru ketahuan setelah rilis.
+  const services: ServiceRow[] = SERVICES.map((service) => {
+    const work = getWorkBySlug(service.workSlug);
+    if (!work) {
+      throw new Error(
+        `content/services.ts: layanan "${service.label}" menunjuk slug "${service.workSlug}" yang tidak terdaftar di lib/works.ts.`,
+      );
+    }
+    return { label: service.label, preview: work.banner.src, alt: service.alt };
+  });
+
   return (
     <main className="relative">
       {/* 1 — Hero (cream, latar fixed) */}
       <Hero />
 
-      {/* 2 — Statement (dark) — panel stacking */}
-      <StatementDark />
-
-      {/* 2b — About windows (cream) — panel jendela yang bisa digeser & muncul
-          satu per satu mengikuti scroll. Section BIASA (bukan stack-panel):
-          isinya tumbuh mengikuti jumlah baris, jadi tidak boleh dikunci setinggi
-          viewport. Ia tetap naik menutupi StatementDark karena urutan DOM. */}
+      {/* 2 — About windows (accent) — section langsung setelah hero. Latarnya
+          SOLID accent dan tepi atasnya dibuka strip krem bertangga saat scroll,
+          jadi peralihan hero→section ini yang jadi kejadian pertama halaman.
+          Section BIASA (bukan stack-panel): tinggi isinya tumbuh mengikuti
+          jumlah baris jendela, jadi tidak boleh dikunci setinggi viewport. */}
       <AboutWindows />
 
-      {/* 3 — Service list (cream) — panel stacking + item aktif terikat scroll */}
-      <ServiceList />
+      {/* 3 — Statement (dark) — panel stacking, naik menutupi AboutWindows */}
+      <StatementDark />
+
+      {/* 4 — Service list (cream) — panel stacking + item aktif terikat scroll */}
+      <ServiceList services={services} />
 
       {/* 5 — Project index (cream) — naik menutupi ServiceList. Grid bergaris
           dua kolom; cover project muncul saat hover (M6 §3.3–3.4). */}
