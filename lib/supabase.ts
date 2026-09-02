@@ -17,6 +17,20 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 let cached: SupabaseClient | null = null;
 
 /**
+ * Apakah guestbook punya kredensial untuk jalan?
+ *
+ * Dipisah dari `getSupabaseAdmin()` supaya route handler bisa MEMERIKSA tanpa
+ * memancing exception. Tanpa ini, satu-satunya cara mengetahui env kosong
+ * adalah membiarkan `getSupabaseAdmin()` melempar dan menangkapnya di
+ * `catch` — yang menyamakan "belum dikonfigurasi" (kondisi normal di fork
+ * orang lain / preview deploy) dengan "Supabase sedang down", dan keduanya
+ * berakhir jadi 500 di muka pengunjung.
+ */
+export function isSupabaseConfigured(): boolean {
+  return Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
+}
+
+/**
  * Sengaja lazy (bukan konstanta modul): kalau env belum di-set, hanya request
  * ke /api/guestbook yang gagal — halaman lain tetap build & render normal.
  */

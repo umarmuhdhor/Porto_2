@@ -115,6 +115,15 @@ export function GuestbookDock() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
+  /**
+   * Server memberi tahu env Supabase-nya kosong → seluruh dock tidak dirender.
+   *
+   * Beda dari `loadError` yang menawarkan Retry: di sini tidak ada yang bisa
+   * dicoba ulang, jadi menampilkan pil yang setiap kali dibuka hanya bisa gagal
+   * lebih buruk daripada tidak menampilkannya sama sekali. Fitur mati diam-diam,
+   * persis seperti LiveCursors saat env-nya kosong.
+   */
+  const [disabled, setDisabled] = useState(false);
 
   const [nickname, setNickname] = useState('');
   const [body, setBody] = useState('');
@@ -140,9 +149,10 @@ export function GuestbookDock() {
       .then(async (res) => {
         const json = await res.json();
         if (!res.ok) throw new Error(json?.error ?? 'request failed');
-        return json.entries as GuestbookEntry[];
+        return json as { entries: GuestbookEntry[]; disabled?: boolean };
       })
-      .then((list) => {
+      .then(({ entries: list, disabled: off }) => {
+        if (off) setDisabled(true);
         setEntries(list);
         setLoadError(null);
         setLoading(false);
@@ -245,6 +255,10 @@ export function GuestbookDock() {
       });
     }
   }
+
+  // DI BAWAH semua hook — early return di atasnya akan membuat jumlah hook
+  // berubah antar render dan React melempar.
+  if (disabled) return null;
 
   const sending = status.kind === 'sending';
   // API mengirim terbaru-dulu; panel membacanya seperti chat (terbaru di bawah).

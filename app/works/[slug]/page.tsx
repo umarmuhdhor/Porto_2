@@ -75,7 +75,13 @@ export default async function WorkPage({ params }: Params) {
     // tanpa itu, gambar galeri ikut melebar di monitor besar dan halaman jadi
     // jauh lebih tinggi tanpa menambah informasi apa pun, sementara baris teks
     // lewat batas nyaman baca.
-    <main style={PAD} className="bg-cream text-ink relative pt-28 pb-24 md:pt-36">
+    // `id`/`tabIndex` = target skip link global (app/layout.tsx).
+    <main
+      id="main-content"
+      tabIndex={-1}
+      style={PAD}
+      className="bg-cream text-ink relative pt-28 pb-24 focus:outline-none md:pt-36"
+    >
       <div className="mx-auto w-full max-w-[1200px]">
         <nav aria-label="Breadcrumb" className="font-system text-muted text-xs md:text-sm">
           <ol className="flex items-center gap-2">

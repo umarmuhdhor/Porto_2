@@ -46,7 +46,10 @@ export default function Home() {
   });
 
   return (
-    <main className="relative">
+    // `tabIndex={-1}` bukan hiasan: tanpa itu sebagian browser memindahkan
+    // scroll ke target skip link tapi meninggalkan fokus di <body>, jadi Tab
+    // berikutnya kembali ke chrome yang baru saja dilewati.
+    <main id="main-content" tabIndex={-1} className="relative focus:outline-none">
       {/* 1 — Hero (cream, latar fixed) */}
       <Hero />
 

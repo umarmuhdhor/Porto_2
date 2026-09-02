@@ -19,7 +19,7 @@
 
 import { createHash } from 'node:crypto';
 import { NextResponse } from 'next/server';
-import { getSupabaseAdmin } from '@/lib/supabase';
+import { getSupabaseAdmin, isSupabaseConfigured } from '@/lib/supabase';
 import {
   PAGE_SIZE,
   RATE_BURST,
@@ -65,6 +65,14 @@ async function countSince(ipHash: string, windowSec: number): Promise<number> {
 }
 
 export async function GET() {
+  // Env kosong bukan error — itu keadaan sah di fork, preview deploy, dan clone
+  // lokal siapa pun yang belum punya project Supabase. Balas daftar kosong
+  // + `disabled` supaya client bisa menyembunyikan pilnya diam-diam (pola yang
+  // sama dengan LiveCursors), bukan 500 yang tampil sebagai fitur rusak.
+  if (!isSupabaseConfigured()) {
+    return NextResponse.json({ entries: [], disabled: true });
+  }
+
   try {
     const { data, error } = await getSupabaseAdmin()
       .from('guestbook')
@@ -83,6 +91,13 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  // UI-nya sudah tersembunyi saat GET membalas `disabled`, tapi endpoint ini
+  // tetap bisa dipanggil langsung dengan curl. 503 (bukan 500): fiturnya mati,
+  // bukan rusak — dan tidak ada yang perlu di-retry sampai env-nya diisi.
+  if (!isSupabaseConfigured()) {
+    return NextResponse.json({ error: 'The guestbook is offline right now.' }, { status: 503 });
+  }
+
   let payload: unknown;
   try {
     payload = await request.json();
