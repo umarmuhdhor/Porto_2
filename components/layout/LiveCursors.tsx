@@ -170,8 +170,7 @@ export function LiveCursors() {
       // Tinggi dokumen halaman ini ditentukan panel sticky yang tingginya vh —
       // ia ikut berubah tanpa event resize (mis. font selesai dimuat), jadi
       // ukurannya diamati juga lewat ResizeObserver di <body>.
-      const ro =
-        typeof ResizeObserver !== 'undefined' ? new ResizeObserver(remeasure) : null;
+      const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(remeasure) : null;
       ro?.observe(document.body);
 
       function frame(now: number) {
