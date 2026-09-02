@@ -18,7 +18,8 @@
  *     biaya di sana;
  *  2. posisi peer disimpan di ref + ditulis langsung ke `style.transform` dalam
  *     loop rAF. React hanya re-render saat ada peer masuk/keluar, bukan tiap
- *     gerakan mouse — kalau tidak, satu peer aktif memicu ~14 render/detik;
+ *     gerakan mouse — kalau tidak, satu peer aktif memicu satu render tiap
+ *     broadcast yang masuk;
  *  3. modul realtime di-`import()` di dalam efek, jadi ~40kb klien Supabase
  *     tidak ikut bundle awal dan tak pernah diunduh perangkat sentuh.
  *

@@ -27,8 +27,13 @@ pnpm install
 pnpm dev          # http://localhost:3000
 pnpm build
 pnpm lint
+pnpm typecheck    # tsc --noEmit
 pnpm format       # prettier + tailwind class sort
 ```
+
+Keempat perintah verifikasi (`lint`, `format:check`, `typecheck`, `build`)
+dijalankan CI per push ke `main` dan per pull request —
+[.github/workflows/ci.yml](.github/workflows/ci.yml).
 
 ## Konten — di mana datanya
 
@@ -105,8 +110,10 @@ SQL — Broadcast aktif bawaan di setiap project Supabase.
 Catatan:
 
 - **Biaya**: kuota Realtime dihitung per pesan. Laju kirim diatur `BROADCAST_MS`
-  di [lib/live-cursors.ts](lib/live-cursors.ts) (default 70ms ≈ 14 pesan/detik
-  saat mouse bergerak). Naikkan angkanya kalau kuota terasa cepat habis.
+  di [lib/live-cursors.ts](lib/live-cursors.ts) (default 140ms ≈ 7 pesan/detik
+  saat mouse bergerak, dikali jumlah penerima di halaman yang sama). Naikkan
+  angkanya kalau kuota terasa cepat habis — yang hilang cuma keterlambatan
+  kursor, bukan kehalusannya, karena penerima meng-interpolasi antar-sampel.
 - Channel dipisah per pathname — pembaca `/works/absata` tidak melihat kursor
   orang yang ada di homepage.
 - Mati otomatis di perangkat sentuh (`pointer: coarse`); klien Supabase juga
@@ -146,10 +153,12 @@ data apa saja yang masih kosong: [docs/BACKLOG.md](docs/BACKLOG.md).
   [lib/chatbot.ts](lib/chatbot.ts) mengarahkan pengunjung ke email.
 - **`HonorsBadge` belum menautkan ke mana pun** — lihat `TODO(brand)` di
   [components/layout/HonorsBadge.tsx](components/layout/HonorsBadge.tsx).
-- **Belum ada test & CI.** Minimal `pnpm lint` + `pnpm build` per push.
+- **Belum ada test.** CI sudah menjaga lint/format/typecheck/build, tapi tidak
+  ada satu pun assertion perilaku. Kandidat pertama: `lib/guestbook.ts` dan
+  `lib/site-url.ts`.
 
 Beres 2026-09-03 (dulu ada di daftar ini): `NEXT_PUBLIC_SITE_URL` yang gagal
-senyap, halaman 404 & error boundary, JSON-LD `Person`, dan skip link.
+senyap, halaman 404 & error boundary, JSON-LD `Person`, skip link, dan CI.
 
 > **Sebelum deploy:** set `NEXT_PUBLIC_SITE_URL` ke domain publik situs.
 > [lib/site-url.ts](lib/site-url.ts) sekarang MENGGAGALKAN build produksi kalau

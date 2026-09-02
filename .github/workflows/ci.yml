@@ -1,0 +1,74 @@
+# Gerbang sebelum `main` — tiga hal yang selama ini hanya ketahuan di laptop
+# atau, lebih buruk, di deploy Vercel:
+#
+#  1. lint. Error `react-hooks/set-state-in-effect` di ChatBubble sampai ke
+#     `main` karena tidak ada yang menjalankan `pnpm lint` selain manusia.
+#  2. format. `pnpm format:check` sempat merah di tiga file tanpa ada yang tahu.
+#  3. build. `lib/site-url.ts` SENGAJA menggagalkan build produksi saat
+#     NEXT_PUBLIC_SITE_URL kosong atau menunjuk localhost. Itu perilaku yang
+#     diinginkan, tapi tempat yang benar untuk menemuinya adalah di sini —
+#     bukan lima menit setelah `git push` saat Vercel yang meneriakkannya.
+#
+# `typecheck` dipisah dari `build` walau `next build` juga menjalankan tsc:
+# tsc murni selesai dalam hitungan detik, jadi error tipe dilaporkan jauh
+# sebelum bundler ikut bekerja.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Push beruntun ke branch yang sama: run lama dibatalkan, yang terbaru saja
+# yang dituntaskan.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    env:
+      # Build produksi menuntut origin absolut, dan CI bukan tempat menyimpan
+      # domain sungguhan — nilai aslinya hidup di Vercel → Environment
+      # Variables. Yang dibuktikan di sini cuma "build-nya lulus", bukan
+      # "canonical-nya benar". Penjaga localhost di lib/site-url.ts sengaja
+      # hanya aktif saat `VERCEL` ada, jadi placeholder ini tidak akan
+      # menggagalkan apa pun.
+      NEXT_PUBLIC_SITE_URL: https://example.com
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Harus sebelum setup-node: `cache: pnpm` di bawah butuh pnpm sudah ada
+      # untuk menemukan store-nya. Versinya dibaca dari field `packageManager`
+      # di package.json supaya CI dan laptop tidak pernah berbeda.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Cache build Next. Kuncinya di-salt commit SHA supaya tiap run menulis
+      # entri baru; yang benar-benar dipakai adalah `restore-keys` — ia
+      # mengambil cache run sebelumnya dan dari situ Next melewati kompilasi
+      # ulang file yang tak tersentuh.
+      #
+      # SENGAJA tidak memakai `hashFiles('**/*.ts')` seperti resep yang beredar:
+      # step ini berjalan SETELAH install, jadi glob itu ikut mengunyah seluruh
+      # isi node_modules — puluhan ribu file di-hash tiap run demi kunci yang
+      # tidak lebih tepat daripada SHA.
+      - uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: next-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: next-${{ hashFiles('pnpm-lock.yaml') }}-
+
+      - run: pnpm lint
+      - run: pnpm format:check
+      - run: pnpm typecheck
+      - run: pnpm build

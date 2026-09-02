@@ -1,7 +1,7 @@
 # Backlog — yang perlu diperbaiki & data yang belum ada
 
 Hasil audit codebase 2026-08-22, diperbarui 2026-09-03 setelah batch P0+P1
-Bagian A dikerjakan. Dua bagian besar:
+lalu batch P2 Bagian A dikerjakan. Dua bagian besar:
 
 - **Bagian A — perbaikan kode.** Bisa dikerjakan siapa pun tanpa data baru.
 - **Bagian B — data yang belum ada.** Hanya Umar yang bisa mengisi; tanpa ini
@@ -28,22 +28,12 @@ Status ringkas juga ada di [../README.md](../README.md) section "Status".
 
 ### P2 — kualitas
 
-- [ ] **`@supabase/supabase-js` masuk bundle homepage.**
-      Terlihat di network `/`: chunk `@supabase_supabase-js_dist_index_mjs`.
-      Penyebabnya `GuestbookDock` selalu mounted di `app/layout.tsx`.
-      **Fix:** `import()` dinamis klien Supabase saat panel dibuka — pola yang
-      `components/layout/LiveCursors.tsx` sudah pakai.
-
-- [ ] **`BROADCAST_MS = 70`** (`lib/live-cursors.ts:16`) ≈ 14 pesan/detik per
-      pengunjung yang menggerakkan mouse. Kuota Realtime free tier dihitung per
-      pesan. Naikkan ke ~120–150ms.
-
-- [ ] **Tidak ada test & CI.** Tidak ada `.github/`. Minimal satu workflow yang
-      menjalankan `pnpm lint` + `pnpm build` per push — itu yang akan menangkap
-      regresi seperti error lint ChatBubble kemarin sebelum sampai `main`.
-      Nilainya naik setelah batch P0: `lib/site-url.ts` kini sengaja
-      MENGGAGALKAN build produksi saat env-nya salah, dan CI adalah tempat yang
-      benar untuk menemui kegagalan itu — bukan deploy Vercel.
+- [ ] **Tidak ada test.** CI sudah ada (lihat "Sudah selesai"), tapi yang
+      dijalankannya cuma lint/format/typecheck/build — tidak ada satu pun
+      assertion tentang perilaku. Kandidat pertama yang paling berbayar:
+      `lib/guestbook.ts` (`validateEntry` dipakai dua sisi, client & server) dan
+      `lib/site-url.ts` (empat cabang error yang sejauh ini hanya diverifikasi
+      manual). Belum ada test runner terpasang — itu keputusan pertama.
 
 
 ### P3 — nice to have
@@ -180,6 +170,40 @@ dibuat, dua entri ini isinya.
 ---
 
 ## Sudah selesai
+
+### Batch P2 Bagian A — 2026-09-03
+
+- ✅ **CI.** `.github/workflows/ci.yml` — `pnpm lint` + `format:check` +
+  `typecheck` + `build` per push ke `main` dan per pull request.
+
+  `NEXT_PUBLIC_SITE_URL` diisi placeholder `https://example.com` di workflow:
+  build produksi menolak jalan tanpa origin absolut, dan CI bukan tempat
+  menyimpan domain sungguhan. Penjaga localhost di `lib/site-url.ts` hanya
+  aktif saat `VERCEL` ada, jadi placeholder itu aman.
+
+  Ikut masuk: script `typecheck` (`tsc --noEmit`) dan field `packageManager`
+  di `package.json` — `pnpm/action-setup` membaca versinya dari sana, jadi CI
+  dan laptop tidak bisa memakai pnpm yang berbeda.
+
+- ✅ **`BROADCAST_MS` 70 → 140.** (`lib/live-cursors.ts`) ~14 → ~7 pesan/detik
+  per pengunjung yang bergerak, dan biaya itu dikali jumlah penerima di halaman
+  yang sama. `LERP` sengaja TIDAK ikut diubah: ia mengatur seberapa cepat kursor
+  mengejar sampel terakhir, bukan seberapa sering sampel datang — menaikkannya
+  untuk "mengimbangi" justru mengembalikan patah-patah yang ia ada untuk
+  menghaluskannya.
+
+- ✅ **Item "supabase-js masuk bundle homepage" dicoret — salah alamat.**
+  `GuestbookDock` tidak mengimpor Supabase sama sekali; ia bicara ke
+  `/api/guestbook`. Satu-satunya pemakai di klien adalah `LiveCursors`, dan di
+  sana klien Supabase MEMANG sudah `import()` dinamis
+  (`components/layout/LiveCursors.tsx:81`), dijaga `pointer: fine` + env terisi.
+  Chunk-nya lazy dan tidak pernah diunduh perangkat sentuh — tidak ada yang
+  perlu diperbaiki.
+
+- ✅ **Catatan `NEXT_PUBLIC_SITE_URL` di `.env.example` disegarkan.** Isinya
+  masih menjanjikan fallback senyap ke localhost — persis perilaku yang dibunuh
+  batch P0 sebelumnya. Dokumentasi yang menjelaskan perilaku lama lebih
+  berbahaya daripada tidak ada dokumentasi.
 
 ### Batch P0 + P1 Bagian A — 2026-09-03
 
