@@ -1,6 +1,7 @@
 # Backlog — yang perlu diperbaiki & data yang belum ada
 
-Hasil audit codebase 2026-08-22. Dua bagian besar:
+Hasil audit codebase 2026-08-22, diperbarui 2026-09-03 setelah batch P0+P1
+Bagian A dikerjakan. Dua bagian besar:
 
 - **Bagian A — perbaikan kode.** Bisa dikerjakan siapa pun tanpa data baru.
 - **Bagian B — data yang belum ada.** Hanya Umar yang bisa mengisi; tanpa ini
@@ -17,42 +18,9 @@ Status ringkas juga ada di [../README.md](../README.md) section "Status".
 
 ### P0 — blokir rilis publik
 
-- [ ] **`NEXT_PUBLIC_SITE_URL` gagal senyap.**
-      `app/layout.tsx`, `app/sitemap.ts`, `app/robots.ts` memakai fallback
-      `http://localhost:3000`. Kalau env lupa diset di Vercel, sitemap, robots,
-      `metadataBase`, dan semua `og:image` menunjuk localhost — tidak ada yang
-      gagal build untuk memberi tahu.
-      Env-nya kini terdokumentasi di `.env.example` (sebelumnya tidak disebut
-      sama sekali), tapi dokumentasi bukan penjaga.
-      **Fix:** pindahkan resolusi origin ke satu modul (mis. `lib/site-url.ts`)
-      yang `throw` saat `NODE_ENV === 'production'` dan env-nya kosong.
-
-- [ ] **Guestbook error ke pengunjung saat env Supabase kosong.**
-      `GET /api/guestbook` → 500 (terverifikasi di dev tanpa `.env.local`).
-      **Fix:** kalau `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY` tidak ada,
-      route balas 200 dengan daftar kosong + flag `disabled`, dan
-      `components/layout/GuestbookDock.tsx` menyembunyikan pilnya. Fitur mati
-      diam-diam, seperti `LiveCursors` sudah lakukan.
+**Kosong.** Dua-duanya selesai 2026-09-03 — lihat "Sudah selesai" di bawah.
 
 ### P1 — sebelum dibagikan ke recruiter
-
-- [ ] **Tidak ada `app/not-found.tsx`.**
-      Slug asing → halaman 404 bawaan Next, keluar total dari brand. Halaman ini
-      juga yang dilihat orang saat menebak URL.
-
-- [ ] **Tidak ada `app/error.tsx` / `app/global-error.tsx`.**
-      Satu error runtime di komponen client (GSAP, R3F, Supabase) = layar putih.
-
-- [ ] **Tidak ada skip-to-content link.**
-      Halaman scroll panjang dengan tiga dock `fixed` (`NavPill`,
-      `AssistantDock`, `GuestbookDock`) + `HonorsBadge`. User keyboard harus tab
-      lewat semuanya sebelum sampai konten. Aria di dalam dock sudah rapi —
-      yang hilang cuma pintu masuknya.
-
-- [ ] **Tidak ada JSON-LD `Person`.**
-      Nol `schema.org` di seluruh codebase. Murah, dan ini yang dipakai mesin
-      pencari untuk mengikat nama → peran → profil sosial. Datanya sudah lengkap
-      — `SITE.github` / `.linkedin` / `.instagram` tinggal dipakai jadi `sameAs`.
 
 - [ ] **`HonorsBadge` tidak menautkan ke mana pun.**
       `components/layout/HonorsBadge.tsx:7` — `TODO(brand)`. Sekarang cuma
@@ -70,14 +38,12 @@ Status ringkas juga ada di [../README.md](../README.md) section "Status".
       pengunjung yang menggerakkan mouse. Kuota Realtime free tier dihitung per
       pesan. Naikkan ke ~120–150ms.
 
-- [ ] **`pnpm format:check` gagal di 3 file.**
-      `components/layout/LiveCursors.tsx`, `eslint.config.mjs`,
-      `postcss.config.mjs`. (`ContactFooter.tsx` dan `lib/chatbot.ts` sudah ikut
-      rapi saat disunting.) **Fix:** `pnpm format`.
-
 - [ ] **Tidak ada test & CI.** Tidak ada `.github/`. Minimal satu workflow yang
       menjalankan `pnpm lint` + `pnpm build` per push — itu yang akan menangkap
       regresi seperti error lint ChatBubble kemarin sebelum sampai `main`.
+      Nilainya naik setelah batch P0: `lib/site-url.ts` kini sengaja
+      MENGGAGALKAN build produksi saat env-nya salah, dan CI adalah tempat yang
+      benar untuk menemui kegagalan itu — bukan deploy Vercel.
 
 
 ### P3 — nice to have
@@ -214,6 +180,57 @@ dibuat, dua entri ini isinya.
 ---
 
 ## Sudah selesai
+
+### Batch P0 + P1 Bagian A — 2026-09-03
+
+- ✅ **P0 — `NEXT_PUBLIC_SITE_URL` tidak lagi gagal senyap.** Resolusi origin
+  pindah ke `lib/site-url.ts`; `app/layout.tsx`, `app/sitemap.ts`, dan
+  `app/robots.ts` mengimpornya. Build produksi `throw` kalau env-nya kosong.
+  Origin dinormalkan lewat `URL.origin`, jadi slash di akhir tidak lagi bisa
+  menghasilkan `//works/...`.
+
+  **Ada lubang kedua yang baru ketahuan saat mengujinya:** `.env.local` di repo
+  ini isinya `http://localhost:3000`, jadi penjaga "env kosong" LOLOS dan
+  sitemap tetap memuat localhost. Nilai yang terisi-tapi-lokal sekarang ikut
+  digagalkan — tapi hanya saat `VERCEL` ada, supaya `pnpm build` di laptop tetap
+  bisa dijalankan. Ketiga jalur diverifikasi.
+
+  Sengaja TIDAK jatuh ke `VERCEL_URL`: itu hostname per-deploy, dan memakainya
+  untuk canonical cuma menukar satu nilai salah yang senyap dengan yang lain.
+
+- ✅ **P0 — guestbook mati diam-diam, bukan 500.** `GET /api/guestbook` balas
+  200 + `disabled` saat env Supabase kosong, `POST` balas 503, dan
+  `GuestbookDock` tidak merender apa pun. Pola yang sama dengan `LiveCursors`.
+  Env kosong itu keadaan sah di fork, preview deploy, dan clone baru — bukan
+  error.
+
+- ✅ **P1 — `app/not-found.tsx`, `app/error.tsx`, `app/global-error.tsx`.**
+  Ketiganya berbagi `components/layout/MessagePage.tsx` supaya halaman yang
+  paling jarang dilihat tidak jadi tiga salinan yang saling tertinggal.
+
+  Konfigurasi font ikut pindah ke `lib/fonts.ts`: `global-error` merender
+  `<html>`-nya sendiri, dan dua pemanggilan `next/font` yang beda satu opsi akan
+  memuat dua salinan font yang sama.
+
+- ✅ **P1 — skip link.** Anchor polos di `app/layout.tsx` (jalan sebelum
+  hidrasi); `<main>` di homepage, case study, dan `MessagePage` dapat
+  `id="main-content"` + `tabIndex={-1}`.
+
+  Disembunyikan dengan digeser keluar layar, BUKAN `sr-only` +
+  `focus:not-sr-only` — utility `not-sr-only` ikut menyetel `padding: 0` dan
+  menang atas `px-5 py-3`, jadi pil-nya terender setinggi 20px. Ketahuan di
+  browser, tidak oleh compiler maupun lint.
+
+- ✅ **P1 — JSON-LD `Person`.** `lib/json-ld.ts`, dibangun dari `content/site.ts`.
+  `sameAs` mengikat nama ke tiga profil sosial, `affiliation` menyebut Apple
+  Developer Academy, dan `SITE.location` akhirnya punya pemakai — field itu
+  memang disimpan untuk ini.
+
+- ✅ **P2 — `pnpm format:check` hijau.** `pnpm format` merapikan
+  `components/layout/LiveCursors.tsx`, `eslint.config.mjs`, `postcss.config.mjs`.
+  Di-commit terpisah dari perbaikan di atas supaya diff-nya terbaca.
+
+### Sebelumnya
 
 - ✅ Error lint `react-hooks/set-state-in-effect` di `components/ui/ChatBubble.tsx`
   — `follow` sekarang turunan `useSyncExternalStore`, bukan `setState` di effect.

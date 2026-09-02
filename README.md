@@ -130,7 +130,7 @@ terpasang; M7 baru separuh.
 | M4 — 3D / WebGL | ✅ | [components/three/](components/three/), `public/models/brand-object.glb` + poster fallback |
 | M5 — case study | ✅ | `/works/[slug]` SSG (3 slug), OG image per halaman, [BentoGallery](components/sections/BentoGallery.tsx) |
 | M6 — micro-interactions | ✅ | text-roll [NavPill](components/layout/NavPill.tsx), hover preview [ProjectIndex](components/sections/ProjectIndex.tsx), [SplitText](components/ui/SplitText.tsx), [ChatBubble](components/ui/ChatBubble.tsx) |
-| M7 — perf / a11y / SEO | 🚧 | **sudah:** sitemap + robots, OG unik per halaman, analytics proxy anti-adblock ([app/layout.tsx](app/layout.tsx) + rewrite di [next.config.ts](next.config.ts)). **belum:** angka Lighthouse, audit kontras WCAG AA, audit focus ring keyboard, cek overflow horizontal, hitung WebGL context |
+| M7 — perf / a11y / SEO | 🚧 | **sudah:** sitemap + robots, OG unik per halaman, analytics proxy anti-adblock ([app/layout.tsx](app/layout.tsx) + rewrite di [next.config.ts](next.config.ts)), JSON-LD `Person` ([lib/json-ld.ts](lib/json-ld.ts)), skip link, 404 + error boundary ([components/layout/MessagePage.tsx](components/layout/MessagePage.tsx)). **belum:** angka Lighthouse, audit kontras WCAG AA, audit focus ring keyboard, cek overflow horizontal, hitung WebGL context |
 
 Di luar plan (ditambahkan setelah M7 dimulai): guestbook anonim, asisten "ask
 about Umar", kursor live — lihat section masing-masing di atas.
@@ -144,13 +144,17 @@ data apa saja yang masih kosong: [docs/BACKLOG.md](docs/BACKLOG.md).
   hasil `pnpm gen:works`, bukan screenshot asli — enam project, semuanya.
 - **Tidak ada CV yang bisa diunduh.** Topik `resume` di
   [lib/chatbot.ts](lib/chatbot.ts) mengarahkan pengunjung ke email.
-- **`NEXT_PUBLIC_SITE_URL` gagal senyap.** Kalau tidak diset di produksi,
-  sitemap/robots/OG memakai fallback `http://localhost:3000`.
-- **Tidak ada `app/not-found.tsx` / `error.tsx`,** tidak ada JSON-LD `Person`,
-  tidak ada skip-to-content link.
 - **`HonorsBadge` belum menautkan ke mana pun** — lihat `TODO(brand)` di
   [components/layout/HonorsBadge.tsx](components/layout/HonorsBadge.tsx).
 - **Belum ada test & CI.** Minimal `pnpm lint` + `pnpm build` per push.
+
+Beres 2026-09-03 (dulu ada di daftar ini): `NEXT_PUBLIC_SITE_URL` yang gagal
+senyap, halaman 404 & error boundary, JSON-LD `Person`, dan skip link.
+
+> **Sebelum deploy:** set `NEXT_PUBLIC_SITE_URL` ke domain publik situs.
+> [lib/site-url.ts](lib/site-url.ts) sekarang MENGGAGALKAN build produksi kalau
+> env-nya kosong — dan juga kalau isinya localhost saat build jalan di Vercel.
+> Itu disengaja: dulu kegagalannya diam-diam dan baru terlihat dari Google.
 
 ### Debug handle (dev-only)
 
