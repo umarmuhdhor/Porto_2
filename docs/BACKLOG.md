@@ -28,12 +28,12 @@ Status ringkas juga ada di [../README.md](../README.md) section "Status".
 
 ### P2 — kualitas
 
-- [ ] **Tidak ada test.** CI sudah ada (lihat "Sudah selesai"), tapi yang
-      dijalankannya cuma lint/format/typecheck/build — tidak ada satu pun
-      assertion tentang perilaku. Kandidat pertama yang paling berbayar:
-      `lib/guestbook.ts` (`validateEntry` dipakai dua sisi, client & server) dan
-      `lib/site-url.ts` (empat cabang error yang sejauh ini hanya diverifikasi
-      manual). Belum ada test runner terpasang — itu keputusan pertama.
+- [ ] **Cakupan test masih dua modul.** `lib/guestbook.ts` dan `lib/site-url.ts`
+      sudah punya test (lihat "Sudah selesai"); sisanya belum. Kandidat
+      berikutnya yang punya aturan sungguhan untuk diuji: `lib/chatbot.ts`
+      (pencocokan topik & kata kunci) dan `lib/works.ts` (resolusi slug).
+      Komponen React sengaja tidak masuk daftar — verifikasinya lewat browser
+      sungguhan, bukan DOM palsu.
 
 
 ### P3 — nice to have
@@ -179,6 +179,29 @@ dibuat, dua entri ini isinya.
 ---
 
 ## Sudah selesai
+
+### Test untuk `lib/guestbook.ts` & `lib/site-url.ts` — 2026-09-03
+
+Vitest (`pnpm test`, config `vitest.config.mts`, environment `node` — tanpa
+jsdom karena dua modul ini tidak menyentuh DOM sama sekali). 29 test, ikut jalan
+di CI sebelum `build`.
+
+`validateEntry` diuji dua arah, bukan cuma jalur tolaknya: penyelundupan
+zero-width (`k<ZWSP>ontol`) dan leetspeak (`k0nt0l`, `sh1t`) harus tertahan,
+TAPI kata wajar yang kebetulan memuat kata terlarang di tengahnya
+("Scunthorpe", "klasifikasi") harus lolos. Batas depan `\b` di regex-nya yang
+menahan itu — kalau filter suatu saat diubah jadi `includes()`, test itu yang
+jatuh duluan.
+
+`site-url` diuji dengan memuat ulang modulnya per kasus (`vi.resetModules()` +
+`vi.stubEnv`), karena `SITE_URL` dihitung sekali saat modul dievaluasi. Semua
+cabang errornya kini terkunci, termasuk yang paling mudah rusak tanpa disadari:
+localhost hanya digagalkan saat `VERCEL` ada, supaya `pnpm build` di laptop
+tetap bisa dijalankan.
+
+Test-nya diverifikasi dengan mutasi, bukan cuma "hijau": penjaga localhost
+dimatikan dan filter kata diganti `includes()` — tiga test jatuh, persis yang
+seharusnya. Lalu dikembalikan.
 
 ### ValueSection dipasang kembali — 2026-09-03
 

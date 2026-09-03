@@ -12,6 +12,10 @@
 # `typecheck` dipisah dari `build` walau `next build` juga menjalankan tsc:
 # tsc murni selesai dalam hitungan detik, jadi error tipe dilaporkan jauh
 # sebelum bundler ikut bekerja.
+#
+# `test` (vitest) berjalan sebelum build dengan alasan yang sama: ia selesai
+# dalam ratusan milidetik, jadi tidak ada gunanya menunggu bundler untuk tahu
+# aturan validasi guestbook atau penjaga origin sudah rusak.
 name: CI
 
 on:
@@ -71,4 +75,5 @@ jobs:
       - run: pnpm lint
       - run: pnpm format:check
       - run: pnpm typecheck
+      - run: pnpm test
       - run: pnpm build

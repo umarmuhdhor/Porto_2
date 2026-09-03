@@ -28,12 +28,20 @@ pnpm dev          # http://localhost:3000
 pnpm build
 pnpm lint
 pnpm typecheck    # tsc --noEmit
+pnpm test         # vitest run
+pnpm test:watch
 pnpm format       # prettier + tailwind class sort
 ```
 
-Keempat perintah verifikasi (`lint`, `format:check`, `typecheck`, `build`)
-dijalankan CI per push ke `main` dan per pull request —
+Kelima perintah verifikasi (`lint`, `format:check`, `typecheck`, `test`,
+`build`) dijalankan CI per push ke `main` dan per pull request —
 [.github/workflows/ci.yml](.github/workflows/ci.yml).
+
+Test hanya untuk modul pure — [lib/guestbook.test.ts](lib/guestbook.test.ts)
+(aturan validasi yang dipakai client & server) dan
+[lib/site-url.test.ts](lib/site-url.test.ts) (empat cabang yang menggagalkan
+build produksi). Komponen React diverifikasi lewat browser sungguhan, bukan DOM
+palsu.
 
 ## Konten — di mana datanya
 
@@ -153,9 +161,8 @@ data apa saja yang masih kosong: [docs/BACKLOG.md](docs/BACKLOG.md).
   [lib/chatbot.ts](lib/chatbot.ts) mengarahkan pengunjung ke email.
 - **`HonorsBadge` belum menautkan ke mana pun** — lihat `TODO(brand)` di
   [components/layout/HonorsBadge.tsx](components/layout/HonorsBadge.tsx).
-- **Belum ada test.** CI sudah menjaga lint/format/typecheck/build, tapi tidak
-  ada satu pun assertion perilaku. Kandidat pertama: `lib/guestbook.ts` dan
-  `lib/site-url.ts`.
+- **Cakupan test masih dua modul** (`lib/guestbook.ts`, `lib/site-url.ts`).
+  Kandidat berikutnya: `lib/chatbot.ts` dan `lib/works.ts`.
 
 Beres 2026-09-03 (dulu ada di daftar ini): `NEXT_PUBLIC_SITE_URL` yang gagal
 senyap, halaman 404 & error boundary, JSON-LD `Person`, skip link, dan CI.
