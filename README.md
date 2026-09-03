@@ -126,8 +126,7 @@ Catatan:
 ## Status
 
 Milestone plan ada di [plans/00-overview.md](plans/00-overview.md). M1–M6 sudah
-terpasang (M4 terpasang tapi tak terpakai — lihat barisnya); M7 tinggal dua item
-yang butuh perangkat & deploy asli.
+terpasang; M7 tinggal dua item yang butuh perangkat & deploy asli.
 
 | Milestone | Status | Bukti di kode |
 |---|---|---|
@@ -135,7 +134,7 @@ yang butuh perangkat & deploy asli.
 | M1 — foundation | ✅ | design tokens, Geist + Space Grotesk, Lenis↔GSAP sync ([lib/gsap.ts](lib/gsap.ts)), frame lines, honors badge, reduced-motion helper ([lib/motion.ts](lib/motion.ts)) |
 | M2 — sticky stacking | ✅ | [components/ui/StackSection.tsx](components/ui/StackSection.tsx), `.stack-panel` di [app/page.tsx](app/page.tsx) |
 | M3 — SVG line-draw | ✅ | [lib/lineDraw.ts](lib/lineDraw.ts), [components/ui/SignatureLine.tsx](components/ui/SignatureLine.tsx), [components/sections/LineArt.tsx](components/sections/LineArt.tsx) |
-| M4 — 3D / WebGL | ⚠️ | [components/three/](components/three/), `public/models/brand-object.glb` + poster fallback — **tapi tidak dirender di mana pun:** host satu-satunya `ValueSection` tidak dipanggil [app/page.tsx](app/page.tsx), jadi nol WebGL context di semua halaman |
+| M4 — 3D / WebGL | ✅ | [components/three/](components/three/), `public/models/brand-object.glb` + poster fallback, di-host [ValueSection](components/sections/ValueSection.tsx) — 1 WebGL context saat gerak normal, 0 (poster saja) di reduced-motion |
 | M5 — case study | ✅ | `/works/[slug]` SSG (3 slug), OG image per halaman, [BentoGallery](components/sections/BentoGallery.tsx) |
 | M6 — micro-interactions | ✅ | text-roll [NavPill](components/layout/NavPill.tsx), hover preview [ProjectIndex](components/sections/ProjectIndex.tsx), [SplitText](components/ui/SplitText.tsx), [ChatBubble](components/ui/ChatBubble.tsx) |
 | M7 — perf / a11y / SEO | 🚧 | **sudah:** sitemap + robots, OG unik per halaman, analytics proxy anti-adblock ([app/layout.tsx](app/layout.tsx) + rewrite di [next.config.ts](next.config.ts)), JSON-LD `Person` ([lib/json-ld.ts](lib/json-ld.ts)), skip link, 404 + error boundary ([components/layout/MessagePage.tsx](components/layout/MessagePage.tsx)), audit 2026-09-03: Lighthouse 99/100/96/100 desktop & 86/100/96/100 mobile, kontras AA (6 pelanggaran diperbaiki), focus ring, overflow, reduced-motion. **belum:** 60fps di device mid-range & verifikasi header cache/Brotli — dua-duanya butuh perangkat + deploy asli |
@@ -154,9 +153,6 @@ data apa saja yang masih kosong: [docs/BACKLOG.md](docs/BACKLOG.md).
   [lib/chatbot.ts](lib/chatbot.ts) mengarahkan pengunjung ke email.
 - **`HonorsBadge` belum menautkan ke mana pun** — lihat `TODO(brand)` di
   [components/layout/HonorsBadge.tsx](components/layout/HonorsBadge.tsx).
-- **Objek 3D M4 tidak dirender di halaman mana pun.** Pasang lagi
-  `ValueSection` atau lepas `three` + `@react-three/fiber` — keputusan, bukan
-  bug ([docs/BACKLOG.md](docs/BACKLOG.md)).
 - **Belum ada test.** CI sudah menjaga lint/format/typecheck/build, tapi tidak
   ada satu pun assertion perilaku. Kandidat pertama: `lib/guestbook.ts` dan
   `lib/site-url.ts`.

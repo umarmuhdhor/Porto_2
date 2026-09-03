@@ -44,19 +44,6 @@ Status ringkas juga ada di [../README.md](../README.md) section "Status".
       2026-09-03 (lihat "Sudah selesai"). Kriteria di
       `plans/07-m7-perf-a11y-seo.md` §1.
 
-- [ ] **Objek 3D (M4) tidak pernah dirender.** `components/sections/ValueSection.tsx`
-      adalah satu-satunya host `BrandObject`, dan `app/page.tsx` tidak
-      memanggilnya — urutan section-nya Hero → AboutWindows → StatementDark →
-      ServiceList → ProjectIndex → ContactFooter. Jadi seluruh M4 (R3F, three,
-      `public/models/brand-object.glb`, poster) mati di pohon: nol WebGL context
-      di halaman mana pun.
-
-      Ini bukan bug yang bisa "diperbaiki" tanpa keputusan: dipasang lagi
-      (StatementDark memang menyebut ValueSection sebagai penutupnya) atau M4
-      dicoret dan `three` + `@react-three/fiber` + `@types/three` dilepas dari
-      dependency. Yang sekarang — kode & aset ada, dependency terpasang,
-      tidak pernah dieksekusi — adalah pilihan yang paling mahal dari keduanya.
-
 - [ ] **Huruf berongga di service list di luar jangkauan pemeriksa otomatis.**
       Item non-aktif digambar `color: transparent` + `-webkit-text-stroke`
       (`app/globals.css`). Kepekatan yang bisa diukur sudah dinaikkan sampai
@@ -192,6 +179,32 @@ dibuat, dua entri ini isinya.
 ---
 
 ## Sudah selesai
+
+### ValueSection dipasang kembali — 2026-09-03
+
+`app/page.tsx` sekarang merender `<ValueSection />` di antara `StatementDark`
+dan `ServiceList` — posisi yang memang disebut DESIGN §3 (#3 brush divider,
+#4 value section) dan yang diasumsikan `StatementDark` ("ditutupi ValueSection").
+
+Sebelum ini section-nya tidak dipanggil dari mana pun, jadi seluruh M4 mati di
+pohon: nol WebGL context, `.glb` + poster tidak pernah diminta, dan `three` +
+`@react-three/fiber` terpasang tanpa pernah dieksekusi.
+
+Diverifikasi lewat CDP (Browser pane tidak bisa dipakai untuk ini — halamannya
+`visibilityState: hidden`, dan Chrome tidak menghitung IntersectionObserver di
+sana, jadi Scene-nya memang tidak akan pernah mount):
+
+- Gerak normal: **1** canvas dengan context WebGL hidup (budget DESIGN §10 ≤2–3),
+  poster memudar ke `opacity: 0` setelah model siap, nol exception.
+- `prefers-reduced-motion: reduce`: **0** canvas, poster `opacity: 1` — persis
+  cabang yang dijanjikan `BrandObject`.
+- Lighthouse setelah dipasang: desktop Perf **100** (naik dari 99) / A11y 100 /
+  BP 96 / SEO 100, mobile Perf **91** (naik dari 86) / 100 / 96 / 100. TBT 0ms
+  di dua-duanya. Objeknya tidak membebani muat awal karena memang tidak ikut:
+  chunk R3F baru diminta 400px sebelum section-nya masuk viewport.
+
+Tinggi dokumen homepage bertambah ~2.800px — fase hold 90vh milik panel ini yang
+memutar objeknya.
 
 ### Audit M7 — 2026-09-03
 

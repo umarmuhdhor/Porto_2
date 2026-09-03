@@ -14,6 +14,7 @@ import { SERVICES } from '@/content/services';
 import { Hero } from '@/components/sections/Hero';
 import { StatementDark } from '@/components/sections/StatementDark';
 import { AboutWindows } from '@/components/sections/AboutWindows';
+import { ValueSection } from '@/components/sections/ValueSection';
 import { ServiceList, type ServiceRow } from '@/components/sections/ServiceList';
 import { ProjectIndex, type ProjectRow } from '@/components/sections/ProjectIndex';
 import { ContactFooter } from '@/components/sections/ContactFooter';
@@ -63,14 +64,22 @@ export default function Home() {
       {/* 3 — Statement (dark) — panel stacking, naik menutupi AboutWindows */}
       <StatementDark />
 
-      {/* 4 — Service list (cream) — panel stacking + item aktif terikat scroll */}
+      {/* 4 — Value / approach (cream) — panel stacking yang naik menutupi
+          StatementDark; brush divider-nya yang menandai peralihan gelap→terang
+          (DESIGN §3 #3–4). Ini juga SATU-SATUNYA host objek 3D di situs (M4):
+          objeknya `absolute` di dalam panel dan progress putarnya diambil dari
+          fase hold panel ini. Tanpa section ini di sini, seluruh M4 mati di
+          pohon — pernah begitu, dan yang ketahuan cuma lewat audit. */}
+      <ValueSection />
+
+      {/* 5 — Service list (cream) — panel stacking + item aktif terikat scroll */}
       <ServiceList services={services} />
 
-      {/* 5 — Project index (cream) — naik menutupi ServiceList. Grid bergaris
+      {/* 6 — Project index (cream) — naik menutupi ServiceList. Grid bergaris
           dua kolom; cover project muncul saat hover (M6 §3.3–3.4). */}
       <ProjectIndex projects={projects} />
 
-      {/* 6 — Contact / footer (accent) — mirror referensi: watermark nama,
+      {/* 7 — Contact / footer (accent) — mirror referensi: watermark nama,
           avatar pixel-art, CTA kiri, sosial kanan, kredit sudut bawah. */}
       <ContactFooter />
     </main>
