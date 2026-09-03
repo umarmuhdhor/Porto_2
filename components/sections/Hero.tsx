@@ -138,9 +138,13 @@ export function Hero() {
           <h1 className="font-display text-center text-6xl leading-[0.9] font-bold tracking-tight md:text-7xl lg:text-8xl">
             <HeroName delay={2.4} />
           </h1>
-          {/* Meta ringkas mobile-only (flank labels disembunyikan di mobile). */}
+          {/* Meta ringkas mobile-only (flank labels disembunyikan di mobile).
+              Lokasinya dibaca dari SITE, bukan ditulis ulang: baris ini sempat
+              berbunyi "Indonesia" saja sementara seluruh situs sudah bilang
+              "Bali, Indonesia" — dan justru baris inilah yang dilihat pengunjung
+              mobile lebih dulu (Lighthouse mencatatnya sebagai elemen LCP). */}
           <p className="font-system text-muted mt-5 text-xs tracking-[0.2em] uppercase md:hidden">
-            {ROLE} · Indonesia
+            {ROLE} · {SITE.location}
           </p>
         </div>
       </div>

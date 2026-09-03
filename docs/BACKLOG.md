@@ -38,10 +38,32 @@ Status ringkas juga ada di [../README.md](../README.md) section "Status".
 
 ### P3 — nice to have
 
-- [ ] **Sisa audit M7 belum dijalankan** — angka Lighthouse, kontras WCAG AA
-      (teks pudar di service list paling rawan), focus ring keyboard, overflow
-      horizontal per breakpoint, jumlah WebGL context aktif.
-      Kriteria lengkapnya di `plans/07-m7-perf-a11y-seo.md` §1.
+- [ ] **Sisa audit M7 yang butuh perangkat/deploy asli** — 60fps di device
+      mid-range dan verifikasi `x-vercel-cache` / Brotli / prerender header.
+      Dua-duanya tidak bisa diukur dari mesin dev; sisanya sudah dijalankan
+      2026-09-03 (lihat "Sudah selesai"). Kriteria di
+      `plans/07-m7-perf-a11y-seo.md` §1.
+
+- [ ] **Objek 3D (M4) tidak pernah dirender.** `components/sections/ValueSection.tsx`
+      adalah satu-satunya host `BrandObject`, dan `app/page.tsx` tidak
+      memanggilnya — urutan section-nya Hero → AboutWindows → StatementDark →
+      ServiceList → ProjectIndex → ContactFooter. Jadi seluruh M4 (R3F, three,
+      `public/models/brand-object.glb`, poster) mati di pohon: nol WebGL context
+      di halaman mana pun.
+
+      Ini bukan bug yang bisa "diperbaiki" tanpa keputusan: dipasang lagi
+      (StatementDark memang menyebut ValueSection sebagai penutupnya) atau M4
+      dicoret dan `three` + `@react-three/fiber` + `@types/three` dilepas dari
+      dependency. Yang sekarang — kode & aset ada, dependency terpasang,
+      tidak pernah dieksekusi — adalah pilihan yang paling mahal dari keduanya.
+
+- [ ] **Huruf berongga di service list di luar jangkauan pemeriksa otomatis.**
+      Item non-aktif digambar `color: transparent` + `-webkit-text-stroke`
+      (`app/globals.css`). Kepekatan yang bisa diukur sudah dinaikkan sampai
+      lolos AA (lihat "Sudah selesai"), tapi axe/Lighthouse mengukur `color`,
+      dan `transparent` selalu dilaporkan 1:1 kalau branch itu yang aktif.
+      Keputusan yang tersisa: pertahankan huruf berongga (dan terima temuan
+      otomatis itu selamanya), atau ganti jadi isian pudar yang bisa diukur.
 
 
 - [ ] **Tidak ada halaman indeks `/works`.** Nav "WORKS" menunjuk anchor
@@ -170,6 +192,77 @@ dibuat, dua entri ini isinya.
 ---
 
 ## Sudah selesai
+
+### Audit M7 — 2026-09-03
+
+Dijalankan terhadap build produksi lokal (`pnpm build` + `pnpm start`), bukan
+dev server: angka dev tidak berarti apa-apa untuk performa.
+
+**Lighthouse** (target plan: Perf ≥85 desktop / ≥75 mobile, A11y ≥90):
+
+| | Perf | A11y | Best Practices | SEO |
+|---|---|---|---|---|
+| Desktop | 99 | 100 | 96 | 100 |
+| Mobile | 86 | 100 | 96 | 100 |
+
+FCP mobile 0.9s (target plan <2s di 4G), CLS 0.001, TBT 90ms. LCP mobile 4.1s —
+elemennya baris meta mobile-only di hero, dan yang menahannya render delay,
+bukan unduhan.
+
+Satu-satunya temuan Best Practices yang tersisa: `errors-in-console` dari
+`/_hb/a/view` 404. Itu beacon analytics yang di-rewrite ke `/_vercel/insights/*`
+— route yang hanya ada di Vercel, jadi 404-nya memang perilaku yang benar di
+luar platform dan tidak akan muncul di produksi.
+
+**Kontras WCAG AA — enam pelanggaran ditemukan, semuanya diperbaiki:**
+
+- `text-accent-line` (#e48f5b) sebagai HURUF di atas cream cuma 2.24:1, dan
+  `text-note` (#5b93e0) 2.80:1. Keduanya dipakai di sorotan kata About, angka
+  section case study, numeral 404, hover judul project, dan huruf hover nama
+  hero. Ditambahkan dua token TEKS terpisah — `--color-accent-line-strong`
+  (#b0551d, 4.51:1) dan `--color-note-strong` (#276dce, 4.50:1).
+
+  Sengaja token baru, bukan menggelapkan yang lama: aksen aslinya SUDAH benar
+  sebagai garis/stroke/latar, dan #e48f5b yang digelapkan justru rusak di atas
+  panel gelap (teks error guestbook: 6.19:1 → 3.08:1). Satu token untuk dua
+  pekerjaan berlawanan itu sumber kesalahannya.
+
+- Bubble hero: putih di atas #5b93e0 = 3.14:1. `--color-note` digelapkan jadi
+  #2e75d7 (4.52:1) — hue sama, jadi bubble-nya masih biru yang sama.
+
+- Teks pudar di dua dock gelap: `text-white/40` = 3.35:1 dan `text-white/35` =
+  2.92:1 (jumlah catatan, empty state, disclaimer, hint, chip saran), plus
+  `placeholder:text-white/30`. Dinaikkan ke /60, /70, dan /55.
+
+- "Drag the windows around" `text-ink/55` di atas accent kuning = 4.02:1 → /65.
+
+- Item non-aktif service list: 32% ink = 2.13:1, di bawah ambang 3:1 untuk teks
+  besar → 46% (3.20:1); stroke huruf berongga 38% → 55%.
+
+**`aria-label` di span polos (3 komponen).** Lighthouse `aria-prohibited-attr`:
+ARIA melarang nama aksesibel pada elemen tanpa role, jadi `<span aria-label>`
+pembungkus `SplitText`, `RiseText`, dan `HeroName` bisa diabaikan screen reader
+— yang tersisa cuma span per-huruf. Diganti salinan `sr-only` berisi teks utuh
+di dalam pembungkus; span per-huruf tetap `aria-hidden`. A11y desktop 93 → 100.
+
+**Hero mobile menulis "Indonesia" saja** (`components/sections/Hero.tsx`)
+sementara seluruh situs sudah "Bali, Indonesia" — string-nya di-hardcode, bukan
+dibaca dari `SITE`. Justru baris itu yang jadi elemen LCP di mobile. Sekarang
+membaca `SITE.location`.
+
+**Yang lolos tanpa perubahan:**
+
+- Focus ring: 18 elemen fokusabel, semuanya punya ring terlihat di bawah
+  modalitas keyboard (diuji dengan `:focus-visible`, bukan `.focus()` — fokus
+  programatik tidak memicu state itu, dan tes pertama sempat salah karenanya).
+- Overflow horizontal: nihil di 375 / 768 / 1280 / 1920, di tiga posisi scroll.
+- OG image, sitemap, robots: 200 semua di build produksi, PNG per halaman.
+- Reduced-motion: hero dirender penuh (nama, signature, bubble, flank) di Chrome
+  `--force-prefers-reduced-motion` — tidak ada garis setengah gambar atau teks
+  yang tersangkut tak terlihat. Section bawah baru diperiksa lewat kode
+  (semua komponen beranimasi punya cabang reduced-motion), belum lewat mata.
+- WebGL context: 0 — tapi lihat temuan M4 di Bagian A, itu bukan hasil yang baik.
+
 
 ### Batch P2 Bagian A — 2026-09-03
 

@@ -13,9 +13,14 @@
  * Tak ada `opacity:0` yang ter-SSR ke HTML → nama tak pernah hilang.
  *
  * A11y (M6 §5 — split-text bisa merusak screen reader / copy-paste):
- * - wrapper `aria-label` teks utuh → dibaca sebagai satu kata.
+ * - satu salinan `sr-only` berisi teks utuh → dibaca sebagai satu kata.
  * - tiap span per-huruf `aria-hidden` supaya tak dibaca dobel.
  * - teks utuh tetap ada di DOM → copy-paste & SEO utuh.
+ *
+ * SENGAJA BUKAN `aria-label` di wrapper: ARIA melarang nama aksesibel pada
+ * elemen tanpa role (`<span>` polos = role generic), jadi sebagian screen
+ * reader mengabaikannya dan malah mengeja span per-huruf. Salinan teks yang
+ * benar-benar ada di DOM tidak bergantung pada dukungan itu.
  *
  * Selalu render <span> inline. Untuk heading bungkus dari pemanggil:
  *   <h1><SplitText text="UMAR" /></h1>
@@ -40,7 +45,8 @@ export function SplitText({ text, className, stagger = 0.045, delay = 0.1 }: Spl
   const chars = Array.from(text);
 
   return (
-    <span className={className} aria-label={text}>
+    <span className={className}>
+      <span className="sr-only">{text}</span>
       {chars.map((c, i) => (
         // overflow-hidden per huruf → efek "naik dari bawah garis".
         <span key={i} aria-hidden className="inline-block overflow-hidden align-bottom">

@@ -91,18 +91,20 @@ type TextProps = {
 /**
  * Satu baris teks yang naik per huruf.
  *
- * A11y: kotak luar membawa `aria-label` teks utuh dan tiap huruf `aria-hidden`,
+ * A11y: satu salinan `sr-only` berisi kalimat utuh + tiap huruf `aria-hidden`,
  * jadi screen reader membaca satu kalimat, bukan mengeja huruf demi huruf.
+ * Bukan `aria-label` di kotak luar: ARIA melarang nama aksesibel pada elemen
+ * tanpa role, dan span polos ini role generic (lihat catatan di SplitText).
  */
 export function RiseText({ text, inline = false, className = '', style, delay = 0 }: TextProps) {
   const chars = Array.from(text);
 
   return (
     <span
-      aria-label={text}
       className={className}
       style={{ display: inline ? 'inline-flex' : 'flex', overflow: 'hidden', ...style }}
     >
+      <span className="sr-only">{text}</span>
       {chars.map((c, i) => (
         <span
           key={i}

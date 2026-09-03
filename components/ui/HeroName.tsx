@@ -33,7 +33,8 @@ export function HeroName({ delay = 2.4, stagger = 0.045 }: HeroNameProps) {
   let idx = 0;
 
   return (
-    <span aria-label={FULL_NAME} className="group/name block cursor-default select-none">
+    <span className="group/name block cursor-default select-none">
+      <span className="sr-only">{FULL_NAME}</span>
       {LINES.map((line, li) => (
         <span key={li} className="block">
           {Array.from(line).map((ch, ci) => {
@@ -56,7 +57,7 @@ export function HeroName({ delay = 2.4, stagger = 0.045 }: HeroNameProps) {
                       {ch}
                     </span>
                     <span
-                      className="text-accent-line absolute inset-0 block translate-y-full transition-transform duration-[650ms] ease-[cubic-bezier(0.76,0,0.24,1)] group-hover/name:translate-y-0"
+                      className="text-accent-line-strong absolute inset-0 block translate-y-full transition-transform duration-[650ms] ease-[cubic-bezier(0.76,0,0.24,1)] group-hover/name:translate-y-0"
                       style={{ transitionDelay: rollDelay }}
                     >
                       {ch}

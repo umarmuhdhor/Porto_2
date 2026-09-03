@@ -330,7 +330,7 @@ export function AssistantDock() {
                 {thinking && (
                   <li className="flex justify-start">
                     <span
-                      className="font-system rounded-[var(--radius-badge)] bg-white/[0.07] px-3 py-2 text-sm text-white/40"
+                      className="font-system rounded-[var(--radius-badge)] bg-white/[0.07] px-3 py-2 text-sm text-white/70"
                       aria-label="Typing"
                     >
                       …
@@ -375,7 +375,7 @@ export function AssistantDock() {
                   maxLength={INPUT_MAX}
                   autoComplete="off"
                   placeholder="Ask something…"
-                  className="font-body focus-visible:border-accent min-h-[2.5rem] flex-1 rounded-[var(--radius-badge)] border border-white/10 bg-black/25 px-3 py-2.5 text-sm text-white placeholder:text-white/30 focus-visible:outline-none"
+                  className="font-body focus-visible:border-accent min-h-[2.5rem] flex-1 rounded-[var(--radius-badge)] border border-white/10 bg-black/25 px-3 py-2.5 text-sm text-white placeholder:text-white/55 focus-visible:outline-none"
                 />
                 <button
                   type="button"
@@ -400,7 +400,7 @@ export function AssistantDock() {
               {/* Jujur soal sifat bot ini, di tempat yang tak bisa dilewatkan:
                   jawabannya terbatas, dan orang yang butuh lebih tahu harus
                   langsung diarahkan ke Umar sendiri. */}
-              <p className="font-system mt-2 text-xs text-white/40">
+              <p className="font-system mt-2 text-xs text-white/60">
                 Scripted answers, not AI — anything else, email Umar.
               </p>
             </div>

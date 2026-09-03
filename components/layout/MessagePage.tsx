@@ -52,7 +52,7 @@ export function MessagePage({ code, title, body, children, detail }: MessagePage
             yang sama dua kali. */}
         <p
           aria-hidden="true"
-          className="font-display text-accent-line text-[clamp(5rem,18vw,12rem)] leading-[0.8] font-bold tracking-tight"
+          className="font-display text-accent-line-strong text-[clamp(5rem,18vw,12rem)] leading-[0.8] font-bold tracking-tight"
         >
           {code}
         </p>

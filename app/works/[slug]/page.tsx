@@ -200,7 +200,7 @@ export default async function WorkPage({ params }: Params) {
               <li key={step.title} className="border-t border-[var(--line-rule)] pt-5">
                 <span
                   aria-hidden="true"
-                  className="font-display text-accent-line block text-sm leading-none font-bold"
+                  className="font-display text-accent-line-strong block text-sm leading-none font-bold"
                 >
                   {String(i + 1).padStart(2, '0')}
                 </span>

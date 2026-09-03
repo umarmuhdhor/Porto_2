@@ -61,7 +61,7 @@ export function ProjectIndex({ projects }: { projects: ProjectRow[] }) {
               ) : (
                 <span
                   key={i}
-                  className="hover:text-accent-line inline-block transition-transform duration-[var(--dur-base)] ease-[var(--ease-smooth)] hover:-translate-y-1.5 hover:rotate-[-7deg] motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:rotate-0"
+                  className="hover:text-accent-line-strong inline-block transition-transform duration-[var(--dur-base)] ease-[var(--ease-smooth)] hover:-translate-y-1.5 hover:rotate-[-7deg] motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:rotate-0"
                 >
                   {char}
                 </span>

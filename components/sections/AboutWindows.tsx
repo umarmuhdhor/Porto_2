@@ -51,7 +51,11 @@ import { StaircaseBlinds } from '@/components/ui/StaircaseBlinds';
 /** Penanda kata kunci di dalam baris. Warna diambil dari token aksen situs. */
 function Hl({ tone = 'line', children }: { tone?: 'line' | 'note' | 'ink'; children: ReactNode }) {
   const cls =
-    tone === 'note' ? 'text-note' : tone === 'ink' ? 'text-ink font-medium' : 'text-accent-line';
+    tone === 'note'
+      ? 'text-note-strong'
+      : tone === 'ink'
+        ? 'text-ink font-medium'
+        : 'text-accent-line-strong';
   return <span className={cls}>{children}</span>;
 }
 
@@ -508,7 +512,7 @@ export function AboutWindows() {
             </h2>
             {/* BUKAN --color-muted: abu-abu itu dipilih untuk latar krem dan cuma
               ~2:1 di atas kuning. Ink 55% tetap terbaca sebagai teks sekunder. */}
-            <p className="font-system text-ink/55 text-[11px] tracking-[0.22em] uppercase">
+            <p className="font-system text-ink/65 text-[11px] tracking-[0.22em] uppercase">
               Drag the windows around
             </p>
           </header>

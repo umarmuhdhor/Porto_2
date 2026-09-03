@@ -91,7 +91,7 @@ function Note({ entry }: { entry: GuestbookEntry }) {
           <span className="font-system truncate text-sm font-semibold text-white/90">{name}</span>
           <time
             dateTime={entry.created_at}
-            className="font-system shrink-0 text-[0.6875rem] text-white/35"
+            className="font-system shrink-0 text-[0.6875rem] text-white/60"
           >
             {relativeTime(entry.created_at)}
           </time>
@@ -327,7 +327,7 @@ export function GuestbookDock() {
                 #
               </span>
               <h2 className="font-system text-inverse text-sm font-semibold">guestbook</h2>
-              <p className="font-system ml-auto text-xs text-white/40 tabular-nums">
+              <p className="font-system ml-auto text-xs text-white/60 tabular-nums">
                 {entries.length} {entries.length === 1 ? 'note' : 'notes'}
               </p>
               <button
@@ -354,7 +354,7 @@ export function GuestbookDock() {
 
             <div ref={listRef} className="flex-1 overflow-y-auto overscroll-contain py-2">
               {loading && (
-                <p className="font-system px-4 py-6 text-center text-sm text-white/35">
+                <p className="font-system px-4 py-6 text-center text-sm text-white/60">
                   Loading notes…
                 </p>
               )}
@@ -377,7 +377,7 @@ export function GuestbookDock() {
               )}
 
               {!loading && !loadError && ordered.length === 0 && (
-                <p className="font-system px-6 py-8 text-center text-sm text-white/35">
+                <p className="font-system px-6 py-8 text-center text-sm text-white/60">
                   No notes yet — yours would be the first.
                 </p>
               )}
@@ -415,7 +415,7 @@ export function GuestbookDock() {
                 disabled={sending}
                 autoComplete="off"
                 placeholder="Signed as Anonymous — add a name?"
-                className="font-system focus-visible:border-accent w-full rounded-[var(--radius-badge)] bg-white/[0.04] px-3 py-2 text-xs text-white placeholder:text-white/30 focus-visible:outline-none disabled:opacity-60"
+                className="font-system focus-visible:border-accent w-full rounded-[var(--radius-badge)] bg-white/[0.04] px-3 py-2 text-xs text-white placeholder:text-white/55 focus-visible:outline-none disabled:opacity-60"
               />
 
               <div className="mt-2 flex items-end gap-2">
@@ -441,7 +441,7 @@ export function GuestbookDock() {
                   rows={1}
                   disabled={sending}
                   placeholder="Leave a note…"
-                  className="font-body focus-visible:border-accent max-h-28 min-h-[2.5rem] flex-1 resize-none rounded-[var(--radius-badge)] border border-white/10 bg-black/25 px-3 py-2.5 text-sm leading-relaxed text-white placeholder:text-white/30 focus-visible:outline-none disabled:opacity-60"
+                  className="font-body focus-visible:border-accent max-h-28 min-h-[2.5rem] flex-1 resize-none rounded-[var(--radius-badge)] border border-white/10 bg-black/25 px-3 py-2.5 text-sm leading-relaxed text-white placeholder:text-white/55 focus-visible:outline-none disabled:opacity-60"
                 />
                 <button
                   type="button"
@@ -468,7 +468,7 @@ export function GuestbookDock() {
               <p
                 aria-live="polite"
                 className={`font-system mt-2 min-h-[1rem] text-xs ${
-                  status.kind === 'error' ? 'text-[var(--color-accent-line)]' : 'text-white/40'
+                  status.kind === 'error' ? 'text-[var(--color-accent-line)]' : 'text-white/60'
                 }`}
               >
                 {status.kind === 'error' && status.message}

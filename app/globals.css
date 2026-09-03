@@ -17,9 +17,29 @@
   --color-accent-soft: #ffe862; /* varian terang aksen */
   --color-accent-line: #e48f5b; /* aksen garis/brush (terakota) — signature hero */
 
-  /* Bubble chat intro hero (mirror referensi). Biru lembut, teks krem/putih. */
-  --color-note: #5b93e0;
+  /* Bubble chat intro hero (mirror referensi). Biru, teks putih.
+     #5b93e0 yang dipakai sebelumnya cuma 3.14:1 terhadap putih — gagal WCAG AA
+     untuk teks kecil. Digelapkan sampai 4.52:1 dengan hue yang sama, jadi
+     bubble-nya masih biru yang sama, cuma cukup pekat untuk dibaca. */
+  --color-note: #2e75d7;
   --color-note-ink: #ffffff;
+
+  /*
+   * Varian TEKS dari dua aksen di atas — dipakai saat warnanya jadi huruf di
+   * atas cream, bukan garis atau latar.
+   *
+   * Kenapa token terpisah, bukan menggelapkan aksen aslinya: #e48f5b dan
+   * #5b93e0 masing-masing cuma 2.24:1 dan 2.80:1 di atas cream (AA butuh
+   * 4.5:1), tapi keduanya SUDAH benar sebagai garis/latar — dan #e48f5b justru
+   * jadi LEBIH BURUK kalau digelapkan lalu dipakai di atas panel gelap
+   * (guestbook error: 6.19:1 → 3.08:1). Satu token untuk dua pekerjaan yang
+   * berlawanan itu yang bikin token pertama salah dipakai.
+   *
+   * Aturannya: garis, stroke, gradient, latar → pakai yang di atas;
+   * huruf di atas cream → pakai dua ini.
+   */
+  --color-accent-line-strong: #b0551d; /* terakota 4.51:1 di atas cream */
+  --color-note-strong: #276dce; /* biru 4.50:1 di atas cream */
 
   /* Teks — DESIGN §2.1 */
   --color-ink: #0a0a0a; /* text primary */
@@ -77,8 +97,10 @@
   --color-accent: var(--color-accent);
   --color-accent-soft: var(--color-accent-soft);
   --color-accent-line: var(--color-accent-line);
+  --color-accent-line-strong: var(--color-accent-line-strong);
   --color-note: var(--color-note);
   --color-note-ink: var(--color-note-ink);
+  --color-note-strong: var(--color-note-strong);
   --color-ink: var(--color-ink);
   --color-muted: var(--color-muted);
   --color-inverse: var(--color-inverse);
@@ -286,11 +308,12 @@ body[data-at-about='true'] .frame-lines {
  */
 .service-item {
   /* BUKAN --color-ghost (rgba(0,0,0,.15)) — item non-aktif tetap KONTEN yang
-     harus terbaca, dan .15 cuma ~1.3:1 di atas cream. 32% ink ≈ 2.3:1: lebih
-     pudar dari sebelumnya supaya jarak aktif↔non-aktif sekuat referensi, tapi
-     masih jauh di atas ambang "hilang". Status aktif tetap dibawa
+     harus terbaca, dan .15 cuma ~1.3:1 di atas cream.
+     46% ink ≈ 3.2:1: lolos ambang AA untuk teks besar (≥24px, dan item ini
+     32-56px), sambil tetap jelas lebih pudar dari item aktif. 32% yang dipakai
+     sebelumnya cuma 2.1:1 — di bawah ambang. Status aktif tetap dibawa
      `aria-current`, dan di reduced-motion semua item dirender ink penuh. */
-  color: color-mix(in srgb, var(--color-ink) 32%, transparent);
+  color: color-mix(in srgb, var(--color-ink) 46%, transparent);
   transition: color var(--dur-base) var(--ease-soft);
 }
 
@@ -314,7 +337,13 @@ body[data-at-about='true'] .frame-lines {
 @supports (-webkit-text-stroke: 1px black) {
   .service-item {
     color: transparent;
-    -webkit-text-stroke: 1.4px color-mix(in srgb, var(--color-ink) 38%, transparent);
+    /* Stroke ikut dinaikkan 38% → 55% bersama fallback isian di atas: garis
+       tipis butuh kepekatan LEBIH tinggi dari isian penuh untuk terbaca sama
+       jelas, bukan lebih rendah. Catatan jujur: pemeriksa otomatis (axe,
+       Lighthouse) tetap menandai baris ini karena yang mereka ukur `color`,
+       dan di sini nilainya `transparent` — huruf berongga memang di luar
+       jangkauan model kontras mereka. Yang bisa diukur sudah dinaikkan. */
+    -webkit-text-stroke: 1.4px color-mix(in srgb, var(--color-ink) 55%, transparent);
     transition:
       color var(--dur-base) var(--ease-soft),
       -webkit-text-stroke-color var(--dur-base) var(--ease-soft);
