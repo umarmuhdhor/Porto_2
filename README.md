@@ -37,11 +37,12 @@ Kelima perintah verifikasi (`lint`, `format:check`, `typecheck`, `test`,
 `build`) dijalankan CI per push ke `main` dan per pull request —
 [.github/workflows/ci.yml](.github/workflows/ci.yml).
 
-Test hanya untuk modul pure — [lib/guestbook.test.ts](lib/guestbook.test.ts)
-(aturan validasi yang dipakai client & server) dan
-[lib/site-url.test.ts](lib/site-url.test.ts) (empat cabang yang menggagalkan
-build produksi). Komponen React diverifikasi lewat browser sungguhan, bukan DOM
-palsu.
+Test hanya untuk modul pure: [guestbook](lib/guestbook.test.ts) (aturan validasi
+yang dipakai client & server), [site-url](lib/site-url.test.ts) (empat cabang
+yang menggagalkan build produksi), [chatbot](lib/chatbot.test.ts) (pencocokan
+topik + integritas TOPICS), dan [works](lib/works.test.ts) (kontrak data case
+study, termasuk cek tiap aset benar-benar ada di `/public`). Komponen React
+diverifikasi lewat browser sungguhan, bukan DOM palsu.
 
 ## Konten — di mana datanya
 
@@ -161,8 +162,8 @@ data apa saja yang masih kosong: [docs/BACKLOG.md](docs/BACKLOG.md).
   [lib/chatbot.ts](lib/chatbot.ts) mengarahkan pengunjung ke email.
 - **`HonorsBadge` belum menautkan ke mana pun** — lihat `TODO(brand)` di
   [components/layout/HonorsBadge.tsx](components/layout/HonorsBadge.tsx).
-- **Cakupan test masih dua modul** (`lib/guestbook.ts`, `lib/site-url.ts`).
-  Kandidat berikutnya: `lib/chatbot.ts` dan `lib/works.ts`.
+- **Test belum menyentuh route handler & komponen.** Empat modul pure sudah
+  tertutup; `app/api/guestbook/route.ts` belum.
 
 Beres 2026-09-03 (dulu ada di daftar ini): `NEXT_PUBLIC_SITE_URL` yang gagal
 senyap, halaman 404 & error boundary, JSON-LD `Person`, skip link, dan CI.

@@ -28,12 +28,12 @@ Status ringkas juga ada di [../README.md](../README.md) section "Status".
 
 ### P2 — kualitas
 
-- [ ] **Cakupan test masih dua modul.** `lib/guestbook.ts` dan `lib/site-url.ts`
-      sudah punya test (lihat "Sudah selesai"); sisanya belum. Kandidat
-      berikutnya yang punya aturan sungguhan untuk diuji: `lib/chatbot.ts`
-      (pencocokan topik & kata kunci) dan `lib/works.ts` (resolusi slug).
-      Komponen React sengaja tidak masuk daftar — verifikasinya lewat browser
-      sungguhan, bukan DOM palsu.
+- [ ] **Test belum menyentuh komponen & route handler.** Empat modul pure sudah
+      tertutup (`guestbook`, `site-url`, `chatbot`, `works` — lihat "Sudah
+      selesai"). Yang belum punya assertion sama sekali: `app/api/guestbook/route.ts`
+      (honeypot, rate limit, jalur env-kosong) dan komponen React. Untuk route
+      handler butuh Supabase palsu — itu keputusan pertamanya; komponen React
+      sengaja tetap diverifikasi lewat browser sungguhan, bukan DOM palsu.
 
 
 ### P3 — nice to have
@@ -179,6 +179,38 @@ dibuat, dua entri ini isinya.
 ---
 
 ## Sudah selesai
+
+### Test untuk `lib/chatbot.ts` & `lib/works.ts` — 2026-09-03
+
+74 test tambahan (total 103).
+
+`chatbot` diuji dua lapis: pencocokan (pertanyaan EN & ID mendarat di topik yang
+benar; pertanyaan di luar cakupan mendarat di `null`) dan integritas data
+(`next` yang menunjuk id tak ada, chip default tanpa label, key yang tak pernah
+bisa memicu apa pun). Lapis kedua itu yang paling berharga: semuanya GAGAL
+DIAM-DIAM — TypeScript senang, panel tetap render, cuma saran atau pemicunya
+yang hilang.
+
+**Satu pemicu mati ditemukan lewat test itu:** key `'real-time'` di topik
+Popshot!! tidak akan pernah cocok. Tokenizer mengganti tiap non-alfanumerik
+dengan spasi, jadi tak ada token yang sama dengan `real-time`, dan karena tak
+mengandung spasi ia juga tidak diperlakukan sebagai frasa. Diganti jadi frasa
+`'real time'`, yang justru menangkap dua-duanya ("real-time" dan "real time").
+
+`works` diuji sebagai KONTRAK DATA, bukan fungsinya (fungsinya tiga baris
+`find`/`map`). Yang dikunci: slug unik & aman jadi segmen URL, jumlah genap
+(grid dua kolom), bentuk grid tetap (3 approach, 3 outcome), `ogAccent` hex unik
+per project, alt gambar deskriptif, dan — yang paling berguna — **setiap path
+aset yang dirujuk benar-benar ada di `/public`**, diperiksa lewat filesystem.
+Itu jaring pengaman saat 32 placeholder SVG diganti screenshot asli (B3): kalau
+nama filenya meleset, test jatuh sebelum situsnya jatuh.
+
+Ikut diuji: setiap `workSlug` di `content/services.ts` menunjuk project yang
+terdaftar. Salah ketik di sana MENGGAGALKAN BUILD (`app/page.tsx` sengaja
+`throw`); sekarang ketahuan dalam milidetik.
+
+Mutasi yang diverifikasi jatuh: path gambar disalahketik, id `next` disalahketik,
+`workSlug` disalahketik, dan `MIN_SCORE` diturunkan 3 → 1.
 
 ### Test untuk `lib/guestbook.ts` & `lib/site-url.ts` — 2026-09-03
 

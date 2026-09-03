@@ -355,7 +355,12 @@ export const TOPICS: ChatTopic[] = [
       'shared album',
       'websocket',
       'realtime',
-      'real-time',
+      // Ditulis sebagai FRASA ('real time'), bukan 'real-time': tokenizer
+      // mengganti tiap non-alfanumerik dengan spasi, jadi key bertanda hubung
+      // tidak akan pernah sama dengan token mana pun — pemicunya mati sejak
+      // lahir. Sebagai frasa, ia dicocokkan ke kalimat yang sudah dinormalkan,
+      // sehingga "real-time" DAN "real time" dua-duanya kena.
+      'real time',
     ],
     answer:
       'Popshot!! turns documenting a group trip into the game itself: everyone gets photo challenges, each person picks an exclusive sidequest, and the shared album unlocks only once the trip ends. Umar built the iOS side in Swift — auth, join-by-code, the real-time waiting room over WebSocket, the camera and its challenge overlay, upload with retry, and the album screens. The Go backend was built by teammates.',
