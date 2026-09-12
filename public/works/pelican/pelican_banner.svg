@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="PELICAN — BANNER">
+  <rect width="1600" height="900" fill="#f7f1ed"/>
+  <rect x="366.1" y="294.9" width="712.0" height="388.4" rx="31.1" fill="#0369a1" opacity="0.9"/>
+  <circle cx="1062.5" cy="590.3" r="215.0" fill="#0369a1" opacity="0.35"/>
+  <path d="M0 667.1 C 480.0 346.8, 1120.0 553.2, 1600 633.2" fill="none" stroke="#0369a1" stroke-width="12.6" opacity="0.55" stroke-linecap="round"/>
+  <rect x="128.0" y="702.0" width="203.8" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="336.0" y="702.0" width="220.5" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="544.0" y="702.0" width="129.0" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <text x="96.0" y="846.0" font-family="system-ui, sans-serif" font-size="28.8" letter-spacing="5.4" fill="#0a0a0a" opacity="0.45">PELICAN — BANNER</text>
+</svg>

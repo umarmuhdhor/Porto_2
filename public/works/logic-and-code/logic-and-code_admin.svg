@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="LOGIC & CODE — ADMIN">
+  <rect width="1200" height="800" fill="#f7f1ed"/>
+  <rect x="128.1" y="183.5" width="478.2" height="524.4" rx="38.3" fill="#e61919" opacity="0.9"/>
+  <circle cx="997.6" cy="327.0" r="128.5" fill="#e61919" opacity="0.35"/>
+  <path d="M0 498.1 C 360.0 256.5, 840.0 543.5, 1200 600.8" fill="none" stroke="#e61919" stroke-width="11.2" opacity="0.55" stroke-linecap="round"/>
+  <rect x="96.0" y="624.0" width="149.5" height="28.0" rx="14.0" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="252.0" y="624.0" width="137.2" height="28.0" rx="14.0" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="408.0" y="624.0" width="109.5" height="28.0" rx="14.0" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="564.0" y="624.0" width="95.6" height="28.0" rx="14.0" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="720.0" y="624.0" width="98.1" height="28.0" rx="14.0" fill="#0a0a0a" opacity="0.12"/>
+  <text x="72.0" y="752.0" font-family="system-ui, sans-serif" font-size="25.6" letter-spacing="4.8" fill="#0a0a0a" opacity="0.45">LOGIC & CODE — ADMIN</text>
+</svg>

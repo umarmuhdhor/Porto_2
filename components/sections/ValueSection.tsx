@@ -1,8 +1,19 @@
 'use client';
 
 /**
- * Section value proposition (DESIGN §3 #4). Panel sticky terang yang naik
- * menutupi StatementDark — pergantian gelap→terang ditandai brush divider.
+ * Section tech stack (DESIGN §3 #4). Panel sticky terang yang naik menutupi
+ * StatementDark — pergantian gelap→terang ditandai brush divider.
+ *
+ * DULU "APPROACH", dengan headline "Designing experiences that help brands
+ * grow" — sisa template designer yang tidak pernah ikut diganti saat situs ini
+ * beralih ke persona iOS developer. Kalimat itu tidak salah, ia cuma tidak
+ * mengatakan apa pun yang tidak bisa ditulis siapa saja tentang dirinya
+ * sendiri. Daftar stack di tempatnya bisa salah — dan itulah gunanya: ia bisa
+ * diperiksa.
+ *
+ * Isinya data (content/stack.ts), bukan JSX. Alasannya sama dengan
+ * content/works: menambah satu teknologi tidak boleh berarti menyentuh file
+ * komponen.
  *
  * M4: section ini jadi host objek 3D (satu-satunya di situs). Dipilih di sini
  * karena bentuknya versi volumetrik dari kurva bezier yang sama dengan
@@ -18,6 +29,7 @@ import { useCallback, useRef } from 'react';
 import { StackSection } from '@/components/ui/StackSection';
 import { BrushDivider } from '@/components/ui/BrushDivider';
 import { BrandObject, type BrandObjectHandle } from '@/components/three/BrandObject';
+import { STACK } from '@/content/stack';
 
 /** Fase hold = ruang scroll yang memutar & memajukan objek 3D dari 0→1. */
 const HOLD_VH = 90;
@@ -31,7 +43,7 @@ export function ValueSection() {
 
   return (
     <StackSection
-      id="approach"
+      id="stack"
       hold={HOLD_VH}
       className="bg-cream text-ink"
       divider={<BrushDivider className="text-cream" />}
@@ -57,14 +69,63 @@ export function ValueSection() {
         />
       </div>
 
-      <p className="font-system text-muted relative text-xs tracking-[0.3em] uppercase">Approach</p>
-      <h2 className="font-display relative mt-6 max-w-4xl text-4xl leading-[1.05] font-bold tracking-tight md:text-6xl lg:text-7xl xl:max-w-2xl">
-        Designing experiences that help brands grow.
+      <p className="font-system text-muted relative text-xs tracking-[0.3em] uppercase">Stack</p>
+      <h2 className="font-display relative mt-6 max-w-3xl text-3xl leading-[1.05] font-bold tracking-tight md:text-4xl lg:text-5xl xl:max-w-xl">
+        Swift and Flutter up front. Python and agents behind them.
       </h2>
-      <p className="font-system text-muted relative mt-8 max-w-lg text-base leading-relaxed">
-        Clarity first, craft second, decoration last. Every screen earns its place in the story
-        before it earns a gradient.
+      <p className="font-system text-muted relative mt-6 max-w-lg text-base leading-relaxed">
+        What I actually build with — the things that have shipped something, not a list of every
+        logo I have opened once.
       </p>
+
+      {/*
+       * <dl>, bukan <ul> bertingkat: tiap baris adalah nama grup dan isinya —
+       * pasangan istilah/definisi, yang persis bentuk yang disampaikan <dl> ke
+       * screen reader tanpa satu kata tambahan.
+       *
+       * Item dipisah titik tengah dalam SATU <dd>, bukan satu pil per item:
+       * dua puluh delapan pil di panel sticky ini berhenti terbaca sebagai
+       * daftar dan mulai terbaca sebagai tekstur, dan tingginya akan melewati
+       * panelnya di laptop. Pola pemisahnya sama dengan baris STACK di header
+       * case study (app/works/[slug]/page.tsx), jadi keduanya terbaca sebagai
+       * hal yang sama.
+       *
+       * `max-w-xl` di xl: itu lebar kolom yang tersisa di sebelah objek 3D.
+       * Menaikkannya membuat baris Frameworks menabrak objeknya.
+       *
+       * UKURAN JUDUL & PADDING BARIS DIKUNCI OLEH TINGGI PANEL, bukan selera.
+       * Panel ini `min-h-[100svh]` di tengah koreografi sticky-stacking: begitu
+       * isinya lebih tinggi dari viewport, panel tumbuh melewatinya dan baris
+       * terakhir terpotong oleh section yang naik menutupinya. Diukur di
+       * 1440×700 (laptop terpendek yang realistis) seluruh isinya 653px.
+       * Kalau menambah grup atau memperbesar judul, ukur ulang di tinggi itu.
+       */}
+      <dl className="relative mt-8 max-w-lg border-t border-[var(--line-rule)] xl:max-w-xl">
+        {STACK.map((group) => (
+          <div
+            key={group.label}
+            className="flex flex-col gap-1 border-b border-[var(--line-rule)] py-3 md:flex-row md:gap-8 md:py-3.5"
+          >
+            <dt className="font-system text-muted shrink-0 text-xs leading-none tracking-[0.2em] uppercase md:w-40 md:pt-1">
+              {group.label}
+            </dt>
+            <dd className="font-system text-ink/85 text-sm leading-relaxed md:text-base">
+              {/* Pemisah dibungkus aria-hidden: tanpa itu VoiceOver membaca
+                  "Swift titik tengah Dart titik tengah Python". */}
+              {group.items.map((item, i) => (
+                <span key={item}>
+                  {i > 0 && (
+                    <span aria-hidden="true" className="text-muted/60 mx-2">
+                      ·
+                    </span>
+                  )}
+                  {item}
+                </span>
+              ))}
+            </dd>
+          </div>
+        ))}
+      </dl>
     </StackSection>
   );
 }

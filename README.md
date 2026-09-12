@@ -144,7 +144,7 @@ terpasang; M7 tinggal dua item yang butuh perangkat & deploy asli.
 | M2 — sticky stacking | ✅ | [components/ui/StackSection.tsx](components/ui/StackSection.tsx), `.stack-panel` di [app/page.tsx](app/page.tsx) |
 | M3 — SVG line-draw | ✅ | [lib/lineDraw.ts](lib/lineDraw.ts), [components/ui/SignatureLine.tsx](components/ui/SignatureLine.tsx), [components/sections/LineArt.tsx](components/sections/LineArt.tsx) |
 | M4 — 3D / WebGL | ✅ | [components/three/](components/three/), `public/models/brand-object.glb` + poster fallback, di-host [ValueSection](components/sections/ValueSection.tsx) — 1 WebGL context saat gerak normal, 0 (poster saja) di reduced-motion |
-| M5 — case study | ✅ | `/works/[slug]` SSG (3 slug), OG image per halaman, [BentoGallery](components/sections/BentoGallery.tsx) |
+| M5 — case study | ✅ | `/works/[slug]` SSG (6 slug) + indeks [`/works`](app/works/page.tsx), OG image per halaman, [BentoGallery](components/sections/BentoGallery.tsx) |
 | M6 — micro-interactions | ✅ | text-roll [NavPill](components/layout/NavPill.tsx), hover preview [ProjectIndex](components/sections/ProjectIndex.tsx), [SplitText](components/ui/SplitText.tsx), [ChatBubble](components/ui/ChatBubble.tsx) |
 | M7 — perf / a11y / SEO | 🚧 | **sudah:** sitemap + robots, OG unik per halaman, analytics proxy anti-adblock ([app/layout.tsx](app/layout.tsx) + rewrite di [next.config.ts](next.config.ts)), JSON-LD `Person` ([lib/json-ld.ts](lib/json-ld.ts)), skip link, 404 + error boundary ([components/layout/MessagePage.tsx](components/layout/MessagePage.tsx)), audit 2026-09-03: Lighthouse 99/100/96/100 desktop & 86/100/96/100 mobile, kontras AA (6 pelanggaran diperbaiki), focus ring, overflow, reduced-motion. **belum:** 60fps di device mid-range & verifikasi header cache/Brotli — dua-duanya butuh perangkat + deploy asli |
 
@@ -162,11 +162,15 @@ data apa saja yang masih kosong: [docs/BACKLOG.md](docs/BACKLOG.md).
   [lib/chatbot.ts](lib/chatbot.ts) mengarahkan pengunjung ke email.
 - **`HonorsBadge` belum menautkan ke mana pun** — lihat `TODO(brand)` di
   [components/layout/HonorsBadge.tsx](components/layout/HonorsBadge.tsx).
-- **Test belum menyentuh route handler & komponen.** Empat modul pure sudah
-  tertutup; `app/api/guestbook/route.ts` belum.
+- **Test belum menyentuh komponen React.** Empat modul pure + route handler
+  guestbook sudah tertutup (121 test); komponen sengaja diverifikasi lewat
+  browser sungguhan, bukan DOM palsu.
 
-Beres 2026-09-03 (dulu ada di daftar ini): `NEXT_PUBLIC_SITE_URL` yang gagal
-senyap, halaman 404 & error boundary, JSON-LD `Person`, skip link, dan CI.
+Beres 2026-09-04 (dulu ada di daftar ini): test route handler guestbook,
+halaman indeks `/works`, dan foto asli di jendela `portrait`.
+
+Beres 2026-09-03: `NEXT_PUBLIC_SITE_URL` yang gagal senyap, halaman 404 & error
+boundary, JSON-LD `Person`, skip link, dan CI.
 
 > **Sebelum deploy:** set `NEXT_PUBLIC_SITE_URL` ke domain publik situs.
 > [lib/site-url.ts](lib/site-url.ts) sekarang MENGGAGALKAN build produksi kalau

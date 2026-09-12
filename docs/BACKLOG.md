@@ -1,7 +1,7 @@
 # Backlog — yang perlu diperbaiki & data yang belum ada
 
-Hasil audit codebase 2026-08-22, diperbarui 2026-09-03 setelah batch P0+P1
-lalu batch P2 Bagian A dikerjakan. Dua bagian besar:
+Hasil audit codebase 2026-08-22, diperbarui 2026-09-04 setelah batch P0+P1,
+batch P2 Bagian A, lalu semua sisa item yang bisa dikerjakan tanpa data baru. Dua bagian besar:
 
 - **Bagian A — perbaikan kode.** Bisa dikerjakan siapa pun tanpa data baru.
 - **Bagian B — data yang belum ada.** Hanya Umar yang bisa mengisi; tanpa ini
@@ -28,12 +28,11 @@ Status ringkas juga ada di [../README.md](../README.md) section "Status".
 
 ### P2 — kualitas
 
-- [ ] **Test belum menyentuh komponen & route handler.** Empat modul pure sudah
-      tertutup (`guestbook`, `site-url`, `chatbot`, `works` — lihat "Sudah
-      selesai"). Yang belum punya assertion sama sekali: `app/api/guestbook/route.ts`
-      (honeypot, rate limit, jalur env-kosong) dan komponen React. Untuk route
-      handler butuh Supabase palsu — itu keputusan pertamanya; komponen React
-      sengaja tetap diverifikasi lewat browser sungguhan, bukan DOM palsu.
+- [ ] **Test belum menyentuh komponen React.** Lima modul kini tertutup — empat
+      modul pure plus route handler guestbook (lihat "Sudah selesai"). Sisanya
+      komponen React, dan itu SENGAJA dibiarkan: yang menentukan benar-salahnya
+      hampir semuanya scroll, hover, dan gerak — hal yang DOM palsu tidak bisa
+      buktikan. Verifikasinya lewat browser sungguhan.
 
 
 ### P3 — nice to have
@@ -53,9 +52,6 @@ Status ringkas juga ada di [../README.md](../README.md) section "Status".
       otomatis itu selamanya), atau ganti jadi isian pudar yang bisa diukur.
 
 
-- [ ] **Tidak ada halaman indeks `/works`.** Nav "WORKS" menunjuk anchor
-      `/#projects`. Dengan enam project ini mulai layak dipertimbangkan.
-
 - [ ] **Tidak ada section tulisan/catatan.** Sinyal kuat untuk developer, tapi
       butuh komitmen menulis — jangan bikin kerangkanya kalau belum ada isinya.
 
@@ -66,37 +62,51 @@ Status ringkas juga ada di [../README.md](../README.md) section "Status".
 Ini yang menahan situs, bukan kodenya. Kolom "taruh di mana" sudah pasti — file
 tujuannya ada semua, tinggal isinya yang kosong.
 
-B1 (URL GitHub) dan B2 (verifikasi handle sosial) sudah masuk — lihat
-"Sudah selesai" di bawah.
+B1 (URL GitHub), B2 (verifikasi handle sosial), dan B7 (foto asli) sudah masuk
+— lihat "Sudah selesai" di bawah.
 
-### B3 — Screenshot & aset case study asli  ·  P0
+### B3 — Screenshot & aset case study asli  ·  P1  ·  sebagian masuk
 
-**Gap terbesar yang tersisa.** 32 file di `public/works/` semuanya SVG hasil
-`pnpm gen:works` — persegi warna + huruf, bukan tangkapan layar. Motion kelas
-Awwwards yang membungkus gambar palsu justru merusak kredibilitas lebih cepat
-daripada situs polos.
+**Sebagian sudah nyata.** 13 aset asli (.webp/.svg) masuk dari DATA-PORTO:
+seluruh gallery Hisplora (6 screenshot iPhone), banner + 4 screenshot console
+ReguLens, banner Logic & Code dan Shopify Automation, layar welcome PopShot!!,
+dan ikon aplikasi Load Away yang asli. Sisanya — 46 file — masih SVG hasil
+`pnpm gen:works`: persegi warna + huruf, bukan tangkapan layar.
 
-Nama file & rasio sudah dikunci oleh `scripts/generate-work-placeholders.mjs`
-dan dibaca `content/works/*.ts`. Rasio: banner & `span: 'full'` = 16:9,
-`span: 'half'` = 3:2.
+Nama file & rasio dikunci oleh `scripts/generate-work-placeholders.mjs` dan
+dibaca `content/works/*.ts`. Rasio: banner & `span: 'full'` = 16:9,
+`span: 'half'` = 3:2, `span: 'portrait'` = 3:4 (screenshot iPhone,
+`object-contain` — lihat BentoGallery).
 
-| Slug | File yang perlu diganti |
+PENTING saat mengganti: begitu sebuah aset diganti gambar asli, HAPUS entri-nya
+dari manifest di `scripts/generate-work-placeholders.mjs`, atau `pnpm gen:works`
+berikutnya akan menimpanya kembali dengan placeholder. Itu sudah hampir terjadi
+pada ikon Load Away — sekarang dijaga flag `logo: false`.
+
+| Slug | File yang masih placeholder |
 |---|---|
-| `load-away` | `_banner`, `_screens`, `_system`, `_graphics`, `_logo` |
-| `popshot` | `_banner`, `_screens`, `_flow`, `_graphics`, `_logo` |
-| `shopify-automation` | `_banner`, `_pipeline`, `_rules`, `_graphics`, `_logo` |
-| `absata` | `_banner`, `_screens`, `_system`, `_graphics`, `_logo` |
+| `load-away` | `_banner`, `_screens`, `_system`, `_graphics` |
+| `popshot` | `_banner`, `_waiting-room`, `_screens`, `_flow`, `_graphics`, `_logo` |
+| `hisplora` | `_banner`, `_logo` |
+| `regulens` | `_logo` |
+| `shopify-automation` | `_pipeline`, `_rules`, `_graphics`, `_logo` |
+| `briefly` | `_banner`, `_surface`, `_flow`, `_logo` |
+| `logic-and-code` | `_engine`, `_admin`, `_logo` |
+| `absata` | semuanya — dan memang begitu, lihat catatan izin |
 | `higgz-academia` | `_banner`, `_screens`, `_system`, `_graphics`, `_detail`, `_illustration`, `_logo` |
 | `mdp-teaching` | `_banner`, `_screens`, `_graphics`, `_illustration`, `_logo` |
+| kartu indeks | `balive`, `pelican`, `colab`, `suwotify`, `filmu` — masing-masing `_banner` |
 
-Tiga slug teratas paling mendesak — itu karya terbaru dan paling relevan, dan
-dua di antaranya punya build TestFlight yang bisa dibuka, jadi pengunjung bisa
-membandingkan screenshot dengan app aslinya.
+Yang paling mendesak: banner Hisplora dan logo ReguLens/Logic & Code — dua
+project itu gallery-nya sudah asli, jadi placeholder yang tersisa berdiri
+persis di sebelah gambar sungguhan dan jadi paling kelihatan.
 
 Dua catatan izin:
 
-- **ABSATA** aplikasi internal DPR RI — cek dulu boleh dipublikasikan atau tidak.
-  Kalau tidak: mockup ulang UI-nya, blur data sensitif, atau ganti dengan diagram alur.
+- **ABSATA** aplikasi internal DPR RI, ditandai `private: true` di DATA-PORTO:
+  tidak ada screenshot yang boleh dibagikan sama sekali. Placeholder-nya PERMANEN
+  sampai ada izin tertulis — bukan pekerjaan yang tertunda. Alternatif yang boleh:
+  mockup ulang UI-nya atau diagram alur.
 - **Shopify Automation** kliennya sudah dianonimkan di teks, jadi screenshot-nya
   tidak boleh memuat nama toko, domain, atau produk yang bisa dilacak. Tangkapan
   layar terminal/pipeline lebih aman daripada tangkapan admin Shopify.
@@ -149,16 +159,6 @@ Sumbernya sudah ada: `/Users/umar/Data/CV_Terbaru.pages` → ekspor ke PDF.
 | Yang dibutuhkan | `CV_Umar_Muhdhor.pdf` hasil ekspor |
 | Taruh di | `public/` + tautkan di `components/sections/ContactFooter.tsx`, dan perbarui topik `resume` di `lib/chatbot.ts:543` |
 
-### B7 — Avatar asli  ·  P2
-
-`components/ui/PixelAvatar.tsx:7` — *"Aset placeholder — ganti dengan avatar asli
-bila tersedia."* Dipakai di footer kontak, tepat di sebelah CTA email.
-
-| | |
-|---|---|
-| Yang dibutuhkan | Foto/avatar asli |
-| Taruh di | `components/ui/PixelAvatar.tsx` (atau file gambar di `public/`) |
-
 ### B8 — Nomor telepon: tampilkan atau tidak?  ·  P3  ·  butuh keputusan
 
 CV memuat 0895070069922; situs tidak menyebutnya sama sekali. Pastikan itu
@@ -179,6 +179,69 @@ dibuat, dua entri ini isinya.
 ---
 
 ## Sudah selesai
+
+### Foto asli di jendela `portrait` (B7) — 2026-09-04
+
+`public/umar-portrait.jpg` (800×800, 64KB) menggantikan `PixelAvatar` di jendela
+`portrait` milik `AboutWindows` — satu-satunya tempat di situs yang judulnya
+menjanjikan wajah.
+
+Footer TIDAK ikut diganti, dan itu keputusan, bukan kelalaian: figur di sana
+setinggi 45vh, berdiri di dasar kotak, dan diapit watermark nama — potret kepala
+di kotak itu akan jadi foto mengambang, bukan figur. Jadi PixelAvatar berhenti
+jadi placeholder dan mulai jadi pilihan: wajah sungguhan di "about", karakter di
+footer.
+
+Latar putih bawaan fotonya dibiarkan. Tile putih di atas bidang accent terbaca
+sebagai pas foto yang memang begitu; memaksa cutout dari tepi rambut yang masih
+putih menghasilkan halo yang jauh lebih terlihat daripada kotak putih yang jujur.
+
+### Halaman indeks `/works` — 2026-09-04
+
+Rute baru `app/works/page.tsx` (statis, ikut sitemap dengan priority 0.9).
+Nav "WORKS", breadcrumb case study, tombol kedua di 404, dan topik `projects` di
+chatbot sekarang menunjuk ke sana, bukan ke anchor `/#projects`.
+
+SENGAJA bukan salinan grid homepage. Grid itu berbasis hover (logo di tengah
+sel, cover muncul saat kursor masuk) — bagus sebagai kejadian visual di tengah
+scroll, buruk sebagai indeks, karena yang dicari orang di halaman indeks justru
+yang disembunyikannya: judul, satu kalimat isi, tahun. Di `/works` semuanya
+terlihat tanpa hover — dan karenanya juga di layar sentuh.
+
+Satu tautan ke `/works` ditambahkan di bawah grid homepage. Bukan hiasan: menu
+NavPill baru dirender saat dibuka, jadi tanpa tautan itu tidak ada satu pun
+tautan ke indeks di HTML awal homepage yang bisa diikuti crawler.
+
+### Test route handler guestbook — 2026-09-04
+
+18 test baru (total 121) di `app/api/guestbook/route.test.ts`; `vitest.config.mts`
+kini juga memindai `app/**/*.test.ts`.
+
+Supabase-nya palsu — bukan karena instance sungguhan terlalu repot, tapi karena
+yang perlu dijaga di sini keputusan handler-nya, bukan kemampuan Postgres
+menyimpan baris. Stub-nya merekam SELURUH rantai query (kolom yang di-select,
+filter, baris yang di-insert), dan itu yang membuat assertion paling penting di
+berkas itu bisa ditulis sama sekali:
+
+- honeypot terisi → 201 palsu DAN **nol** query ke database (bukan sekadar
+  "tidak ada insert");
+- honeypot berisi spasi (autofill browser) → TIDAK dianggap terisi, komentar
+  manusia tetap tersimpan;
+- yang di-insert `ip_hash` 64 heksadesimal, dan payload-nya tidak memuat IP
+  aslinya di mana pun — janji "anonim" di halaman guestbook berdiri di atas itu;
+- `ip_hash` TIDAK pernah ikut di kolom yang di-select, baik di GET maupun di
+  baris balikan insert;
+- dua jendela rate limit dibedakan lewat batas waktunya (bukan urutan
+  penyelesaian `Promise.all`) dan keduanya memfilter hash yang sama;
+- `x-forwarded-for` diambil entri PERTAMA — kalau yang terakhir, semua orang di
+  belakang satu proxy berbagi bucket dan satu pengunjung bisa mengunci sisanya;
+- validasi jalan SEBELUM rate limit: kiriman busuk nol round-trip ke database;
+- env kosong → GET 200 `disabled`, POST 503 (bukan 500);
+- error database → pesan generik, teks aslinya tidak ikut ke pengunjung.
+
+Diverifikasi dengan mutasi, bukan cuma "hijau": honeypot dimatikan, hash IP
+diganti IP mentah, `ip_hash` diikutkan di select, dan cabang validasi dilewati —
+masing-masing menjatuhkan test yang tepat. Lalu dikembalikan.
 
 ### Test untuk `lib/chatbot.ts` & `lib/works.ts` — 2026-09-03
 

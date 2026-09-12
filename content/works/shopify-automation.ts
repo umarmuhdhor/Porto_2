@@ -9,13 +9,15 @@ import type { Work } from './types';
  * boleh disebut, ganti `facts.Client` dan kalimat `summary` — sisanya sudah
  * netral.
  *
- * Aset masih placeholder — ganti dengan tangkapan layar asli sebelum ship publik.
+ * Banner sekarang ASLI (kartu judul dari DATA-PORTO). Sisa asetnya masih
+ * placeholder — ganti dengan tangkapan layar asli sebelum ship publik.
  */
 export const shopifyAutomation: Work = {
   slug: 'shopify-automation',
   title: 'Shopify Automation',
   logo: '/works/shopify-automation/shopify-automation_logo.svg',
   category: 'AI AUTOMATION | PYTHON',
+  disciplines: ['ai', 'web'],
   year: '2026',
   description:
     'An agent-driven pipeline that turns one supplier product link into a review-ready Shopify draft — brand copy, linked variants, cost, size chart, and photos — with every mechanical step handled by deterministic Python rather than the model.',
@@ -34,14 +36,14 @@ export const shopifyAutomation: Work = {
   services: ['AI automation', 'Pipeline engineering', 'Data extraction', 'Shopify integration'],
   facts: [
     { label: 'Client', value: 'Fashion retailer on Shopify' },
-    { label: 'Scope', value: 'Design and implementation' },
+    { label: 'Role', value: 'AI automation engineer — one of two' },
     { label: 'Runtime', value: 'Python plus an agent, Shopify Admin API' },
     { label: 'Sources', value: 'Alibaba and 1688' },
   ],
   stack: ['Python', 'Shopify Admin GraphQL API', 'MCP', 'Headless browser automation'],
   challenge:
     'Two suppliers, two entirely different pages: one serves clean embedded JSON, the other serves Chinese data that only becomes English after a client-side translator finishes running — and both block robots. On top of that, a language model writing Shopify GraphQL from memory kept drifting into the wrong field names and the wrong mutation shape, and those errors only surfaced after the product already existed in the store.',
-  role: 'Designed and built the pipeline: both supplier extractors, the deterministic build step, the mutation generators, the verification gate, and the batch driver — plus the operator commands and the rulebook that encodes the business rules as configuration rather than code.',
+  role: 'AI automation engineer, one of two people on the project. Built the extraction, build, and verification pipeline: both supplier extractors, the deterministic build step, the mutation generators, the verification gate, and the batch driver — plus the operator commands and the rulebook that encodes the business rules as configuration rather than code.',
   approach: [
     {
       title: 'AI for judgment, code for mechanics',
@@ -62,8 +64,8 @@ export const shopifyAutomation: Work = {
     { metric: '0', label: 'Products ever published without human review' },
   ],
   banner: {
-    src: '/works/shopify-automation/shopify-automation_banner.svg',
-    alt: 'The uploader pipeline running: a supplier link resolving into a review-ready Shopify draft.',
+    src: '/works/shopify-automation/shopify-automation_banner.webp',
+    alt: 'The Alibaba-to-Shopify pipeline in four stages: extract, classify, build, and draft.',
   },
   gallery: [
     {

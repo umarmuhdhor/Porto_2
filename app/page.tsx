@@ -26,6 +26,7 @@ export default function Home() {
     slug: work.slug,
     title: work.title,
     category: work.category,
+    disciplines: work.disciplines,
     year: work.year,
     logo: work.logo,
     preview: work.banner.src,
@@ -64,7 +65,7 @@ export default function Home() {
       {/* 3 — Statement (dark) — panel stacking, naik menutupi AboutWindows */}
       <StatementDark />
 
-      {/* 4 — Value / approach (cream) — panel stacking yang naik menutupi
+      {/* 4 — Tech stack (cream) — panel stacking yang naik menutupi
           StatementDark; brush divider-nya yang menandai peralihan gelap→terang
           (DESIGN §3 #3–4). Ini juga SATU-SATUNYA host objek 3D di situs (M4):
           objeknya `absolute` di dalam panel dan progress putarnya diambil dari
@@ -80,7 +81,7 @@ export default function Home() {
       <ProjectIndex projects={projects} />
 
       {/* 7 — Contact / footer (accent) — mirror referensi: watermark nama,
-          avatar pixel-art, CTA kiri, sosial kanan, kredit sudut bawah. */}
+          CTA kiri, sosial kanan, kredit sudut bawah. */}
       <ContactFooter />
     </main>
   );

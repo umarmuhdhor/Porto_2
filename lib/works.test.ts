@@ -18,10 +18,22 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { getAllSlugs, getAllWorks, getWorkBySlug } from '@/lib/works';
+import {
+  DISCIPLINES,
+  getAllEntries,
+  getAllSlugs,
+  getAllWorks,
+  getEntriesByDiscipline,
+  getWorkBySlug,
+  getWorksByDiscipline,
+  hasCaseStudy,
+  isDisciplineId,
+} from '@/lib/works';
 import { SERVICES } from '@/content/services';
+import { WORK_CARDS } from '@/content/works/cards';
 
 const works = getAllWorks();
+const entries = getAllEntries();
 const PUBLIC_DIR = path.join(process.cwd(), 'public');
 
 describe('lookup', () => {
@@ -53,6 +65,7 @@ describe('registry', () => {
 
   it('jumlahnya genap', () => {
     // ProjectIndex grid dua kolom: jumlah ganjil meninggalkan sel kosong.
+    // Yang dihitung HANYA case study — homepage memang tidak merender kartu.
     expect(works.length % 2).toBe(0);
   });
 
@@ -117,6 +130,14 @@ describe('kontrak data tiap work', () => {
     },
   );
 
+  it('slug tidak bentrok antara case study dan kartu', () => {
+    // Bentrok = kartu ikut ter-render sebagai baris kedua di indeks, dan
+    // `hasCaseStudy` mengirim salah satunya ke halaman milik yang lain.
+    const cardSlugs = WORK_CARDS.map((card) => card.slug);
+    for (const slug of cardSlugs) expect(getWorkBySlug(slug), slug).toBeUndefined();
+    expect(new Set(entries.map((entry) => entry.slug)).size).toBe(entries.length);
+  });
+
   it('ogAccent tidak dipakai dua project', () => {
     // Seluruh gunanya memang membedakan preview link antar project.
     const accents = works.map((work) => work.ogAccent.toLowerCase());
@@ -132,6 +153,113 @@ describe('kontrak data tiap work', () => {
       }
     },
   );
+});
+
+describe('disiplin (filter /works)', () => {
+  it.each(works.map((work) => [work.slug, work] as const))(
+    '%s — punya minimal satu disiplin, semuanya id yang sah & tanpa duplikat',
+    (_, work) => {
+      // Nol disiplin = project itu hanya muncul di "All" dan lenyap dari setiap
+      // chip filter — hilang tanpa satu pun error.
+      expect(work.disciplines.length).toBeGreaterThan(0);
+      for (const id of work.disciplines) expect(isDisciplineId(id)).toBe(true);
+      expect(new Set(work.disciplines).size).toBe(work.disciplines.length);
+    },
+  );
+
+  it('setiap disiplin yang terdaftar punya minimal satu project', () => {
+    // Chip yang isinya nol dirender mati di WorksExplorer. Kalau itu terjadi,
+    // yang salah bukan UI-nya — bucket-nya yang tidak punya alasan untuk ada.
+    for (const discipline of DISCIPLINES) {
+      expect(getWorksByDiscipline(discipline.id).length, discipline.id).toBeGreaterThan(0);
+    }
+  });
+
+  it('getWorksByDiscipline mempertahankan urutan registry', () => {
+    const apps = getWorksByDiscipline('app').map((work) => work.slug);
+    const expected = works.filter((work) => work.disciplines.includes('app')).map((w) => w.slug);
+    expect(apps).toEqual(expected);
+  });
+
+  it('isDisciplineId menolak nilai dari URL yang tidak dikenal', () => {
+    // `?tag=` datang dari luar; satu-satunya penjaga sebelum dipakai jadi state.
+    expect(isDisciplineId('app')).toBe(true);
+    expect(isDisciplineId('App')).toBe(false);
+    expect(isDisciplineId('')).toBe(false);
+    expect(isDisciplineId(undefined)).toBe(false);
+  });
+
+  it('id disiplin aman dipakai di query string & unik', () => {
+    const ids = DISCIPLINES.map((discipline) => discipline.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    for (const id of ids) expect(id).toMatch(/^[a-z]+$/);
+  });
+});
+
+describe('kartu indeks (content/works/cards.ts)', () => {
+  /*
+   * Kartu tidak lewat kontrak `Work` — tidak punya challenge/approach/outcomes,
+   * dan memang itu alasannya ada. Yang tetap harus dijaga: ia muncul di indeks,
+   * jadi gambarnya harus ada, alt-nya harus terbaca, tag-nya harus sah, dan ia
+   * TIDAK boleh punya halaman.
+   */
+  it.each(WORK_CARDS.map((card) => [card.slug, card] as const))(
+    '%s — field wajib terisi & slug aman dipakai di URL',
+    (_, card) => {
+      for (const field of ['title', 'category', 'year', 'description'] as const) {
+        expect(card[field].trim().length, field).toBeGreaterThan(0);
+      }
+      expect(card.slug).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/);
+    },
+  );
+
+  it.each(WORK_CARDS.map((card) => [card.slug, card] as const))(
+    '%s — banner ada di /public dan punya alt yang deskriptif',
+    (_, card) => {
+      expect(card.banner.src.startsWith('/')).toBe(true);
+      expect(
+        fs.existsSync(path.join(PUBLIC_DIR, card.banner.src)),
+        `${card.banner.src} tidak ada`,
+      ).toBe(true);
+      expect(card.banner.alt.trim().length).toBeGreaterThan(3);
+    },
+  );
+
+  it.each(WORK_CARDS.map((card) => [card.slug, card] as const))(
+    '%s — punya disiplin yang sah & link keluar absolut https',
+    (_, card) => {
+      expect(card.disciplines.length).toBeGreaterThan(0);
+      for (const id of card.disciplines) expect(isDisciplineId(id)).toBe(true);
+      for (const link of card.links ?? []) {
+        expect(link.href).toMatch(/^https:\/\//);
+        expect(link.label.trim().length).toBeGreaterThan(0);
+      }
+    },
+  );
+
+  it('hasCaseStudy memisahkan keduanya dengan benar', () => {
+    // Inilah yang memutuskan sebuah baris di `/works` dibungkus <a> atau tidak.
+    // Salah di sini = link ke 404, atau case study yang tidak bisa dibuka.
+    for (const work of works) expect(hasCaseStudy(work.slug), work.slug).toBe(true);
+    for (const card of WORK_CARDS) expect(hasCaseStudy(card.slug), card.slug).toBe(false);
+    expect(hasCaseStudy('tidak-ada')).toBe(false);
+  });
+
+  it('getAllEntries = case study lalu kartu, tanpa yang hilang', () => {
+    expect(entries.length).toBe(works.length + WORK_CARDS.length);
+    expect(entries.slice(0, works.length).map((entry) => entry.slug)).toEqual(getAllSlugs());
+  });
+
+  it('getEntriesByDiscipline tidak pernah lebih sedikit dari getWorksByDiscipline', () => {
+    // Angka di chip filter dihitung dari entries; kalau bucket entries lebih
+    // kecil daripada bucket works, ada case study yang lenyap dari indeks.
+    for (const discipline of DISCIPLINES) {
+      expect(
+        getEntriesByDiscipline(discipline.id).length,
+        discipline.id,
+      ).toBeGreaterThanOrEqual(getWorksByDiscipline(discipline.id).length);
+    }
+  });
 });
 
 describe('content/services.ts', () => {

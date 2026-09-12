@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="FILMU — BANNER">
+  <rect width="1600" height="900" fill="#f7f1ed"/>
+  <rect x="399.1" y="153.9" width="792.1" height="414.0" rx="33.1" fill="#c2410c" opacity="0.9"/>
+  <circle cx="947.0" cy="422.7" r="229.8" fill="#c2410c" opacity="0.35"/>
+  <path d="M0 570.3 C 480.0 270.8, 1120.0 629.2, 1600 671.9" fill="none" stroke="#c2410c" stroke-width="12.6" opacity="0.55" stroke-linecap="round"/>
+  <rect x="128.0" y="702.0" width="197.5" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="336.0" y="702.0" width="168.7" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="544.0" y="702.0" width="197.9" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="752.0" y="702.0" width="114.8" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="960.0" y="702.0" width="186.5" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <text x="96.0" y="846.0" font-family="system-ui, sans-serif" font-size="28.8" letter-spacing="5.4" fill="#0a0a0a" opacity="0.45">FILMU — BANNER</text>
+</svg>

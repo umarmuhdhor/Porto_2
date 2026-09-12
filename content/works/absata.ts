@@ -2,21 +2,29 @@ import type { Work } from './types';
 
 /**
  * ABSATA — magang Mobile Application Developer di DPR RI (Sep–Des 2024).
- * Sistem absensi mobile untuk Staff Administrasi Anggota (SAA) & Tenaga Ahli (TA).
- * Aset masih placeholder — ganti dengan screenshot asli sebelum ship publik.
+ * Sistem absensi mobile untuk Staf Administrasi Anggota (SAA) & Tenaga Ahli (TA).
+ *
+ * PROJECT BER-NDA (`private: true` di DATA-PORTO): sistem internal pemerintah.
+ * Tidak ada demo, tidak ada repo, dan TIDAK ADA SATU PUN SCREENSHOT yang boleh
+ * dibagikan — karena itu `links` sengaja kosong dan seluruh asetnya placeholder,
+ * BUKAN karena screenshot aslinya belum sempat diambil. Jangan diganti.
+ *
+ * Angka & klaim di sini dibatasi ke apa yang ada di DATA-PORTO: dua kelompok
+ * staf, login aman, dashboard, pemantauan realtime, integrasi REST API.
  */
 export const absata: Work = {
   slug: 'absata',
   title: 'ABSATA',
   logo: '/works/absata/absata_logo.svg',
   category: 'MOBILE APP | FLUTTER',
+  disciplines: ['app'],
   year: '2024',
   description:
     'Mobile attendance system for administrative staff and expert staff at the Indonesian House of Representatives — secure login, an informative dashboard, and real-time attendance tracking in one Flutter app.',
   summary: [
-    { text: 'DPR RI tracked hundreds of staff by hand, unit by unit. ' },
+    { text: 'Attendance for two groups of parliamentary support staff was handled by hand. ' },
     {
-      text: 'ABSATA replaced that with a single mobile attendance app used daily by administrative and expert staff.',
+      text: 'ABSATA replaced that with one mobile attendance app, part of a wider digital transformation effort inside the institution.',
       strong: true,
     },
     {
@@ -26,14 +34,14 @@ export const absata: Work = {
   services: ['Mobile development', 'Flutter', 'REST API integration', 'UI/UX implementation'],
   facts: [
     { label: 'Organisation', value: 'DPR RI (House of Representatives)' },
-    { label: 'Timeline', value: 'Sep – Dec 2024' },
+    { label: 'Timeline', value: 'Sep – Dec 2024, four-month placement' },
     { label: 'Platform', value: 'Flutter — iOS & Android' },
-    { label: 'Team', value: 'In-house mobile team' },
+    { label: 'Access', value: 'Internal system — no public link or repository' },
   ],
   stack: ['Flutter', 'Dart', 'REST API', 'Git'],
   challenge:
-    'The attendance flow had to serve two different roles — administrative staff and expert staff — without confusing either one, stay resistant to cheating, and remain fast on a network that is not always stable. Features were built in parallel with the rest of the team, so API integration and version control had to be disciplined from day one.',
-  role: 'Mobile Application Developer Intern. Built ABSATA from scratch in Flutter — secure login, dashboard, and real-time attendance tracking — integrated the REST API, and collaborated on UI/UX implementation for ABSATA as well as an LMS app. Active in team discussions and reviews to keep the development flow moving.',
+    'Attendance for Member Administration Staff and Expert Staff was handled manually, which cost administrative time and left the institution with no live view of who was actually present. The replacement had to serve two different roles without confusing either one, and it was built in parallel with the rest of an intern team — so the API contract and version control had to be disciplined from day one.',
+  role: 'Mobile Application Developer Intern. Led development of the attendance application as part of the internship team — the secure login flow, the dashboard, and realtime attendance monitoring in Flutter — integrated it with the institution\'s services over a REST API, and implemented UI/UX designs for both ABSATA and the institution\'s LMS application. Development continued with another team after the placement ended in December 2024.',
   approach: [
     {
       title: 'One app, two roles',
@@ -45,7 +53,7 @@ export const absata: Work = {
     },
     {
       title: 'Shipped inside a team workflow',
-      body: 'Branches, reviews, and Git discipline kept my work mergeable while the rest of the team moved in parallel on the LMS app.',
+      body: 'Branches, reviews, and Git discipline kept the work mergeable while the rest of the intern team moved in parallel on the LMS app — and left something another team could pick up when the placement ended.',
     },
   ],
   outcomes: [

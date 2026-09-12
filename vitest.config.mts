@@ -22,6 +22,10 @@ export default defineConfig({
   },
   test: {
     environment: 'node',
-    include: ['lib/**/*.test.ts'],
+    // `app/**` ikut supaya route handler bisa diuji di tempatnya. Yang diuji
+    // di sana tetap logika server murni (keputusan handler + query yang
+    // dikirim ke Supabase palsu) — bukan komponen React, jadi environment
+    // `node` di atas masih berlaku.
+    include: ['lib/**/*.test.ts', 'app/**/*.test.ts'],
   },
 });

@@ -45,7 +45,7 @@
 import { Fragment, useCallback, useEffect, useRef, type ReactNode } from 'react';
 import { gsap, ScrollTrigger, useGSAP } from '@/lib/gsap';
 import { NO_PREFERENCE } from '@/lib/motion';
-import { PixelAvatar } from '@/components/ui/PixelAvatar';
+import Image from 'next/image';
 import { StaircaseBlinds } from '@/components/ui/StaircaseBlinds';
 
 /** Penanda kata kunci di dalam baris. Warna diambil dari token aksen situs. */
@@ -95,12 +95,35 @@ const WINDOWS: WindowSpec[] = [
   },
   {
     title: 'portrait',
-    place: 'lg:col-span-3 lg:col-start-9 lg:row-start-1 lg:mt-16',
+    // Lebarnya DIBATASI di kedua arah, dan itu yang menentukan tingginya:
+    // isinya `aspect-square`, jadi satu kolom penuh di mobile berarti foto
+    // setinggi ~900px — satu wajah yang mengisi hampir seluruh layar
+    // (terverifikasi di viewport 992px). `max-w` menjaganya tetap terbaca
+    // sebagai tile potret, bukan billboard.
+    place:
+      'mx-auto w-full max-w-[17rem] lg:mx-0 lg:max-w-[15rem] lg:col-span-3 lg:col-start-9 lg:row-start-1 lg:mt-4',
     media: (
-      // Latar gelap, BUKAN accent: section-nya sendiri sudah accent, jadi tile
-      // accent akan lenyap jadi satu bidang kuning dengan sekelilingnya.
-      <div className="bg-dark flex items-end justify-center overflow-hidden py-6">
-        <PixelAvatar className="h-44 w-auto sm:h-52" />
+      // Foto asli, bukan lagi avatar pixel-art: jendela ini judulnya
+      // "portrait", dan satu-satunya tempat di situs yang menjanjikan wajah
+      // sungguhan. Avatar pixel-art tetap hidup di footer, tempat ia memang
+      // berperan sebagai figur seluruh badan, bukan sebagai potret.
+      //
+      // Latar putih bawaan fotonya DIBIARKAN — tile putih di atas bidang
+      // accent terbaca sebagai pas foto yang memang begitu, dan alternatifnya
+      // (memaksa cutout atau menimpa latar gelap di belakang subjek yang
+      // tepinya masih putih) menghasilkan halo yang jauh lebih terlihat.
+      //
+      // `fill` + aspect-square: kotaknya yang menentukan ukuran, jadi jendela
+      // ini tidak berubah tinggi kalau fotonya suatu saat diganti dengan rasio
+      // lain. `sizes` mengikuti lebar render nyata (3/12 kolom di desktop).
+      <div className="relative aspect-square w-full overflow-hidden bg-white">
+        <Image
+          src="/umar-portrait.jpg"
+          alt="Umar Muhdhor"
+          fill
+          sizes="(max-width: 1024px) 17rem, 15rem"
+          className="object-cover"
+        />
       </div>
     ),
   },
@@ -118,7 +141,7 @@ const WINDOWS: WindowSpec[] = [
   },
   {
     title: 'right-now',
-    place: 'lg:col-span-4 lg:col-start-8 lg:row-start-2 lg:mt-8',
+    place: 'lg:col-span-4 lg:col-start-8 lg:row-start-2 lg:mt-4',
     lines: [
       <>
         Learning <Hl tone="note">SwiftUI</Hl> and native platform APIs in depth
@@ -323,36 +346,6 @@ export function AboutWindows() {
     { scope: sectionRef },
   );
 
-  /**
-   * Tandai `body[data-at-about]` selama section ini menguasai layar — itu yang
-   * memudarkan garis frame (lihat .frame-lines di globals.css).
-   *
-   * Yang diamati PANGGUNG, bukan section: section-nya sengaja jauh lebih tinggi
-   * dari viewport (ruang scroll untuk reveal jendela), jadi rasio perpotongannya
-   * tak pernah mendekati 0.55 dan ambang apa pun akan salah baca. Panggung
-   * setinggi layar, jadi rasionya = seberapa besar bagiannya yang terlihat.
-   */
-  useEffect(() => {
-    const stage = stageRef.current;
-    if (!stage) return;
-
-    const set = (on: boolean) => {
-      if (on) document.body.dataset.atAbout = 'true';
-      else delete document.body.dataset.atAbout;
-    };
-
-    const io = new IntersectionObserver(
-      ([entry]) => set(entry.isIntersecting && entry.intersectionRatio >= 0.55),
-      { threshold: [0, 0.55, 1] },
-    );
-    io.observe(stage);
-
-    return () => {
-      io.disconnect();
-      set(false);
-    };
-  }, []);
-
   // Panggung menyusut saat viewport diubah ukurannya, dan window yang tadinya
   // pas bisa jadi menggantung di luar. Offset-nya dijepit ulang, BUKAN direset:
   // posisi itu hasil kerja user, jadi yang dibetulkan cuma yang benar-benar
@@ -467,7 +460,7 @@ export function AboutWindows() {
           Batas drag = kotak elemen ini (lihat clampOffset). */}
       <div
         ref={stageRef}
-        className="about-stage flex w-full flex-col justify-center overflow-hidden py-[16vh] lg:py-0"
+        className="about-stage flex w-full flex-col justify-center overflow-hidden py-[16vh] lg:py-[12vh]"
         style={{ paddingInline: 'var(--frame-inset)' }}
       >
         {/* Medan titik — bahasa tekstur yang sama dengan StatementDark, dengan
@@ -485,7 +478,7 @@ export function AboutWindows() {
           {/* Kepala section — sengaja kecil: headline besar sudah jadi milik hero
             dan StatementDark, jadi bagian ini masuk sebagai "ruang kerja".
             Di atas accent semua teks dipaksa ink gelap (globals.css §2.1). */}
-          <header className="mb-[7vh] flex flex-col items-center gap-4 text-center">
+          <header className="mb-[5vh] flex flex-col items-center gap-4 text-center lg:mb-[4vh]">
             <h2 className="font-display max-w-3xl text-3xl leading-[1.08] font-bold tracking-tight md:text-5xl">
               {HEADING.map((word, i) => (
                 <Fragment key={`${word}-${i}`}>
@@ -521,7 +514,7 @@ export function AboutWindows() {
             bertumpuk supaya baris teks tidak pernah menyempit sampai sulit
             dibaca. `items-start` menjaga tiap jendela setinggi isinya sendiri
             (bukan diregangkan setinggi baris grid). */}
-          <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12 lg:gap-x-6 lg:gap-y-10">
+          <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12 lg:gap-x-6 lg:gap-y-6">
             {WINDOWS.map((win, i) => (
               <div
                 key={win.title}
@@ -577,7 +570,7 @@ export function AboutWindows() {
                   </div>
 
                   {win.media ?? (
-                    <ol className="font-system flex flex-col gap-3 px-5 py-5 text-[15px] leading-relaxed md:px-6 md:py-6 md:text-base">
+                    <ol className="font-system flex flex-col gap-3 px-5 py-5 text-[15px] leading-relaxed md:px-6 md:py-5 md:text-base">
                       {win.lines?.map((line, li) => (
                         <li key={li} className="flex gap-4">
                           {/* Nomor baris: dekoratif (urutan sudah dibawa <ol>),

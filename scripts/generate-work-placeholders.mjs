@@ -18,7 +18,7 @@
  * Jalankan: pnpm run gen:works
  */
 
-import { writeFileSync, mkdirSync, existsSync } from 'node:fs';
+import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -29,14 +29,28 @@ const RATIO = {
   banner: [1600, 900],
   full: [1600, 900],
   half: [1200, 800],
+  portrait: [900, 1200],
 };
 
+/**
+ * MANIFEST — cerminan content/works/*.ts dan content/works/cards.ts.
+ *
+ * `logo: false` berarti project itu SUDAH PUNYA logo asli di public/works/ dan
+ * script ini tidak boleh menyentuhnya. Tanpa flag itu `pnpm gen:works` menimpa
+ * ikon aplikasi Load Away yang asli dengan kotak huruf — kegagalan senyap yang
+ * baru ketahuan saat melihat halamannya.
+ *
+ * Aset yang sudah diganti gambar asli (.webp) sengaja TIDAK didaftarkan di
+ * sini: mendaftarkannya hanya menghasilkan .svg yatim yang tidak dirujuk siapa
+ * pun. Yang ada di daftar `assets` di bawah = yang masih placeholder.
+ */
 const PROJECTS = [
   {
     slug: 'load-away',
     title: 'Load Away',
-    monogram: 'L',
-    accent: '#6d28d9',
+    // Ikon aplikasi aslinya sudah ada — jangan digenerate ulang.
+    logo: false,
+    accent: '#db0700',
     assets: [
       ['banner', 'banner'],
       ['screens', 'half'],
@@ -46,15 +60,33 @@ const PROJECTS = [
   },
   {
     slug: 'popshot',
-    title: 'Popshot!!',
+    title: 'PopShot!!',
     monogram: 'P',
-    accent: '#db2777',
+    accent: '#153861',
+    // `welcome` sudah screenshot asli (.webp) — tidak didaftarkan.
     assets: [
       ['banner', 'banner'],
+      ['waiting-room', 'portrait'],
       ['screens', 'half'],
       ['flow', 'half'],
       ['graphics', 'full'],
     ],
+  },
+  {
+    slug: 'hisplora',
+    title: 'Hisplora',
+    monogram: 'H',
+    accent: '#54453e',
+    // Seluruh gallery-nya sudah screenshot asli; hanya banner yang belum.
+    assets: [['banner', 'banner']],
+  },
+  {
+    slug: 'regulens',
+    title: 'ReguLens',
+    monogram: 'R',
+    accent: '#111111',
+    // Banner & gallery semuanya asli — di sini tinggal logo-nya.
+    assets: [],
   },
   {
     slug: 'shopify-automation',
@@ -62,10 +94,30 @@ const PROJECTS = [
     monogram: 'S',
     accent: '#334155',
     assets: [
-      ['banner', 'banner'],
       ['pipeline', 'half'],
       ['rules', 'half'],
       ['graphics', 'full'],
+    ],
+  },
+  {
+    slug: 'briefly',
+    title: 'Briefly',
+    monogram: 'B',
+    accent: '#7c3aed',
+    assets: [
+      ['banner', 'banner'],
+      ['surface', 'half'],
+      ['flow', 'half'],
+    ],
+  },
+  {
+    slug: 'logic-and-code',
+    title: 'Logic & Code',
+    monogram: 'L',
+    accent: '#e61919',
+    assets: [
+      ['engine', 'half'],
+      ['admin', 'half'],
     ],
   },
   {
@@ -106,6 +158,53 @@ const PROJECTS = [
       ['screens', 'full'],
     ],
   },
+
+  /*
+   * Entri indeks tanpa halaman case study (content/works/cards.ts). Masing-
+   * masing cuma butuh SATU gambar — thumbnail di baris `/works` — dan tidak
+   * punya field `logo` sama sekali, jadi `logo: false` di sini bukan
+   * penghematan melainkan kebenaran: tidak ada slot yang merendernya.
+   */
+  {
+    slug: 'balive',
+    title: 'Balive',
+    card: true,
+    logo: false,
+    accent: '#0d9488',
+    assets: [['banner', 'banner']],
+  },
+  {
+    slug: 'pelican',
+    title: 'PELICAN',
+    card: true,
+    logo: false,
+    accent: '#0369a1',
+    assets: [['banner', 'banner']],
+  },
+  {
+    slug: 'colab',
+    title: 'COLAB',
+    card: true,
+    logo: false,
+    accent: '#db2777',
+    assets: [['banner', 'banner']],
+  },
+  {
+    slug: 'suwotify',
+    title: 'Suwotify',
+    card: true,
+    logo: false,
+    accent: '#16a34a',
+    assets: [['banner', 'banner']],
+  },
+  {
+    slug: 'filmu',
+    title: 'Filmu',
+    card: true,
+    logo: false,
+    accent: '#c2410c',
+    assets: [['banner', 'banner']],
+  },
 ];
 
 /**
@@ -122,14 +221,21 @@ const PROJECTS = [
  * mem-parse TypeScript.
  */
 function assertSlugsExist() {
-  const missing = PROJECTS.map((p) => p.slug).filter(
-    (slug) => !existsSync(resolve(ROOT, 'content/works', `${slug}.ts`)),
-  );
+  // Entri kartu tidak punya file sendiri — semuanya tinggal di cards.ts, jadi
+  // yang dicek keberadaan slug-nya DI DALAM file itu, bukan nama filenya.
+  const cardsFile = resolve(ROOT, 'content/works/cards.ts');
+  const cardsSource = existsSync(cardsFile) ? readFileSync(cardsFile, 'utf8') : '';
+
+  const missing = PROJECTS.filter((project) =>
+    project.card
+      ? !cardsSource.includes(`slug: '${project.slug}'`)
+      : !existsSync(resolve(ROOT, 'content/works', `${project.slug}.ts`)),
+  ).map((project) => project.slug);
 
   if (missing.length > 0) {
     console.error(
       `\n✗ Manifest di scripts/generate-work-placeholders.mjs sudah menyimpang.\n` +
-        `  Slug tanpa content/works/<slug>.ts: ${missing.join(', ')}\n` +
+        `  Slug tanpa content/works/<slug>.ts (atau tanpa entri di cards.ts): ${missing.join(', ')}\n` +
         `  Samakan manifest dengan isi content/works/ lalu jalankan lagi.\n`,
     );
     process.exit(1);
@@ -229,8 +335,10 @@ for (const project of PROJECTS) {
   const dir = resolve(ROOT, 'public/works', project.slug);
   mkdirSync(dir, { recursive: true });
 
-  writeFileSync(resolve(dir, `${project.slug}_logo.svg`), logoSvg(project), 'utf8');
-  written += 1;
+  if (project.logo !== false) {
+    writeFileSync(resolve(dir, `${project.slug}_logo.svg`), logoSvg(project), 'utf8');
+    written += 1;
+  }
 
   for (const [role, slot] of project.assets) {
     const [w, h] = RATIO[slot];

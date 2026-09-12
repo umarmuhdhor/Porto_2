@@ -1,4 +1,23 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="Load Away logo">
-  <rect width="96" height="96" rx="22" fill="#6d28d9"/>
-  <text x="48" y="63" text-anchor="middle" font-family="system-ui, sans-serif" font-size="46" font-weight="700" fill="#f7f1ed">L</text>
+<svg width="430" height="430" viewBox="0 0 430 430" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_857_298)">
+<rect width="430" height="430" rx="90" fill="black"/>
+<rect x="135" y="43" width="162" height="343" fill="url(#paint0_linear_857_298)"/>
+<path d="M135 42L279 51.5V364.5L135 387.5V42Z" fill="black"/>
+<rect x="264.701" y="197" width="6.29921" height="34" rx="2.47059" fill="#860301"/>
+<rect x="255" y="210.6" width="13.8583" height="3.4" fill="#860301"/>
+<path d="M143.812 386H297L261 452H81L143.812 386Z" fill="url(#paint1_linear_857_298)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_857_298" x1="216" y1="-10.8743" x2="216" y2="359.063" gradientUnits="userSpaceOnUse">
+<stop stop-color="#DB0700"/>
+<stop offset="1" stop-color="#4F0000"/>
+</linearGradient>
+<linearGradient id="paint1_linear_857_298" x1="196.736" y1="392" x2="119.186" y2="488.069" gradientUnits="userSpaceOnUse">
+<stop stop-color="#4F0000"/>
+<stop offset="1" stop-color="#270808"/>
+</linearGradient>
+<clipPath id="clip0_857_298">
+<rect width="430" height="430" rx="90" fill="white"/>
+</clipPath>
+</defs>
 </svg>

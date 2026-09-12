@@ -4,7 +4,13 @@
  *
  * Dibangun dari kotak-kotak (grid integer + shape-rendering crispEdges) supaya
  * tepinya bertangga & terbaca sebagai pixel-art, bukan ilustrasi vektor mulus.
- * Aset placeholder — ganti dengan avatar asli bila tersedia.
+ *
+ * SEKARANG DIPAKAI DI SATU TEMPAT SAJA: panggung footer, tempat perannya
+ * memang figur seluruh badan yang berdiri di dasar kotak. Jendela `portrait` di
+ * AboutWindows dulu memakainya sebagai pengganti sementara dan kini memuat foto
+ * asli (`public/umar-portrait.jpg`) — jadi ini bukan lagi placeholder yang
+ * menunggu diganti, melainkan pilihan: wajah sungguhan di bagian "about",
+ * karakter di footer.
  */
 
 const C = {

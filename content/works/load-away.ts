@@ -2,16 +2,24 @@ import type { Work } from './types';
 
 /**
  * Load Away (nama project Xcode: `Wofoking`) — game iOS satir, dibangun di
- * Apple Developer Academy 2026 berdua dengan seorang designer.
- * Repo: github.com/aliefauzan/LoadAway · TestFlight: pFp5njxz
+ * Apple Developer Academy 2026 oleh tim berisi lima orang: tiga engineer dan
+ * dua designer. Repo: github.com/aliefauzan/LoadAway · TestFlight: pFp5njxz
  *
- * Aset masih placeholder — ganti dengan screenshot asli sebelum ship publik.
+ * CAKUPAN PERAN DIPERSEMPIT ke sumber di DATA-PORTO: pipeline gaze ARKit
+ * beserta lima guard-nya, dan companion watchOS yang mengalirkan heart rate.
+ * Versi sebelumnya di file ini mengklaim seluruh gameplay engine, Swift 6
+ * concurrency, dan QA end-to-end untuk satu orang — dan itu pekerjaan tiga
+ * engineer.
+ *
+ * Logo sekarang ikon aplikasi ASLI (dari DATA-PORTO). Sisa asetnya masih
+ * placeholder — ganti dengan screenshot asli sebelum ship publik.
  */
 export const loadAway: Work = {
   slug: 'load-away',
   title: 'Load Away',
   logo: '/works/load-away/load-away_logo.svg',
   category: 'IOS GAME | SWIFTUI + ARKIT',
+  disciplines: ['app'],
   year: '2026',
   description:
     'A satirical iOS game whose loading bar only fills while you are not looking at it — built in SwiftUI on an ARKit gaze pipeline, with layered anti-cheat guards and live heart rate from Apple Watch.',
@@ -22,7 +30,7 @@ export const loadAway: Work = {
       strong: true,
     },
     {
-      text: " I built the gameplay engine and the gaze pipeline: ARKit face tracking re-derived as face-to-camera geometry, five anti-cheat guards stacked on top of it, and a watchOS companion streaming live heart rate into the bar's volatility.",
+      text: " I built the gaze pipeline: ARKit face tracking re-derived as face-to-camera geometry, five anti-cheat guards stacked on top of it, and a watchOS companion streaming live heart rate into the bar's volatility.",
     },
   ],
   services: [
@@ -33,9 +41,9 @@ export const loadAway: Work = {
   ],
   facts: [
     { label: 'Context', value: 'Apple Developer Academy, Bali' },
-    { label: 'Role', value: 'Coder — gameplay, gaze, watchOS' },
+    { label: 'Role', value: 'iOS engineer — gaze tracking and watchOS heart rate' },
     { label: 'Platform', value: 'iOS + embedded watchOS companion' },
-    { label: 'Team', value: 'Coder and designer pair' },
+    { label: 'Team', value: 'Five people — three engineers, two designers' },
   ],
   stack: [
     'Swift 6',
@@ -52,7 +60,7 @@ export const loadAway: Work = {
   ],
   challenge:
     'The entire game rests on one question the hardware answers badly: is the player looking? TrueDepth stops tracking near profile, so a full head turn reads as a lost face rather than a look away. Judging head angle in world axes inverted the moment the phone moved. And players peek — head turned, eyes slid back to the screen — which no head angle can catch.',
-  role: 'Coder. Built the gameplay engine, the ARKit gaze pipeline and its anti-cheat guards, the watchOS companion streaming heart rate over WatchConnectivity, the Foundation Models taunt layer, Swift 6 concurrency, Xcode target wiring, and end-to-end QA — alongside a designer who authored the haunted-forest flow and cinematics.',
+  role: 'iOS engineer, one of three on a five-person team. Built the ARKit gaze pipeline — calibrated face-to-camera classification, the eye-gaze peek guard, the eyes-closed path, the frozen-mesh guard, and the continuous player identity lock — plus the watchOS companion streaming BPM over WatchConnectivity with a stale-sample watchdog, and diagnosed the watch pairing failure down to build configuration rather than code.',
   approach: [
     {
       title: 'Reframe the gaze, do not widen the angle',
@@ -93,5 +101,5 @@ export const loadAway: Work = {
       span: 'full',
     },
   ],
-  ogAccent: '#6d28d9',
+  ogAccent: '#db0700',
 };

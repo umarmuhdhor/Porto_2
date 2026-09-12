@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="HISPLORA — BANNER">
+  <rect width="1600" height="900" fill="#f7f1ed"/>
+  <rect x="233.9" y="117.1" width="624.0" height="551.0" rx="44.1" fill="#54453e" opacity="0.9"/>
+  <circle cx="1391.0" cy="451.4" r="209.3" fill="#54453e" opacity="0.35"/>
+  <path d="M0 687.7 C 480.0 478.4, 1120.0 421.6, 1600 624.9" fill="none" stroke="#54453e" stroke-width="12.6" opacity="0.55" stroke-linecap="round"/>
+  <rect x="128.0" y="702.0" width="214.7" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="336.0" y="702.0" width="217.1" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="544.0" y="702.0" width="107.5" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <text x="96.0" y="846.0" font-family="system-ui, sans-serif" font-size="28.8" letter-spacing="5.4" fill="#0a0a0a" opacity="0.45">HISPLORA — BANNER</text>
+</svg>

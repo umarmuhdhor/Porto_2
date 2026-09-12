@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="COLAB — BANNER">
+  <rect width="1600" height="900" fill="#f7f1ed"/>
+  <rect x="367.6" y="202.9" width="712.3" height="551.1" rx="44.1" fill="#db2777" opacity="0.9"/>
+  <circle cx="999.8" cy="605.7" r="188.2" fill="#db2777" opacity="0.35"/>
+  <path d="M0 692.9 C 480.0 469.0, 1120.0 431.0, 1600 622.8" fill="none" stroke="#db2777" stroke-width="12.6" opacity="0.55" stroke-linecap="round"/>
+  <rect x="128.0" y="702.0" width="94.2" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="336.0" y="702.0" width="214.2" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="544.0" y="702.0" width="194.9" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="752.0" y="702.0" width="187.8" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <text x="96.0" y="846.0" font-family="system-ui, sans-serif" font-size="28.8" letter-spacing="5.4" fill="#0a0a0a" opacity="0.45">COLAB — BANNER</text>
+</svg>

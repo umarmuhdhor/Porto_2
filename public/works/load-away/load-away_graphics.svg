@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="LOAD AWAY — GRAPHICS">
   <rect width="1600" height="900" fill="#f7f1ed"/>
-  <rect x="175.3" y="233.4" width="764.0" height="393.4" rx="31.5" fill="#6d28d9" opacity="0.9"/>
-  <circle cx="1142.4" cy="326.3" r="235.9" fill="#6d28d9" opacity="0.35"/>
-  <path d="M0 619.7 C 480.0 195.8, 1120.0 704.2, 1600 652.1" fill="none" stroke="#6d28d9" stroke-width="12.6" opacity="0.55" stroke-linecap="round"/>
+  <rect x="175.3" y="233.4" width="764.0" height="393.4" rx="31.5" fill="#db0700" opacity="0.9"/>
+  <circle cx="1142.4" cy="326.3" r="235.9" fill="#db0700" opacity="0.35"/>
+  <path d="M0 619.7 C 480.0 195.8, 1120.0 704.2, 1600 652.1" fill="none" stroke="#db0700" stroke-width="12.6" opacity="0.55" stroke-linecap="round"/>
   <rect x="128.0" y="702.0" width="202.6" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
   <rect x="336.0" y="702.0" width="150.4" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
   <rect x="544.0" y="702.0" width="168.8" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>

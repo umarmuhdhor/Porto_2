@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="LOGIC & CODE — ENGINE">
+  <rect width="1200" height="800" fill="#f7f1ed"/>
+  <rect x="207.2" y="129.8" width="512.2" height="290.0" rx="23.2" fill="#e61919" opacity="0.9"/>
+  <circle cx="799.3" cy="524.4" r="150.8" fill="#e61919" opacity="0.35"/>
+  <path d="M0 492.7 C 360.0 218.2, 840.0 581.8, 1200 602.9" fill="none" stroke="#e61919" stroke-width="11.2" opacity="0.55" stroke-linecap="round"/>
+  <rect x="96.0" y="624.0" width="158.5" height="28.0" rx="14.0" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="252.0" y="624.0" width="135.1" height="28.0" rx="14.0" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="408.0" y="624.0" width="148.7" height="28.0" rx="14.0" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="564.0" y="624.0" width="107.4" height="28.0" rx="14.0" fill="#0a0a0a" opacity="0.12"/>
+  <text x="72.0" y="752.0" font-family="system-ui, sans-serif" font-size="25.6" letter-spacing="4.8" fill="#0a0a0a" opacity="0.45">LOGIC & CODE — ENGINE</text>
+</svg>

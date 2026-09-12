@@ -219,24 +219,6 @@ body {
  * ikut "menempel" di tepi layar dan terasa kaku; luruh di ~8% teratas/terbawah
  * membuatnya menyatu dengan latar.
  */
-/*
- * Garis frame dipudarkan selama section accent (AboutWindows) menguasai layar.
- * Di sana bidangnya sudah bertekstur titik dan berisi jendela ber-ring sendiri;
- * hairline putih di atas kuning jadi garis ketiga yang bersaing, bukan margin
- * cetak seperti di section lain.
- *
- * Yang dipudarkan SELURUH layer (garis + tick), bukan `.frame-line` saja —
- * tick di mid-height tidak berkelas dan akan tertinggal menggantung sendirian.
- * Atribut di-set AboutWindows lewat IntersectionObserver, pola yang sama dengan
- * `data-at-contact` milik ContactChromeToggle.
- */
-.frame-lines {
-  transition: opacity var(--dur-base) var(--ease-soft);
-}
-body[data-at-about='true'] .frame-lines {
-  opacity: 0;
-}
-
 .frame-line {
   width: var(--hairline-w);
   background-image: linear-gradient(
@@ -432,6 +414,60 @@ body[data-at-about='true'] .frame-lines {
 }
 
 /*
+ * Nama hero (components/ui/HeroName.tsx) — entrance & hover, dua efek terpisah.
+ *
+ * ENTRANCE `.hero-char`: huruf tersingkap bawah→atas lewat `clip-path` sambil
+ * naik & melepas blur. Kenapa clip-path dan bukan wrapper `overflow: hidden`:
+ * wrapper itu terus mengklip setelah animasi selesai, jadi gerak hover yang
+ * keluar dari kotak huruf ikut terpotong. Frame `to`-nya sengaja inset NEGATIF
+ * (melebar keluar kotak) supaya huruf bebas terangkat sesudahnya.
+ *
+ * HOVER `.hero-char-face`: transition (bukan animation) supaya gelombangnya
+ * menyapu balik saat kursor pergi. `--hover-delay` di-set per huruf di komponen.
+ *
+ * Keduanya HANYA di bawah `no-preference` — state istirahat kedua elemen adalah
+ * huruf hitam yang terlihat penuh, jadi no-JS & reduced-motion tetap membaca
+ * nama utuh. SENGAJA tanpa `will-change`: entrance one-shot, dan hint CSS tak
+ * bisa dicabut setelahnya — tiap huruf akan menahan layer compositor sendiri
+ * sepanjang sisa kunjungan.
+ */
+@keyframes hero-char-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.42em);
+    filter: blur(10px);
+    clip-path: inset(100% -15% -25% -15%);
+  }
+  60% {
+    filter: blur(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+    clip-path: inset(-25% -15% -25% -15%);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-char {
+    animation: hero-char-in 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: var(--in-delay, 0s);
+  }
+
+  .hero-char-face {
+    transition:
+      transform 520ms cubic-bezier(0.22, 1, 0.36, 1),
+      color 520ms var(--ease-soft);
+    transition-delay: var(--hover-delay, 0s);
+  }
+  .group\/name:hover .hero-char-face {
+    transform: translateY(-0.09em);
+    color: var(--color-accent-line-strong);
+  }
+}
+
+/*
  * Hero intro choreography — signature-first (Hero.tsx `data-intro`).
  * Fase 'draw': signature dipindah ke tengah & membesar sambil menggores, sisa
  * hero disembunyikan. Fase 'reveal' (atribut berganti): nilai kembali ke
@@ -573,6 +609,88 @@ body[data-at-about='true'] .frame-lines {
   }
 }
 
+/*
+ * Ikon brand timbul di section dark (components/sections/FloatingIcons.tsx).
+ *
+ * Empat lapis elemen, masing-masing memegang SATU transform — dipisah karena
+ * transform tidak bisa dikomposisi dari dua sumber di elemen yang sama:
+ *   .floaty      → naik-turun (keyframes, sudah ada di atas)
+ *   .icon3d      → perspektif; TIDAK ikut bergerak, kalau titik hilangnya ikut
+ *                  bergeser tiap frame, kemiringannya terbaca goyah
+ *   .icon3d-spin → yaw idle pelan (keyframes) supaya volumenya terbaca walau
+ *                  kursor diam
+ *   .icon3d-tilt → kemiringan mengikuti kursor (--px/--py ditulis JS di elemen
+ *                  akar, dikalikan --tilt milik tiap ikon)
+ *
+ * `perspective` di .icon3d, bukan di parent bersama: dengan satu perspektif
+ * untuk keduanya, ikon yang jauh dari titik hilang akan terlihat menceng.
+ */
+.icon3d {
+  /* Ukuran, kedalaman, dan perspektif diturunkan dari SATU nilai (--size).
+     Perspektif sebesar ~1.15x sisi ikon: makin besar angkanya makin lemah
+     foreshortening-nya, dan pada 460px (nilai pertama yang dicoba) tumpukannya
+     terbaca datar — sisi extrude-nya nyaris tidak pernah menghadap kamera. */
+  --depth: 0.16;
+  width: var(--size, 4rem);
+  height: var(--size, 4rem);
+  perspective: calc(var(--size, 4rem) * 1.15);
+  position: relative;
+}
+.icon3d-spin,
+.icon3d-tilt {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+.icon3d-layer {
+  position: absolute;
+  inset: 0;
+  /* --l (0 di muka → 1 di lapis terdalam) di-set per lapis di komponen. */
+  transform: translateZ(calc(var(--size, 4rem) * var(--depth) * var(--l, 0) * -1));
+  /* Lapis TIDAK boleh preserve-3d: isinya SVG datar, dan membiarkannya
+     membuka konteks 3D sendiri hanya menambah kerja compositor. */
+  backface-visibility: hidden;
+}
+.icon3d-layer svg {
+  width: 100%;
+  height: 100%;
+}
+
+/*
+ * Kemiringan ISTIRAHAT + kontribusi kursor, di satu transform.
+ *
+ * Sudut istirahatnya bukan hiasan: pada 0° seluruh lapis menumpuk persis di
+ * belakang muka dan ketebalannya hilang sepenuhnya — yang tersisa siluet datar.
+ * Karena itu sudut ini TETAP dipakai di reduced-motion; yang dimatikan di sana
+ * gerakannya (yaw idle + tilt kursor), bukan bentuknya.
+ */
+.icon3d-tilt {
+  transform: rotateX(calc(var(--base-pitch, -11deg) + var(--py, 0) * var(--tilt, 14) * -1deg))
+    rotateY(calc(var(--base-yaw, 22deg) + var(--px, 0) * var(--tilt, 14) * 1deg));
+}
+
+@keyframes icon3d-yaw {
+  0%,
+  100% {
+    transform: rotateY(calc(var(--spin-dir, 1) * -13deg)) rotateX(4deg);
+  }
+  50% {
+    transform: rotateY(calc(var(--spin-dir, 1) * 13deg)) rotateX(-4deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .icon3d-spin {
+    animation: icon3d-yaw calc(var(--dur, 7s) * 1.6) ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
+  }
+  .icon3d-tilt {
+    /* Transisi pendek: --px/--py ditulis per frame pointermove, jadi ini hanya
+       meredam lompatan saat kursor masuk layar, bukan sumber gerakannya. */
+    transition: transform 140ms linear;
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .floaty {
     animation: floaty var(--dur, 7s) ease-in-out infinite;
@@ -604,9 +722,14 @@ body[data-at-about='true'] .frame-lines {
  * dalamnya `absolute`, jadi elemen ini harus jadi containing block-nya di SEMUA
  * breakpoint — termasuk mobile, tempat sticky-nya dimatikan.
  *
- * Paku hanya di >=lg DAN hanya di no-preference:
+ * Paku hanya di >=lg, layar cukup TINGGI, dan no-preference:
  *  - di mobile empat jendela bertumpuk lebih tinggi dari viewport, jadi memaku
  *    panggung setinggi 100vh akan memotong jendela paling bawah;
+ *  - ambang tinggi 800px karena panggung yang dipaku memotong apa pun yang
+ *    lewat (`overflow: hidden`): di laptop pendek isi section lebih tinggi dari
+ *    100vh dan jendela baris bawah ("right-now") terpotong tepat di batas
+ *    section berikutnya. Di bawah ambang itu section kembali mengalir biasa —
+ *    reveal-nya tetap jalan, cuma tidak dipaku;
  *  - di reduced-motion tak ada yang muncul bertahap, jadi ruang scroll ekstra
  *    itu cuma jadi layar diam yang panjang.
  */
@@ -614,7 +737,7 @@ body[data-at-about='true'] .frame-lines {
   position: relative;
 }
 
-@media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+@media (min-width: 1024px) and (min-height: 800px) and (prefers-reduced-motion: no-preference) {
   /* 240vh = 100vh tampil + 140vh fase paku, dibagi ke empat jendela (±35vh
      per jendela) supaya jeda antar-kemunculan benar-benar terbaca. */
   .about-panel {
@@ -625,6 +748,16 @@ body[data-at-about='true'] .frame-lines {
     position: sticky;
     top: 0;
     height: 100vh;
+    /* Padding sendiri, lebih rapat dari mode mengalir: di sini tingginya
+       terkunci 100vh, jadi tiap vh yang dipakai padding adalah vh yang diambil
+       dari jendela.
+
+       ASIMETRIS (atas < bawah) dan itu memang satu-satunya cara menggeser isi
+       ke atas: isinya di-`justify-center`, jadi padding yang simetris berapa
+       pun nilainya menghasilkan jarak atas yang sama persis — sisa ruangnya
+       dibagi dua oleh centering. Bawah yang lebih tebal itulah yang menarik
+       seluruh blok naik. */
+    padding-block: 4vh 11vh;
   }
 }
 

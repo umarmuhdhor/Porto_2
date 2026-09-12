@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="SUWOTIFY — BANNER">
+  <rect width="1600" height="900" fill="#f7f1ed"/>
+  <rect x="174.7" y="292.2" width="572.0" height="460.9" rx="36.9" fill="#16a34a" opacity="0.9"/>
+  <circle cx="1035.2" cy="408.4" r="164.5" fill="#16a34a" opacity="0.35"/>
+  <path d="M0 594.8 C 480.0 285.5, 1120.0 614.5, 1600 662.1" fill="none" stroke="#16a34a" stroke-width="12.6" opacity="0.55" stroke-linecap="round"/>
+  <rect x="128.0" y="702.0" width="88.3" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="336.0" y="702.0" width="104.9" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="544.0" y="702.0" width="171.9" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
+  <text x="96.0" y="846.0" font-family="system-ui, sans-serif" font-size="28.8" letter-spacing="5.4" fill="#0a0a0a" opacity="0.45">SUWOTIFY — BANNER</text>
+</svg>

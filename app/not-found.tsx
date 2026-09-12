@@ -27,7 +27,7 @@ export default function NotFound() {
       <Link href="/" className={PRIMARY_ACTION}>
         Back to home
       </Link>
-      <Link href="/#projects" className={SECONDARY_ACTION}>
+      <Link href="/works" className={SECONDARY_ACTION}>
         See the work
       </Link>
     </MessagePage>

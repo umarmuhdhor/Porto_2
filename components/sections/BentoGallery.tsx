@@ -1,11 +1,17 @@
 /**
  * Bento gallery case study (M5 §3.3 #6, DESIGN §4.6).
  *
- * ATURAN RASIO: rasio TIDAK datang dari data. `span: 'full'` selalu 16/9 dan
- * `span: 'half'` selalu 3/2, dikunci di sini. Kalau tiap project bebas memilih
- * rasio, grid akan compang-camping antar case study — dan itu justru masalah
- * yang mau dihindari (M5 §5). Gambar diisi `object-cover`, jadi aset boleh
- * sedikit meleset dari rasio slot tanpa merusak grid.
+ * ATURAN RASIO: rasio TIDAK datang dari data. `span: 'full'` selalu 16/9,
+ * `span: 'half'` selalu 3/2, `span: 'portrait'` selalu 3/4 — ketiganya dikunci
+ * di sini. Kalau tiap project bebas memilih rasio, grid akan compang-camping
+ * antar case study — dan itu justru masalah yang mau dihindari (M5 §5).
+ *
+ * `full` dan `half` diisi `object-cover`, jadi aset boleh sedikit meleset dari
+ * rasio slot tanpa merusak grid. `portrait` SATU-SATUNYA yang `object-contain`:
+ * isinya screenshot iPhone (~1:2), dan meng-cover-nya ke 3/4 memotong dua
+ * pertiga layar. Di sini gambar dibiarkan utuh dengan pita latar di kiri-kanan
+ * — pita itu memang harga yang dibayar, dan lebih murah daripada screenshot
+ * yang kehilangan nav bar-nya.
  *
  * Gap sengaja ada dan konsisten (bukan gap 0) — kartu radius-card butuh ruang
  * agar terbaca sebagai kartu.
@@ -14,21 +20,30 @@
  */
 
 import Image from 'next/image';
-import type { GalleryItem } from '@/lib/works';
+import type { GalleryItem, GallerySpan } from '@/lib/works';
 import { Reveal } from '@/components/ui/Reveal';
 
 const SHELL = 'relative overflow-hidden rounded-[var(--radius-card)] bg-ink/5';
+
+/** Rasio per span — dikunci di sini, tidak boleh datang dari file konten. */
+const RATIO: Record<GallerySpan, string> = {
+  full: 'aspect-[16/9]',
+  half: 'aspect-[3/2]',
+  portrait: 'aspect-[3/4]',
+};
 
 function GalleryImage({
   src,
   alt,
   priority = false,
   sizes,
+  fit = 'cover',
 }: {
   src: string;
   alt: string;
   priority?: boolean;
   sizes: string;
+  fit?: 'cover' | 'contain';
 }) {
   return (
     <Image
@@ -37,7 +52,7 @@ function GalleryImage({
       fill
       sizes={sizes}
       priority={priority}
-      className="object-cover"
+      className={fit === 'contain' ? 'object-contain p-3 md:p-5' : 'object-cover'}
       // Aset placeholder saat ini .svg — dilewatkan apa adanya oleh optimizer
       // (lihat images.dangerouslyAllowSVG di next.config.ts).
     />
@@ -57,6 +72,9 @@ function staggerDelays(items: readonly GalleryItem[]): number[] {
       column = 0;
       return 0;
     }
+    // `portrait` dan `half` sama-sama satu kolom, jadi keduanya ikut hitungan
+    // kolom yang sama — yang menentukan stagger adalah posisi di baris, bukan
+    // rasio kartunya.
     const delay = column * 90;
     column = (column + 1) % 2;
     return delay;
@@ -96,12 +114,11 @@ export function BentoGallery({
             className={item.span === 'full' ? 'md:col-span-2' : undefined}
             delay={delays[i]}
           >
-            <figure
-              className={`${SHELL} ${item.span === 'full' ? 'aspect-[16/9]' : 'aspect-[3/2]'}`}
-            >
+            <figure className={`${SHELL} ${RATIO[item.span]}`}>
               <GalleryImage
                 src={item.src}
                 alt={item.alt}
+                fit={item.span === 'portrait' ? 'contain' : 'cover'}
                 sizes={
                   item.span === 'full'
                     ? '(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1080px'

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="BRIEFLY — SURFACE">
+  <rect width="1200" height="800" fill="#f7f1ed"/>
+  <rect x="163.7" y="183.2" width="561.4" height="378.8" rx="30.3" fill="#7c3aed" opacity="0.9"/>
+  <circle cx="756.0" cy="252.8" r="216.7" fill="#7c3aed" opacity="0.35"/>
+  <path d="M0 629.0 C 360.0 302.1, 840.0 497.9, 1200 548.4" fill="none" stroke="#7c3aed" stroke-width="11.2" opacity="0.55" stroke-linecap="round"/>
+  <rect x="96.0" y="624.0" width="162.4" height="28.0" rx="14.0" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="252.0" y="624.0" width="148.0" height="28.0" rx="14.0" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="408.0" y="624.0" width="119.8" height="28.0" rx="14.0" fill="#0a0a0a" opacity="0.12"/>
+  <text x="72.0" y="752.0" font-family="system-ui, sans-serif" font-size="25.6" letter-spacing="4.8" fill="#0a0a0a" opacity="0.45">BRIEFLY — SURFACE</text>
+</svg>

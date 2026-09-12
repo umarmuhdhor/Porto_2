@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="900" height="1200" role="img" aria-label="POPSHOT!! — WAITING-ROOM">
+  <rect width="900" height="1200" fill="#f7f1ed"/>
+  <rect x="157.4" y="291.3" width="359.3" height="605.9" rx="28.7" fill="#153861" opacity="0.9"/>
+  <circle cx="682.2" cy="765.0" r="220.8" fill="#153861" opacity="0.35"/>
+  <path d="M0 929.0 C 270.0 399.0, 630.0 801.0, 900 828.4" fill="none" stroke="#153861" stroke-width="12.6" opacity="0.55" stroke-linecap="round"/>
+  <rect x="72.0" y="936.0" width="109.7" height="42.0" rx="21.0" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="189.0" y="936.0" width="101.3" height="42.0" rx="21.0" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="306.0" y="936.0" width="71.7" height="42.0" rx="21.0" fill="#0a0a0a" opacity="0.12"/>
+  <rect x="423.0" y="936.0" width="84.5" height="42.0" rx="21.0" fill="#0a0a0a" opacity="0.12"/>
+  <text x="54.0" y="1128.0" font-family="system-ui, sans-serif" font-size="38.4" letter-spacing="7.2" fill="#0a0a0a" opacity="0.45">POPSHOT!! — WAITING-ROOM</text>
+</svg>

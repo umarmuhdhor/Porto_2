@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="POPSHOT!! — BANNER">
   <rect width="1600" height="900" fill="#f7f1ed"/>
-  <rect x="225.9" y="136.5" width="648.6" height="478.4" rx="38.3" fill="#db2777" opacity="0.9"/>
-  <circle cx="968.2" cy="489.1" r="183.9" fill="#db2777" opacity="0.35"/>
-  <path d="M0 583.7 C 480.0 520.8, 1120.0 379.2, 1600 666.5" fill="none" stroke="#db2777" stroke-width="12.6" opacity="0.55" stroke-linecap="round"/>
+  <rect x="225.9" y="136.5" width="648.6" height="478.4" rx="38.3" fill="#153861" opacity="0.9"/>
+  <circle cx="968.2" cy="489.1" r="183.9" fill="#153861" opacity="0.35"/>
+  <path d="M0 583.7 C 480.0 520.8, 1120.0 379.2, 1600 666.5" fill="none" stroke="#153861" stroke-width="12.6" opacity="0.55" stroke-linecap="round"/>
   <rect x="128.0" y="702.0" width="100.0" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
   <rect x="336.0" y="702.0" width="186.1" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>
   <rect x="544.0" y="702.0" width="84.2" height="31.5" rx="15.8" fill="#0a0a0a" opacity="0.12"/>

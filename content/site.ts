@@ -32,13 +32,29 @@ const EMAIL_HOST = 'gmail.com';
 const GITHUB_HANDLE = 'umarmuhdhor';
 const LINKEDIN_HANDLE = 'umarmuhdhor';
 const INSTAGRAM_HANDLE = 'umarmuhd._';
+/**
+ * Kanal YouTube matematika ("Tidak Sulit"). Handle-nya TIDAK ada hubungannya
+ * dengan nama — ditulis apa adanya dari DATA-PORTO (data/contact.json), dan
+ * termasuk tanda `@`-nya, karena itu memang bagian dari URL-nya.
+ */
+const YOUTUBE_HANDLE = '@tidaksulit6688';
 
 const NAME = 'Umar Muhdhor';
-const ROLE = 'iOS Developer';
+
+/**
+ * Peran ditulis sebagai DUA bagian, bukan satu kalimat: hero memasangnya
+ * mengapit nama di kiri & kanan garis frame, jadi pemisahannya adalah data,
+ * bukan keputusan layout yang boleh ditebak komponen lewat `split('&')`.
+ * `ROLE` (bergabung) tetap dipakai untuk metadata & JSON-LD yang butuh satu baris.
+ */
+const ROLE_PARTS = ['iOS Developer', 'AI Automation'] as const;
+const ROLE = ROLE_PARTS.join(' & ');
 
 export const SITE = {
   name: NAME,
   role: ROLE,
+  /** Dua sisi label hero — kiri & kanan nama. */
+  roleParts: ROLE_PARTS,
 
   /**
    * Nama dipecah per baris untuk watermark raksasa di footer. Ukurannya
@@ -51,8 +67,6 @@ export const SITE = {
   monogram: 'UM.',
 
   location: 'Bali, Indonesia',
-  /** Label hero — sengaja terpisah dari `location` karena ia kalimat, bukan nilai. */
-  locationLabel: 'Based in — Bali, Indonesia',
 
   /**
    * Email dipecah user/host karena footer merendernya sebagai dua potong yang
@@ -66,10 +80,12 @@ export const SITE = {
   githubHandle: GITHUB_HANDLE,
   linkedinHandle: LINKEDIN_HANDLE,
   instagramHandle: INSTAGRAM_HANDLE,
+  youtubeHandle: YOUTUBE_HANDLE,
 
   github: `https://github.com/${GITHUB_HANDLE}`,
   linkedin: `https://www.linkedin.com/in/${LINKEDIN_HANDLE}/`,
   instagram: `https://www.instagram.com/${INSTAGRAM_HANDLE}/`,
+  youtube: `https://www.youtube.com/${YOUTUBE_HANDLE}`,
 
   seo: {
     title: `${NAME} — ${ROLE}`,

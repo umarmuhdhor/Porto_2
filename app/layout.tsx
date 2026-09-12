@@ -7,7 +7,6 @@ import { SITE_URL } from '@/lib/site-url';
 import { FONT_VARS } from '@/lib/fonts';
 import { personJsonLd } from '@/lib/json-ld';
 import { SmoothScrollProvider } from '@/components/providers/SmoothScrollProvider';
-import { FrameLines } from '@/components/layout/FrameLines';
 import { HonorsBadge } from '@/components/layout/HonorsBadge';
 import { NavPill } from '@/components/layout/NavPill';
 import { GuestbookDock } from '@/components/layout/GuestbookDock';
@@ -108,7 +107,6 @@ export default function RootLayout({
 
         <SmoothScrollProvider>
           {children}
-          <FrameLines />
           <HonorsBadge />
           <NavPill />
           {/*

@@ -13,6 +13,7 @@ export const higgzAcademia: Work = {
   title: 'Higgz Academia',
   logo: '/works/higgz-academia/higgz-academia_logo.svg',
   category: 'EDTECH | PROBLEM SOLVING',
+  disciplines: ['teaching'],
   year: '2023–2024',
   description:
     'Worked solutions and video tutorials for Higgz Academia — steps that follow one clean path, stay consistent across topics, and hold accuracy above 90%.',

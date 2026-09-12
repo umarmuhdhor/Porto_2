@@ -1,22 +1,29 @@
 'use client';
 
 /**
- * Nama hero "UMAR MUHDHOR" (2 baris) — dua animasi digabung per huruf:
+ * Nama hero "UMAR MUHDHOR" (2 baris) — dua animasi per huruf, di elemen berbeda
+ * supaya keduanya tidak berebut properti `transform` yang sama:
  *
- * 1. ENTRANCE (saat reveal): tiap huruf naik dari bawah garis (`.split-char`,
- *    di-gate `no-preference` di globals.css). Sama seperti SplitText.
- * 2. HOVER (mirror referensi nithinmwarrier.com): hover di nama → tiap huruf
- *    "roll" — salinan atas naik keluar, salinan bawah (terakota, senada
- *    signature) masuk. Referensi menukar Aeonik→Trobika; Trobika proprietary,
- *    jadi mekaniknya ditiru dengan pergeseran warna, bukan font.
+ * 1. ENTRANCE (`.hero-char`, saat reveal) — huruf tersingkap dari bawah ke atas
+ *    sambil naik sedikit dan melepas blur. Penyingkapannya pakai `clip-path`,
+ *    BUKAN wrapper `overflow: hidden`: wrapper itu tetap mengklip selamanya
+ *    setelah animasi selesai, jadi gerak hover apa pun yang keluar dari kotak
+ *    huruf akan terpotong. Frame terakhir clip-path-nya sengaja melebar keluar
+ *    kotak (inset negatif) supaya huruf bebas bergerak sesudahnya.
  *
- * Struktur roll pakai pola RollingLabel (NavPill): salinan bawah `absolute` →
- * mask tetap setinggi SATU huruf, overflow-hidden mengklip salinan yang keluar.
- * Entrance & hover di elemen berbeda → animation-fill entrance tak menimpa hover.
+ * 2. HOVER (`.hero-char-face`) — gelombang: huruf terangkat sedikit dan
+ *    berganti warna ke terakota (senada signature), berurutan kiri→kanan lewat
+ *    `transition-delay` per huruf. Reversibel penuh — gelombangnya menyapu balik
+ *    saat kursor pergi, karena yang dipakai transition, bukan animation.
  *
- * Robustness: state istirahat = huruf (salinan atas) TERLIHAT. no-JS/reduced-
- * motion → nama tampil utuh statis. A11y: wrapper `aria-label` nama utuh; tiap
- * huruf `aria-hidden`.
+ * Versi sebelumnya memakai "roll" dua-salinan (salinan atas keluar, salinan
+ * bawah masuk) di dalam mask setinggi satu huruf. Mekanik itu menggandakan tiap
+ * huruf di DOM dan, digabung dengan entrance-nya, membuat nama terus bergerak.
+ * Yang di sini satu salinan per huruf: lebih tenang dan lebih murah.
+ *
+ * Robustness: state istirahat = huruf TERLIHAT tanpa clip. no-JS/reduced-motion
+ * → nama tampil utuh statis (kedua efek di-gate `no-preference` di globals.css).
+ * A11y: nama utuh dibaca sekali lewat `sr-only`; tiap huruf `aria-hidden`.
  */
 
 const LINES = ['UMAR', 'MUHDHOR'] as const;
@@ -39,31 +46,21 @@ export function HeroName({ delay = 2.4, stagger = 0.045 }: HeroNameProps) {
         <span key={li} className="block">
           {Array.from(line).map((ch, ci) => {
             const i = idx++;
-            // Stagger lebih besar → ombak menyapu huruf demi huruf (efek "air").
-            const rollDelay = `${(i * 0.06).toFixed(3)}s`;
             return (
-              // Mask entrance: klip huruf yang naik dari bawah saat reveal.
-              <span key={ci} aria-hidden className="inline-block overflow-hidden align-bottom">
-                <span
-                  className="split-char inline-block"
-                  style={{ animationDelay: `${(delay + i * stagger).toFixed(3)}s` }}
-                >
-                  {/* Mask hover-roll: setinggi 1 huruf (salinan bawah absolute). */}
-                  <span className="relative block overflow-hidden leading-[0.9]">
-                    <span
-                      className="block transition-transform duration-[650ms] ease-[cubic-bezier(0.76,0,0.24,1)] group-hover/name:-translate-y-full"
-                      style={{ transitionDelay: rollDelay }}
-                    >
-                      {ch}
-                    </span>
-                    <span
-                      className="text-accent-line-strong absolute inset-0 block translate-y-full transition-transform duration-[650ms] ease-[cubic-bezier(0.76,0,0.24,1)] group-hover/name:translate-y-0"
-                      style={{ transitionDelay: rollDelay }}
-                    >
-                      {ch}
-                    </span>
-                  </span>
-                </span>
+              <span
+                key={ci}
+                aria-hidden
+                className="hero-char inline-block"
+                style={
+                  {
+                    '--in-delay': `${(delay + i * stagger).toFixed(3)}s`,
+                    // Gelombang hover disapu per huruf; jedanya lebih rapat dari
+                    // entrance supaya terasa satu sapuan, bukan huruf-per-huruf.
+                    '--hover-delay': `${(i * 0.028).toFixed(3)}s`,
+                  } as React.CSSProperties
+                }
+              >
+                <span className="hero-char-face inline-block">{ch}</span>
               </span>
             );
           })}

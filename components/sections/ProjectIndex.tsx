@@ -9,18 +9,27 @@
  * preview DI DALAM selnya sendiri, jadi tidak ada lagi yang perlu dihitung per
  * mousemove dan bundle client-nya hilang sepenuhnya.
  *
- * Sentuh / tanpa hover: sel tetap menampilkan logo + kategori (cover hanya
- * tambahan), jadi tidak ada informasi yang cuma hidup di state hover. Fokus
- * keyboard memicu efek yang sama lewat `group-focus-visible`.
+ * Sentuh / tanpa hover: sel tetap menampilkan logo + kategori + tag disiplin
+ * (cover hanya tambahan), jadi tidak ada informasi yang cuma hidup di state
+ * hover. Fokus keyboard memicu efek yang sama lewat `group-focus-visible`.
+ *
+ * Tag disiplin di tiap sel dipasangkan dengan baris pintasan di header section:
+ * tag memberi tahu satu project ada di bucket mana, pintasan membawa ke `/works`
+ * yang sudah terfilter ke bucket itu. Filter sesungguhnya tidak di sini —
+ * alasannya di komentar baris pintasan.
  */
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { DISCIPLINES, type DisciplineId } from '@/content/works/disciplines';
+import { DisciplineTags } from '@/components/ui/DisciplineTags';
 
 export interface ProjectRow {
   slug: string;
   title: string;
   category: string;
+  /** App / Web / AI / Teaching — sumbu yang bisa difilter di `/works`. */
+  disciplines: readonly DisciplineId[];
   year: string;
   /** Wordmark project — tampil di tengah sel. */
   logo: string;
@@ -70,8 +79,35 @@ export function ProjectIndex({ projects }: { projects: ProjectRow[] }) {
           </span>
         </h2>
         <p className="font-system text-muted mx-auto mt-5 max-w-xl text-base md:text-lg">
-          Selection of mobile and iOS development work, built end to end.
+          Selection of mobile, web, and AI automation work, built end to end.
         </p>
+
+        {/*
+         * Pintasan disiplin — TAUTAN ke `/works?tag=…`, bukan filter di tempat.
+         * Grid ini duduk di tengah koreografi sticky-stacking: menyusutkan
+         * isinya saat sebuah tag ditekan akan mengubah tinggi panel yang
+         * posisi scroll-nya sedang dipegang oleh section di atas dan di
+         * bawahnya. Filter yang sesungguhnya (instan, bisa dikombinasi dengan
+         * membaca daftar) hidup di `/works`, dan baris ini yang mengantar ke
+         * sana sudah dalam keadaan terfilter.
+         *
+         * Tanpa 'use client': tetap nol JS, dan tiap tautan tetap bisa dibuka
+         * di tab baru — yang tak pernah bisa dilakukan chip berbasis state.
+         */}
+        <nav aria-label="Browse projects by discipline" className="mt-8">
+          <ul className="flex flex-wrap justify-center gap-2 md:gap-3">
+            {DISCIPLINES.map((discipline) => (
+              <li key={discipline.id}>
+                <Link
+                  href={`/works?tag=${discipline.id}`}
+                  className="font-system text-ink/70 hover:border-ink hover:text-ink focus-visible:outline-accent inline-block rounded-[var(--radius-pill)] border border-[var(--line-strong)] px-4 py-2 text-xs tracking-[0.12em] uppercase transition-colors duration-[var(--dur-base)] ease-[var(--ease-smooth)] focus-visible:outline-2 focus-visible:outline-offset-2 md:text-sm"
+                >
+                  {discipline.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </header>
 
       {/*
@@ -123,8 +159,21 @@ export function ProjectIndex({ projects }: { projects: ProjectRow[] }) {
                 />
               </span>
 
-              <span className="font-system relative z-[2] text-xs leading-none tracking-wide uppercase md:text-base">
-                {project.category}
+              <span className="relative z-[2] flex w-full flex-col items-center gap-2">
+                <span className="font-system text-xs leading-none tracking-wide uppercase md:text-base">
+                  {project.category}
+                </span>
+                {/* Tag disiplin di bawah kategori, bukan menggantikannya:
+                    kategori menyebut TEKNOLOGINYA ("SWIFTUI + ARKIT"), tag
+                    menyebut BUCKET-nya. Yang kedua yang cocok dengan chip di
+                    `/works`, dan tanpa keduanya salah satu informasi hilang.
+                    `onImage` karena cover project muncul persis di belakangnya
+                    saat hover. */}
+                <DisciplineTags
+                  ids={project.disciplines}
+                  variant="onImage"
+                  className="justify-center"
+                />
               </span>
 
               {/* Pil CTA — murni dekoratif, seluruh selnya sudah satu link. */}
@@ -153,6 +202,16 @@ export function ProjectIndex({ projects }: { projects: ProjectRow[] }) {
           </li>
         ))}
       </ul>
+
+      <p className="font-system text-muted mt-10 text-center text-sm md:text-base">
+        <Link
+          href="/works"
+          className="focus-visible:outline-accent hover:text-ink rounded-sm underline underline-offset-4 transition-colors focus-visible:outline-2 focus-visible:outline-offset-4"
+        >
+          See the full index
+          <span aria-hidden="true"> &#8594;</span>
+        </Link>
+      </p>
     </section>
   );
 }

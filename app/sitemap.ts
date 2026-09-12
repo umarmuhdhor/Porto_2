@@ -22,6 +22,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 1,
     },
+    {
+      // Indeks project. Prioritasnya di antara homepage dan case study: ia
+      // pintu masuk ke semuanya, tapi isinya ringkasan — halaman case
+      // study-nya yang punya isi sebenarnya.
+      url: `${SITE_URL}/works`,
+      lastModified,
+      changeFrequency: 'monthly',
+      priority: 0.9,
+    },
     ...getAllSlugs().map((slug) => ({
       url: `${SITE_URL}/works/${slug}`,
       lastModified,

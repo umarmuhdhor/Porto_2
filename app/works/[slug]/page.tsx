@@ -19,6 +19,7 @@ import { notFound } from 'next/navigation';
 import { getAllSlugs, getWorkBySlug } from '@/lib/works';
 import { BentoGallery } from '@/components/sections/BentoGallery';
 import { ServicePillList } from '@/components/ui/ServicePill';
+import { DisciplineTags } from '@/components/ui/DisciplineTags';
 import { ScrollTopButton } from '@/components/ui/ScrollTopButton';
 
 export const dynamicParams = false;
@@ -70,8 +71,8 @@ export default async function WorkPage({ params }: Params) {
 
   return (
     // <main> tetap selebar viewport dengan padding frame-inset, jadi latar cream
-    // penuh dan padding-nya masih dihitung dari lebar layar — sejajar dengan
-    // FrameLines global. Yang dibatasi lebarnya cuma KOLOM KONTEN di dalamnya:
+    // penuh dan padding-nya masih dihitung dari lebar layar — nilai inset yang
+    // sama dipakai garis frame hero. Yang dibatasi lebarnya cuma KOLOM KONTEN:
     // tanpa itu, gambar galeri ikut melebar di monitor besar dan halaman jadi
     // jauh lebih tinggi tanpa menambah informasi apa pun, sementara baris teks
     // lewat batas nyaman baca.
@@ -86,8 +87,8 @@ export default async function WorkPage({ params }: Params) {
         <nav aria-label="Breadcrumb" className="font-system text-muted text-xs md:text-sm">
           <ol className="flex items-center gap-2">
             <li>
-              <Link href="/#projects" className={`${LINK} hover:text-ink`}>
-                Projects
+              <Link href="/works" className={`${LINK} hover:text-ink`}>
+                Works
               </Link>
             </li>
             <li aria-hidden="true">/</li>
@@ -112,13 +113,20 @@ export default async function WorkPage({ params }: Params) {
               {work.title}
             </h1>
           </div>
-          <p className="font-system text-muted text-xs tracking-[0.2em] uppercase md:pt-3 md:text-right">
-            {work.category}
-            <span className="mx-2" aria-hidden="true">
-              ·
-            </span>
-            {work.year}
-          </p>
+          <div className="flex flex-col gap-3 md:items-end md:pt-3">
+            <p className="font-system text-muted text-xs tracking-[0.2em] uppercase md:text-right">
+              {work.category}
+              <span className="mx-2" aria-hidden="true">
+                ·
+              </span>
+              {work.year}
+            </p>
+            {/* Tag disiplin bentuknya sama persis dengan chip filter di
+                `/works`: pembaca yang mendarat langsung di case study ini
+                (lewat link yang dibagikan) tetap tahu bucket mana yang harus
+                ditekan di indeks untuk menemukan yang sejenis. */}
+            <DisciplineTags ids={work.disciplines} className="md:justify-end" />
+          </div>
         </header>
 
         <p className="font-body mt-10 max-w-3xl text-lg leading-relaxed md:mt-14 md:text-2xl">
@@ -243,8 +251,8 @@ export default async function WorkPage({ params }: Params) {
           aria-label="Case study navigation"
           className="mt-20 flex items-center justify-between border-t border-[var(--line-rule)] pt-8 md:mt-28"
         >
-          <Link href="/#projects" className={`${LINK} text-ink hover:text-accent`}>
-            ← Go back to projects
+          <Link href="/works" className={`${LINK} text-ink hover:text-accent`}>
+            ← Back to all works
           </Link>
           <ScrollTopButton className={`${LINK} text-muted hover:text-ink cursor-pointer`} />
         </nav>

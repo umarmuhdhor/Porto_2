@@ -5,7 +5,7 @@
  *   1. bidang accent-soft + medan titik
  *   2. strip tangga krem di tepi atas (StaircaseBlinds)
  *   3. isi ber-parallax (FooterParallax):
- *        panggung  → watermark nama + avatar
+ *        panggung  → watermark nama
  *        garis     → dua paruh yang digambar dari tepi ke tengah
  *        blok bawah→ CTA kiri, "Reach out" + sosial kanan, kredit
  *
@@ -19,13 +19,13 @@
  *     yang berbeda. Berat display dinaikkan ke 700 karena Trobika pada berat
  *     normal sudah setebal grotesk bold — memakai 400 akan terbaca jauh lebih
  *     kurus dari referensi.
- *   - Figur avatar. Milik referensi adalah karakter pixel-art orang lain yang
- *     digambar ke <canvas>; yang dipakai di sini avatar sendiri (PixelAvatar).
- *     Kotak & penempatannya yang disamakan, bukan gambarnya.
+ *   - Figur avatar. Referensi menaruh karakter pixel-art di tengah panggung
+ *     footer; di sini panggungnya sengaja DIBIARKAN KOSONG dan diisi watermark
+ *     nama saja. Maskot pixel-art-nya pernah ada di sini lalu dicabut atas
+ *     permintaan — jangan dikembalikan tanpa diminta.
  */
 
 import { SITE } from '@/content/site';
-import { PixelAvatar } from '@/components/ui/PixelAvatar';
 import { StaircaseBlinds } from '@/components/ui/StaircaseBlinds';
 import { FitWatermark } from '@/components/ui/FitWatermark';
 import { RiseGroup, RiseText, Rise } from '@/components/ui/RiseText';
@@ -33,7 +33,12 @@ import { FooterParallax } from '@/components/sections/FooterParallax';
 import { ContactChromeToggle } from '@/components/sections/ContactChromeToggle';
 
 const { emailUser: MAIL_USER, emailHost: MAIL_HOST, email: EMAIL } = SITE;
-const { github: GITHUB, instagram: INSTAGRAM, linkedin: LINKEDIN } = SITE;
+const {
+  github: GITHUB,
+  instagram: INSTAGRAM,
+  linkedin: LINKEDIN,
+  youtube: YOUTUBE,
+} = SITE;
 
 /** Nama watermark, satu baris per elemen array. */
 const WATERMARK = SITE.nameLines;
@@ -95,7 +100,7 @@ export function ContactFooter() {
         className="relative z-[3] flex flex-1 flex-col"
         style={{ paddingInline: 'var(--frame-inset)' }}
       >
-        {/* ——— Panggung: watermark + avatar ——— */}
+        {/* ——— Panggung: watermark ——— */}
         <div className="relative flex flex-1 items-center justify-center">
           {/* Watermark. opacity 0.1 di mobile / 0.2 di desktop, dan kotaknya
               melebihi layar (150%) di mobile supaya nama tetap terbaca sebagai
@@ -107,15 +112,6 @@ export function ContactFooter() {
             <FitWatermark lines={WATERMARK} className="relative w-[150%] md:w-[85%]" />
           </div>
 
-          {/* Avatar. Kotaknya setinggi 45vh (360px dari 800px di referensi) dan
-              isinya DIDUDUKKAN DI DASAR kotak: gambar referensi punya ruang
-              kosong di atas kepala sehingga figurnya jatuh di paruh bawah
-              kotak, sedangkan PixelAvatar di sini terpotong pas. Tanpa
-              `items-end` kotak yang sama akan menaruh figur ini lebih tinggi
-              dari referensi. */}
-          <div className="relative z-[5] flex h-[45vh] max-h-[420px] min-h-[220px] items-end">
-            <PixelAvatar className="h-full w-auto" />
-          </div>
         </div>
 
         {/* Semua yang di bawah panggung masuk ke SATU grup reveal: garis, CTA,
@@ -237,6 +233,23 @@ export function ContactFooter() {
                           <path d="M12 16v-5" />
                           <path d="M16 16v-3a2 2 0 1 0 -4 0" />
                           <path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" />
+                        </svg>
+                      </a>
+                    </Rise>
+                    {/* YouTube terakhir: kanal matematika, bukan kerja
+                        engineering — relevan sebagai bukti mengajar, tapi
+                        bukan tautan yang dicari perekrut lebih dulu. */}
+                    <Rise delay={0.42}>
+                      <a
+                        href={YOUTUBE}
+                        aria-label="YouTube"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="focus-visible:outline-ink inline-flex focus-visible:outline-2 focus-visible:outline-offset-4"
+                      >
+                        <svg {...ICON} aria-hidden>
+                          <path d="M2 8a4 4 0 0 1 4 -4h12a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-12a4 4 0 0 1 -4 -4z" />
+                          <path d="M10 9l5 3l-5 3z" />
                         </svg>
                       </a>
                     </Rise>
